@@ -1,0 +1,20 @@
+{
+    "name": "kyslik/column-sortable",
+    "description": "",
+    "authors": [
+        {
+            "name": "Martin Kiesel",
+            "email": "martinkiesel@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "illuminate/support": "5.0.*"
+    },
+    "autoload": {
+        "psr-0": {
+            "Kyslik\\ColumnSortable": "src/"
+        }
+    },
+    "minimum-stability": "stable"
+}
