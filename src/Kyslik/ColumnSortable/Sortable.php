@@ -15,7 +15,7 @@ trait Sortable {
             return $query;
     }
 
-    public static function link(array $parameters) //sending array because of blade extension
+    public static function link(array $parameters) //Extending Blade; Blade sends array.
     {
         if (count($parameters) == 1) $parameters[1] = ucfirst($parameters[0]);
 
@@ -31,7 +31,7 @@ trait Sortable {
         $alpha_icon_set = config('columnsortable.alpha_icon_set');
 
         $default_icon_set = config('columnsortable.default_icon_set');
-        $sortable_icon = config('columnsortable.sortable_icon'); //icon that shows when sortable but column is not sorted at the time
+        $sortable_icon = config('columnsortable.sortable_icon');
 
         if (Input::get('sort') == $col)
         {

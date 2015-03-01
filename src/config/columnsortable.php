@@ -18,7 +18,9 @@ return [
 
     'default_icon_set' => 'fa-sort',
 
-
-    'sortable_icon'    => 'fa-sort'
+    /*
+    Icon that shows when generating sortable link while column is not sorted.
+    */
+    'sortable_icon'    => 'fa-sort' 
 
 ];
