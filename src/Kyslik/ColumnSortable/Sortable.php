@@ -22,16 +22,16 @@ trait Sortable {
         $col = $parameters[0];
         $title = $parameters[1];
 
-        $numeric_columns = array(config('columnsortable.numeric_columns'));
-        $amount_columns = array(config('columnsortable.amount_columns'));
-        $alpha_columns = array(config('columnsortable.alpha_columns'));
+        $numeric_columns = Config::get('columnsortable.numeric_columns');
+        $amount_columns = Config::get('columnsortable.amount_columns');
+        $alpha_columns = Config::get('columnsortable.alpha_columns');
 
-        $numeric_icon_set = config('columnsortable.numeric_columns');
-        $amount_icon_set = config('columnsortable.amount_icon_set');
-        $alpha_icon_set = config('columnsortable.alpha_icon_set');
+        $numeric_icon_set = Config::get('columnsortable.numeric_icon_set');
+        $amount_icon_set = Config::get('columnsortable.amount_icon_set');
+        $alpha_icon_set = Config::get('columnsortable.alpha_icon_set');
 
-        $default_icon_set = config('columnsortable.default_icon_set');
-        $sortable_icon = config('columnsortable.sortable_icon');
+        $default_icon_set = Config::get('columnsortable.default_icon_set');
+        $sortable_icon = Config::get('columnsortable.sortable_icon');
 
         if (Input::get('sort') == $col)
         {
