@@ -2,7 +2,11 @@
 
 Package for handling column sorting in Laravel 5.
 
-## Install
+Simply put: [this hack](http://hack.swic.name/laravel-column-sorting-made-easy/) in package with blade extension and Font Awesome icon support.
+
+## Setup
+
+### Composer
 
 Pull this package in through Composer.
 
@@ -29,12 +33,15 @@ Add the package to your application service providers in `config/app.php`
 
 ],
 ```
+### Publish configuration
 
 Publish the package configuration file to your application.
 
     $ php artisan vendor:publish
     
 See configuration file yourself and make adjustments as you wish.
+
+### Font Awesome support
 
 Install [Font-awesome](https://github.com/FortAwesome/Font-Awesome) for visual joy.
 ## Usage
@@ -64,6 +71,15 @@ public function index(User $user)
 }
 ```
 
+Simple example view with pagination links
+
+```
+@foreach ($users as $user)
+    @sortablelink('name')
+@endforeach
+{!! $users->appends(\Input::except('page'))->render() !!}
+```
+
 ## Blade Extension
 
 There is one blade extension for you to use
@@ -72,4 +88,7 @@ There is one blade extension for you to use
 @sortable('column', 'Title')
 ```
 
-You can ommit title parameter.
+Column parameter is `order by` and Title parameter is displayed inside anchor tags.
+
+__You can ommit Title parameter. __
+
