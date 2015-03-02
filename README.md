@@ -7,6 +7,8 @@ Package for handling column sorting in Laravel 5.
 
 Simply put: [this hack](http://hack.swic.name/laravel-column-sorting-made-easy/) in package with blade extension and Font Awesome icon support.
 
+>This is my shot at universal and easy to use model sorting in Laravel. The end result allows you to sort an Eloquent model using any column by clicking the column name. Everything is done in PHP, no JS involved.
+
 ## Setup
 
 ### Composer
@@ -22,6 +24,7 @@ Pull this package in through Composer.
 ```
 
     $ composer update
+    
 
 Add the package to your application service providers in `config/app.php`
 
@@ -46,7 +49,7 @@ See configuration file yourself and make adjustments as you wish.
 
 ### Font Awesome support
 
-Install [Font-awesome](https://github.com/FortAwesome/Font-Awesome) for visual joy.
+Install [Font-Awesome](https://github.com/FortAwesome/Font-Awesome) for visual joy. Search "sort" in [cheatsheet](http://fortawesome.github.io/Font-Awesome/cheatsheet/) and see used icons (12) yourself.
 ## Usage
 
 First of all, include `Sortable` trait inside your `Eloquent` model(s).
@@ -62,8 +65,11 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
 You're set to go.
 
-Sortable trait adds Sortable scope to the models so you can use it with paginate e.g:
+Sortable trait adds Sortable scope to the models so you can use it with paginate.
 
+#### Example
+
+Controller's index method.
 
 ```
 public function index(User $user)
@@ -74,7 +80,7 @@ public function index(User $user)
 }
 ```
 
-Simple example view with pagination links
+View with pagination links
 
 ```
 @sortablelink('name')
