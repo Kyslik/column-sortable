@@ -89,6 +89,5 @@ There is one blade extension for you to use
 ```
 
 Column parameter is `order by` and Title parameter is displayed inside anchor tags.
-
-__You can ommit Title parameter. __
+You can ommit Title parameter.
 

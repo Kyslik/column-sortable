@@ -45,7 +45,7 @@ trait Sortable {
         else
             $icon = $sortable_icon;
 
-        $icon = '<i class="fa ' . $icon . '"></i>';
+        $icon = '<i class="' . $icon . '"></i>';
 
         $parameters = array_merge(Input::all(), array('sort'  => $col,
                                                       'order' => (Input::get('order') === 'asc' ? 'desc' : 'asc')));
