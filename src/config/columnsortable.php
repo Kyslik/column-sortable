@@ -9,6 +9,7 @@ return [
     */
     'numeric_columns'  => ['created_at',
                            'updated_at',
+                           'level',
                            'id'],
 
 
@@ -24,8 +25,9 @@ return [
     These columns are going to have 'alpha_icon_set' next to sortable link.
     */
     'alpha_columns'    => ['name',
-                           'description',
-                           'email'],
+                           'descrtiption',
+                           'email',
+                           'slug'],
 
 
     /*

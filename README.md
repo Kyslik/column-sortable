@@ -77,8 +77,9 @@ public function index(User $user)
 Simple example view with pagination links
 
 ```
+@sortablelink('name')
 @foreach ($users as $user)
-    @sortablelink('name')
+    {{ $user->name }}
 @endforeach
 {!! $users->appends(\Input::except('page'))->render() !!}
 ```
