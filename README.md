@@ -18,7 +18,7 @@ Pull this package in through Composer.
 ```
 {
     "require": {
-        "kyslik/column-sortable": "~1.0"
+        "kyslik/column-sortable": "~1.0.0"
     }
 }
 ```
