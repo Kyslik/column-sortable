@@ -18,7 +18,7 @@ Pull this package in through Composer.
 ```
 {
     "require": {
-        "kyslik/column-sortable": "dev-master"
+        "kyslik/column-sortable": "~1.0"
     }
 }
 ```
@@ -45,7 +45,7 @@ Publish the package configuration file to your application.
 
     $ php artisan vendor:publish
     
-See configuration file yourself and make adjustments as you wish.
+See configuration file (`config/columnsortable.php`) yourself and make adjustments as you wish.
 
 ### Font Awesome support
 
@@ -95,7 +95,7 @@ View with pagination links
 There is one blade extension for you to use
 
 ```
-@sortable('column', 'Title')
+@sortablelink('column', 'Title')
 ```
 
 Column parameter is `order by` and Title parameter is displayed inside anchor tags.
