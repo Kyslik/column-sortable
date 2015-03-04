@@ -33,7 +33,7 @@ trait Sortable {
         $default_icon_set = Config::get('columnsortable.default_icon_set');
         $sortable_icon = Config::get('columnsortable.sortable_icon');
 
-        if (Input::get('sort') == $col)
+        if (Input::get('sort') == $col && (in_array(Input::get('order'), ['asc', 'desc'])))
         {
             if (in_array(Input::get('sort'), $numeric_columns)) $icon = $numeric_icon_set;
             elseif (in_array(Input::get('sort'), $amount_columns)) $icon = $amount_icon_set;
