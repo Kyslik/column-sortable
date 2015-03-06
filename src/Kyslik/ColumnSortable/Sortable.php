@@ -10,7 +10,8 @@ trait Sortable {
 
     public function scopeSortable($query)
     {
-        if ((Input::has('sort') && Input::has('order')) && (Schema::hasColumn($this->getTable(), Input::get('sort')))) return $query->orderBy(Input::get('sort'), Input::get('order'));
+
+        if ((Input::has('sort') && Input::has('order')) && $this->columnExists()) return $query->orderBy(Input::get('sort'), Input::get('order'));
         else
             return $query;
     }
@@ -33,7 +34,9 @@ trait Sortable {
         $default_icon_set = Config::get('columnsortable.default_icon_set');
         $sortable_icon = Config::get('columnsortable.sortable_icon');
 
-        if (Input::get('sort') == $col && (in_array(Input::get('order'), ['asc', 'desc'])))
+        if (Input::get('sort') == $col && (in_array(Input::get('order'), ['asc',
+                                                                          'desc']))
+        )
         {
             if (in_array(Input::get('sort'), $numeric_columns)) $icon = $numeric_icon_set;
             elseif (in_array(Input::get('sort'), $amount_columns)) $icon = $amount_icon_set;
@@ -52,6 +55,17 @@ trait Sortable {
         $url = route(Route::currentRouteName(), $parameters);
 
         return '<a href="' . $url . '"' . '>' . htmlentities($title) . '</a>' . ' ' . $icon;
+    }
+
+    /**
+     * @return bool
+     */
+    private function columnExists()
+    {
+        if ( ! isset($this->sortable)) return Schema::hasColumn($this->getTable(), Input::get('sort'));
+        else
+            return in_array(Input::get('sort'), $this->sortable);
+
     }
 
 
