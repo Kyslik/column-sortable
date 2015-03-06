@@ -9,7 +9,7 @@ Simply put: [this hack](http://hack.swic.name/laravel-column-sorting-made-easy/)
 
 >This is my shot at universal and easy to use model sorting in Laravel. The end result allows you to sort an Eloquent model using any column by clicking the column name. Everything is done in PHP, no JS involved.
 
-#### Changes 1.0.4 to 2.0.0
+#### Changes 1.0.4 to 1.0.5
 You can now define `protected $sortable = []` in your models so application speeds up a little. `Scheme::hasColumn()` is run only when `$sortable` is not defined. 
 
 
@@ -57,7 +57,7 @@ See configuration file (`config/columnsortable.php`) yourself and make adjustmen
 Install [Font-Awesome](https://github.com/FortAwesome/Font-Awesome) for visual joy. Search "sort" in [cheatsheet](http://fortawesome.github.io/Font-Awesome/cheatsheet/) and see used icons (12) yourself.
 ## Usage
 
-First of all, include `Sortable` trait inside your `Eloquent` model(s). Define `$sortable` array see [Changes 1.0.4 to 2.0.0](https://github.com/Kyslik/column-sortable#changes-104-to-200) why.
+First of all, include `Sortable` trait inside your `Eloquent` model(s). Define `$sortable` array see [Changes 1.0.4 to 1.0.5](https://github.com/Kyslik/column-sortable#changes-104-to-105) why.
 
 ```
 use Kyslik\ColumnSortable\Sortable;
