@@ -57,7 +57,7 @@ See configuration file (`config/columnsortable.php`) yourself and make adjustmen
 Install [Font-Awesome](https://github.com/FortAwesome/Font-Awesome) for visual joy. Search "sort" in [cheatsheet](http://fortawesome.github.io/Font-Awesome/cheatsheet/) and see used icons (12) yourself.
 ## Usage
 
-First of all, include `Sortable` trait inside your `Eloquent` model(s). Define `$sortable` array see [Changes 1.0.4 to 2.0.0](https://github.com/Kyslik/column-sortable#Changes-1.0.4-to-2.0.0) why.
+First of all, include `Sortable` trait inside your `Eloquent` model(s). Define `$sortable` array see [Changes 1.0.4 to 2.0.0](https://github.com/Kyslik/column-sortable#changes-104-to-200) why.
 
 ```
 use Kyslik\ColumnSortable\Sortable;
