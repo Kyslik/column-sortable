@@ -2,16 +2,18 @@
 
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Input;
-use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Schema;
 
 
-trait Sortable {
+trait Sortable
+{
 
     public function scopeSortable($query)
     {
 
-        if ((Input::has('sort') && Input::has('order')) && $this->columnExists()) return $query->orderBy(Input::get('sort'), Input::get('order'));
+        if (Input::has('sort') && Input::has('order') && $this->columnExists(Input::get('sort')))
+            return $query->orderBy(Input::get('sort'), Input::get('order'));
         else
             return $query;
     }
@@ -23,49 +25,38 @@ trait Sortable {
         $col = $parameters[0];
         $title = $parameters[1];
 
-        $numeric_columns = Config::get('columnsortable.numeric_columns');
-        $amount_columns = Config::get('columnsortable.amount_columns');
-        $alpha_columns = Config::get('columnsortable.alpha_columns');
+        $icon = Config::get('columnsortable.sortable_icon');
 
-        $numeric_icon_set = Config::get('columnsortable.numeric_icon_set');
-        $amount_icon_set = Config::get('columnsortable.amount_icon_set');
-        $alpha_icon_set = Config::get('columnsortable.alpha_icon_set');
-
-        $default_icon_set = Config::get('columnsortable.default_icon_set');
-        $sortable_icon = Config::get('columnsortable.sortable_icon');
-
-        if (Input::get('sort') == $col && (in_array(Input::get('order'), ['asc',
-                                                                          'desc']))
-        )
-        {
-            if (in_array(Input::get('sort'), $numeric_columns)) $icon = $numeric_icon_set;
-            elseif (in_array(Input::get('sort'), $amount_columns)) $icon = $amount_icon_set;
-            elseif (in_array(Input::get('sort'), $alpha_columns)) $icon = $alpha_icon_set;
-            else $icon = $default_icon_set;
-
-            $icon = $icon . '-' . Input::get('order');
+        foreach (Config::get('columnsortable.columns') as $key => $value) {
+            if(in_array($col, $value['rows'])) {
+                $icon = $value['class'];
+            }
         }
+
+        if (Input::get('sort') == $col && in_array(Input::get('order'), ['asc', 'desc']))
+            $icon = $icon . '-' . Input::get('order');
         else
-            $icon = $sortable_icon;
+            $icon = Config::get('columnsortable.sortable_icon');
 
-        $icon = '<i class="' . $icon . '"></i>';
+        $parameters = [
+            'sort' => $col,
+            'order' => Input::get('order') === 'asc' ? 'desc' : 'asc'
+        ];
 
-        $parameters = array_merge(Input::all(), array('sort'  => $col,
-                                                      'order' => (Input::get('order') === 'asc' ? 'desc' : 'asc')));
-        $url = route(Route::currentRouteName(), $parameters);
+        $url = route(Request::route()->getName(), array_merge(Request::route()->parameters(), $parameters));
 
-        return '<a href="' . $url . '"' . '>' . htmlentities($title) . '</a>' . ' ' . $icon;
+        return '<a href="' . $url . '"' . '>' . htmlentities($title) . '</a>' . ' ' . '<i class="' . $icon . '"></i>';
     }
 
     /**
      * @return bool
      */
-    private function columnExists()
+    private function columnExists($column)
     {
-        if ( ! isset($this->sortable)) return Schema::hasColumn($this->getTable(), Input::get('sort'));
+        if (!isset($this->sortable))
+            return Schema::hasColumn($this->getTable(), $column);
         else
-            return in_array(Input::get('sort'), $this->sortable);
-
+            return in_array($column, $this->sortable);
     }
 
 
