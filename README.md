@@ -12,6 +12,9 @@ Simply put: [this hack](http://hack.swic.name/laravel-column-sorting-made-easy/)
 #### Changes 1.0.4 to 1.0.5
 You can now define `protected $sortable = []` in your models so application speeds up a little. `Scheme::hasColumn()` is run only when `$sortable` is not defined. 
 
+#### Changes 1.0.5 to 2.0.0
+There is a new config structure. 
+
 
 
 ## Setup
@@ -23,7 +26,7 @@ Pull this package in through Composer.
 ```
 {
     "require": {
-        "kyslik/column-sortable": "~1.0.0"
+        "kyslik/column-sortable": "~2.0.0"
     }
 }
 ```
