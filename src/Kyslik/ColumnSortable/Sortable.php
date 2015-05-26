@@ -43,7 +43,7 @@ trait Sortable
             'order' => Input::get('order') === 'asc' ? 'desc' : 'asc'
         ];
 
-        $url = route(Request::route()->getName(), array_merge(Request::route()->parameters(), $parameters));
+        $url = route(Request::route()->getName(), array_merge(Request::except(['order','sort']), $parameters));
 
         return '<a href="' . $url . '"' . '>' . htmlentities($title) . '</a>' . ' ' . '<i class="' . $icon . '"></i>';
     }
