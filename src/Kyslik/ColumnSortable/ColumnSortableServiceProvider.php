@@ -42,13 +42,8 @@ class ColumnSortableServiceProvider extends ServiceProvider {
 
         $blade = $this->app['view']->getEngineResolver()->resolve('blade')->getCompiler();
 
-        $blade->extend(function ($view, $compiler)
-        {
-            $pattern = $compiler->createMatcher('sortablelink');
-
-            $replace = '<?php echo \Kyslik\ColumnSortable\Sortable::link(array $2);?>';
-
-            return preg_replace($pattern, $replace, $view);
+        $blade->directive('sortablelink', function($expression) {
+            return "<?php echo \Kyslik\ColumnSortable\Sortable::link(array {$expression});?>";
         });
 
     }
