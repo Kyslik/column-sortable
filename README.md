@@ -1,9 +1,9 @@
-# Column sorting for Laravel 5
+# Column sorting for Laravel 5.1
 [![Latest Version](https://img.shields.io/github/release/Kyslik/column-sortable.svg?style=flat-square)](https://github.com/Kyslik/column-sortable/releases)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
 [![Total Downloads](https://img.shields.io/packagist/dt/Kyslik/column-sortable.svg?style=flat-square)](https://packagist.org/packages/Kyslik/column-sortable)
 
-Package for handling column sorting in Laravel 5.1
+Package for handling column sorting in Laravel 5.1 and [Laravel-5.0](https://github.com/Kyslik/column-sortable/tree/Laravel-5.0)
 
 Simply put: [this hack](http://hack.swic.name/laravel-column-sorting-made-easy/) in package with blade extension and Font Awesome icon support.
 
@@ -18,7 +18,7 @@ Pull this package in through Composer.
 ```
 {
     "require": {
-        "kyslik/column-sortable": "~2.0.0"
+        "kyslik/column-sortable": "~3.0.0"
     }
 }
 ```
@@ -31,12 +31,12 @@ Add the package to your application service providers in `config/app.php`
 ```
 'providers' => [
     
-    'Illuminate\Foundation\Providers\ArtisanServiceProvider',
-    'Illuminate\Auth\AuthServiceProvider',
-    ...
-    
-    'Kyslik\ColumnSortable\ColumnSortableServiceProvider',
+    App\Providers\RouteServiceProvider::class,
 
+    /*
+     * Third Party Service Providers...
+     */
+    Kyslik\ColumnSortable\ColumnSortableServiceProvider::class,
 ],
 ```
 ### Publish configuration
