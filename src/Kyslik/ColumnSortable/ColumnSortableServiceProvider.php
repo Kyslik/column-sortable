@@ -1,9 +1,10 @@
 <?php namespace Kyslik\ColumnSortable;
 
+
 use Illuminate\Support\ServiceProvider;
 
 class ColumnSortableServiceProvider extends ServiceProvider {
-
+    
     /**
      * Indicates if loading of the provider is deferred.
      *
@@ -42,7 +43,8 @@ class ColumnSortableServiceProvider extends ServiceProvider {
 
         $blade = $this->app['view']->getEngineResolver()->resolve('blade')->getCompiler();
 
-        $blade->directive('sortablelink', function($expression) {
+        $blade->directive('sortablelink', function ($expression)
+        {
             return "<?php echo \Kyslik\ColumnSortable\Sortable::link(array {$expression});?>";
         });
 

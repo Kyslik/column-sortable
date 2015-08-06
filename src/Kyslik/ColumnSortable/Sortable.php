@@ -5,7 +5,6 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Schema;
 
-
 trait Sortable
 {
 

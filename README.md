@@ -76,23 +76,32 @@ You're set to go.
 
 Sortable trait adds Sortable scope to the models so you can use it with paginate.
 
-#### Example
+#### Full Example
 
-Controller's index method.
+#####Routes
+
+
+```
+Route::get('users', ['as' => 'users.index', 'uses' => 'HomeController@index']);
+```
+
+#####Controller's `index()` method
 
 ```
 public function index(User $user)
 {
-    $users = $user->Sortable()->paginate(10);
+    $users = $user->sortable()->paginate(10);
 
 	return view('user.index')->withUsers($users);
 }
 ```
 
-View with pagination links
+##### View
+_pagination included_
 
 ```
-@sortablelink('name')
+@sortablelink ('name')
+
 @foreach ($users as $user)
     {{ $user->name }}
 @endforeach
@@ -101,10 +110,10 @@ View with pagination links
 
 ## Blade Extension
 
-There is one blade extension for you to use
+There is one blade extension for you to use __(mind the space between the directive and brackets)__
 
 ```
-@sortablelink('column', 'Title')
+@sortablelink ('column', 'Title')
 ```
 
 Column parameter is `order by` and Title parameter is displayed inside anchor tags.
