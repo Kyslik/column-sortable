@@ -7,7 +7,7 @@ Package for handling column sorting in Laravel 5.1 and [Laravel-5.0](https://git
 
 Simply put: [this hack](http://hack.swic.name/laravel-column-sorting-made-easy/) in package with blade extension and Font Awesome icon support.
 
->This is my shot at universal and easy to use model sorting in Laravel. The end result allows you to sort an Eloquent model using any column by clicking the column name. Everything is done in PHP, no JS involved.
+>This is my shot at universal and easy to use model sorting in Laravel. The end result allows you to sort an Eloquent model using any column by clicking the column name. Everything is done in PHP, no JS involved. [__Maciej Swic__](https://github.com/maciekish)
 
 ## Setup
 
