@@ -3,7 +3,8 @@
 
 use Illuminate\Support\ServiceProvider;
 
-class ColumnSortableServiceProvider extends ServiceProvider {
+class ColumnSortableServiceProvider extends ServiceProvider
+{
     
     /**
      * Indicates if loading of the provider is deferred.
@@ -19,7 +20,7 @@ class ColumnSortableServiceProvider extends ServiceProvider {
      */
     public function boot()
     {
-        $this->publishes([__DIR__ . '/../../config/columnsortable.php' => config_path('columnsortable.php')]);
+        $this->publishes([__DIR__ . '/../../config/columnsortable.php' => config_path('columnsortable.php')], 'config');
         $this->registerBladeExtensions();
     }
 

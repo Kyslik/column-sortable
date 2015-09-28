@@ -5,9 +5,17 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Schema;
 
+/**
+ * Class Sortable
+ * @package Kyslik\ColumnSortable
+ */
 trait Sortable
 {
 
+    /**
+     * @param $query
+     * @return mixed
+     */
     public function scopeSortable($query)
     {
 
@@ -17,9 +25,13 @@ trait Sortable
             return $query;
     }
 
+    /**
+     * @param array $parameters
+     * @return string
+     */
     public static function link(array $parameters) //Extending Blade; Blade sends array.
     {
-        if (count($parameters) == 1) $parameters[1] = ucfirst($parameters[0]);
+        if (count($parameters) === 1) $parameters[1] = ucfirst($parameters[0]);
 
         $col = $parameters[0];
         $title = $parameters[1];
@@ -42,12 +54,14 @@ trait Sortable
             'order' => Input::get('order') === 'asc' ? 'desc' : 'asc'
         ];
 
-        $url = route(Request::route()->getName(), array_merge(Request::route()->parameters(), $parameters));
+        $query_string = http_build_query(array_merge(Request::route()->parameters(), $parameters));
 
-        return '<a href="' . $url . '"' . '>' . htmlentities($title) . '</a>' . ' ' . '<i class="' . $icon . '"></i>';
+        return '<a href="' . url(Request::path() . '?' . $query_string) . '"' . '>' . htmlentities($title) . '</a>' . ' ' . '<i class="' . $icon . '"></i>';
     }
 
+
     /**
+     * @param $column
      * @return bool
      */
     private function columnExists($column)
@@ -57,6 +71,5 @@ trait Sortable
         else
             return in_array($column, $this->sortable);
     }
-
 
 }
