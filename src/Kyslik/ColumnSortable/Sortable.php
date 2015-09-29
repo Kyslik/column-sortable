@@ -54,9 +54,9 @@ trait Sortable
             'order' => Input::get('order') === 'asc' ? 'desc' : 'asc'
         ];
 
-        $query_string = http_build_query(array_merge(Request::route()->parameters(), $parameters));
-
-        return '<a href="' . url(Request::path() . '?' . $query_string) . '"' . '>' . htmlentities($title) . '</a>' . ' ' . '<i class="' . $icon . '"></i>';
+        parse_str(\Request::getQueryString(),$get_array);
+        $url = route(Request::route()->getName(), array_merge($get_array, $parameters));
+        return '<a href="' . $url . '"' . '>' . htmlentities($title) . '</a>' . ' ' . '<i class="' . $icon . '"></i>';
     }
 
 
