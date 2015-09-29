@@ -85,6 +85,12 @@ Sortable trait adds Sortable scope to the models so you can use it with paginate
 Route::get('users', ['as' => 'users.index', 'uses' => 'HomeController@index']);
 ```
 
+since version **3.0.2** you can use non-named routes
+
+```
+Route::get('users', ['uses' => 'HomeController@index]);
+```
+
 #####Controller's `index()` method
 
 ```
