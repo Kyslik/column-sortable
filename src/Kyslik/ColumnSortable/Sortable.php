@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * Class Sortable
+ * Trait Sortable
  * @package Kyslik\ColumnSortable
  */
 trait Sortable
@@ -18,7 +18,6 @@ trait Sortable
      */
     public function scopeSortable($query)
     {
-
         if (Input::has('sort') && Input::has('order') && $this->columnExists(Input::get('sort')))
             return $query->orderBy(Input::get('sort'), Input::get('order'));
         else
@@ -61,7 +60,6 @@ trait Sortable
 
         return '<a ' . $anchor_class . ' href="' . url(Request::path() . '?' . $query_string) . '"' . '>' . htmlentities($title) . '</a>' . ' ' . '<i class="' . $icon . '"></i>';
     }
-
 
     /**
      * @param $column
