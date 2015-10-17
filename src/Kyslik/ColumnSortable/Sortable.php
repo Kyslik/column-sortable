@@ -56,7 +56,10 @@ trait Sortable
 
         $query_string = http_build_query(array_merge(Request::route()->parameters(), $parameters));
 
-        return '<a href="' . url(Request::path() . '?' . $query_string) . '"' . '>' . htmlentities($title) . '</a>' . ' ' . '<i class="' . $icon . '"></i>';
+        $anchor_class = Config::get('columnsortable.anchor_class', null);
+        if ($anchor_class !== null) $anchor_class = 'class="' . $anchor_class . '"';
+
+        return '<a ' . $anchor_class . ' href="' . url(Request::path() . '?' . $query_string) . '"' . '>' . htmlentities($title) . '</a>' . ' ' . '<i class="' . $icon . '"></i>';
     }
 
 

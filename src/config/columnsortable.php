@@ -3,7 +3,7 @@
 return [
 
     /*
-    Spec columns
+    Spec columns, self explanatory.
     */
     'columns' => [
         'numeric_columns'  => [
@@ -28,6 +28,11 @@ return [
     /*
     Icon that shows when generating sortable link while column is not sorted.
     */
-    'sortable_icon'    => 'fa fa-sort'
+    'sortable_icon'    => 'fa fa-sort',
+
+    /*
+    Default anchor class, if value is null none is added. (must be type of null)
+    */
+    'anchor_class'      => null
 
 ];
