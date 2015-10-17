@@ -20,7 +20,7 @@ class ColumnSortableServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->publishes([__DIR__ . '/../../config/columnsortable.php' => config_path('columnsortable.php')], 'config');
+        $this->publishes([__DIR__ . '/../../config/columnsortable.php' => config_path('columnsortable.php')], 'columnsortable:config');
         $this->registerBladeExtensions();
     }
 
@@ -31,7 +31,7 @@ class ColumnSortableServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__ . '/../../config/columnsortable.php', 'columnsortable');
+        $this->mergeConfigFrom(__DIR__ . '/../../config/columnsortable.php', 'columnsortable:config');
     }
 
     /**

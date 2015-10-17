@@ -43,9 +43,11 @@ Add the package to your application service providers in `config/app.php`
 
 Publish the package configuration file to your application.
 
-    $ php artisan vendor:publish
+    $ php artisan vendor:publish --provider="Kyslik\ColumnSortable\ColumnSortableServiceProvider" --tag="columnsortable:config"
     
 See configuration file (`config/columnsortable.php`) yourself and make adjustments as you wish.
+
+>Updating 3.0.2 to 3.0.3, use [`--force`](http://laravel.com/docs/5.1/packages#public-assets) option when publishing config file. See this [issue](https://github.com/Kyslik/column-sortable/issues/10), why is config file changed.
 
 ### Font Awesome support
 
