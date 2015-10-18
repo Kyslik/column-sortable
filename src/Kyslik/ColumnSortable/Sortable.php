@@ -13,15 +13,53 @@ trait Sortable
 {
 
     /**
-     * @param $query
+     * @param            $query
+     * @param array|null $default
      * @return mixed
      */
-    public function scopeSortable($query)
+    public function scopeSortable($query, array $default = null)
     {
-        if (Input::has('sort') && Input::has('order') && $this->columnExists(Input::get('sort')))
-            return $query->orderBy(Input::get('sort'), Input::get('order'));
+        if (Input::has('sort') && Input::has('order'))
+            return $this->queryOrderBuilder($query, Input::only(['sort', 'order']));
+        else if (!is_null($default))
+            return $this->queryOrderBuilder($query, $this->formatDefaultArray($default));
         else
             return $query;
+    }
+
+    /**
+     * @param       $query
+     * @param array $a
+     * @return mixed
+     */
+    private function queryOrderBuilder($query, array $a)
+    {
+        $order = array_get($a, 'order', 'asc');
+        if (!in_array($order, ['asc', 'desc'])) $order = 'asc';
+
+        $sort = array_get($a, 'sort', null);
+        if (!is_null($sort) && $this->columnExists($sort))
+            return $query->orderBy($sort, $order);
+        return $query;
+    }
+
+    /**
+     * @param array $a
+     * @return array
+     */
+    private function formatDefaultArray(array $a)
+    {
+        $order = null;
+        reset($a);
+
+        if ((bool)count(array_filter(array_keys($a), 'is_string'))) {
+            $sort = key($a);
+            $order = array_get($a, $sort, null);
+        } else
+            $sort = current($a);
+
+        if (!$sort)  return [];
+        return ['sort' => $sort, 'order' => $order];
     }
 
     /**
@@ -50,7 +88,7 @@ trait Sortable
 
         $parameters = [
             'sort' => $col,
-            'order' => Input::get('order') === 'asc' ? 'desc' : 'asc'
+            'order' => Input::get('order') === 'desc' ? 'asc' : 'desc'
         ];
 
         $query_string = http_build_query(array_merge(Request::route()->parameters(), $parameters));
