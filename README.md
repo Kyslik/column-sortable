@@ -3,11 +3,11 @@
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
 [![Total Downloads](https://img.shields.io/packagist/dt/Kyslik/column-sortable.svg?style=flat-square)](https://packagist.org/packages/Kyslik/column-sortable)
 
-Package for handling column sorting in Laravel 5.1 and [Laravel-5.0](https://github.com/Kyslik/column-sortable/tree/Laravel-5.0)
+Package for handling column sorting in Laravel 5.1 (maintained) and [Laravel-5.0](https://github.com/Kyslik/column-sortable/tree/Laravel-5.0) (not maintained)
 
 Simply put: [this hack](http://hack.swic.name/laravel-column-sorting-made-easy/) in package with blade extension and Font Awesome icon support.
 
->This is my shot at universal and easy to use model sorting in Laravel. The end result allows you to sort an Eloquent model using any column by clicking the column name. Everything is done in PHP, no JS involved. [__Maciej Swic__](https://github.com/maciekish)
+>This is my shot at universal and easy to use model sorting in Laravel. The end result allows you to sort an Eloquent model using any column by clicking the column name. Everything is done in PHP, no JS involved.
 
 ## Setup
 
@@ -47,11 +47,49 @@ Publish the package configuration file to your application.
     
 See configuration file (`config/columnsortable.php`) yourself and make adjustments as you wish.
 
->Updating 3.0.2 to 3.0.3, use [`--force`](http://laravel.com/docs/5.1/packages#public-assets) option when publishing config file. See this [issue](https://github.com/Kyslik/column-sortable/issues/10), why is config file changed.
+#### Config in few words
+
+Sortablelink blade extension distinguishes between "types" (numeric, amount, alpha) and applies different class for each of them. See following snippet:
+
+```
+'columns' => [
+        'numeric_columns'  => [ 
+            'rows' => ['created_at', 'updated_at', 'level', 'id'],
+            'class' => 'fa fa-sort-numeric'
+        ],
+        'amount_columns'   => [
+            'rows' => ['price'],
+            'class' => 'fa fa-sort-amount'
+        ],
+        'alpha_columns'    => [
+            'rows' => ['name', 'description', 'email', 'slug'],
+            'class' => 'fa fa-sort-alpha',
+        ],
+    ],
+```
+
+Rest of the [config file](https://github.com/Kyslik/column-sortable/blob/master/src/config/columnsortable.php) should be crystal clear.
+
+#### Config update notes
+
+>Updating 3.0.* to 3.0.3, use [`--force`](http://laravel.com/docs/5.1/packages#public-assets) option when publishing config file. See this [issue](https://github.com/Kyslik/column-sortable/issues/10), why is config file changed.
 
 ### Font Awesome support
 
 Install [Font-Awesome](https://github.com/FortAwesome/Font-Awesome) for visual joy. Search "sort" in [cheatsheet](http://fortawesome.github.io/Font-Awesome/cheatsheet/) and see used icons (12) yourself.
+
+## Blade Extension
+
+There is one blade extension for you to use <strike>__(mind the space between the directive and brackets)__</strike> _fixed in L5.1? (need confirmation)_
+
+```
+@sortablelink ('column', 'Title')
+```
+
+Column parameter is `order by` and **Title** parameter is displayed inside anchor tags.
+You can omit **Title** parameter. In **3.0.3** you can set anchor class in configuration file.
+
+
 ## Usage
 
 First of all, include `Sortable` trait inside your `Eloquent` model(s). Define `$sortable` array (see example code below).
@@ -70,7 +108,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	                       'name', 
 	                       'email', 
 	                       'created_at', 
-	                       'updated_at']; //ommitable
+	                       'updated_at']; //omitable
 	
 ```
 
@@ -78,9 +116,9 @@ You're set to go.
 
 Sortable trait adds Sortable scope to the models so you can use it with paginate.
 
-#### Full Example
+### Full Example
 
-#####Routes
+####Routes
 
 
 ```
@@ -93,7 +131,7 @@ since version **3.0.2** you can use non-named routes
 Route::get('users', ['uses' => 'HomeController@index']);
 ```
 
-#####Controller's `index()` method
+####Controller's `index()` method
 
 ```
 public function index(User $user)
@@ -104,7 +142,17 @@ public function index(User $user)
 }
 ```
 
-##### View
+Since version **3.0.4** you can set default sort (when nothing is in (URL) query strings yet).
+
+```
+//generate ->orderBy('name', 'asc')
+$users = $user->sortable(['name'])->paginate(10); //default order is asc
+
+//generate ->orderBy('id', 'desc')
+$users = $user->sortable(['id' => 'desc'])->paginate(10);
+```
+
+#### View
 _pagination included_
 
 ```
@@ -115,15 +163,3 @@ _pagination included_
 @endforeach
 {!! $users->appends(\Input::except('page'))->render() !!}
 ```
-
-## Blade Extension
-
-There is one blade extension for you to use __(mind the space between the directive and brackets)__
-
-```
-@sortablelink ('column', 'Title')
-```
-
-Column parameter is `order by` and Title parameter is displayed inside anchor tags.
-You can ommit Title parameter.
-
