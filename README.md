@@ -1,9 +1,9 @@
-# Column sorting for Laravel 5.1
+# Column sorting for Laravel 5.2
 [![Latest Version](https://img.shields.io/github/release/Kyslik/column-sortable.svg?style=flat-square)](https://github.com/Kyslik/column-sortable/releases)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
 [![Total Downloads](https://img.shields.io/packagist/dt/Kyslik/column-sortable.svg?style=flat-square)](https://packagist.org/packages/Kyslik/column-sortable)
 
-Package for handling column sorting in Laravel 5.1 (maintained) and [Laravel-5.0](https://github.com/Kyslik/column-sortable/tree/Laravel-5.0) (not maintained)
+Package for handling column sorting in Laravel 5.2 and [Laravel-5.1](https://github.com/Kyslik/column-sortable/tree/Laravel-5.1).
 
 Simply put: [this hack](http://hack.swic.name/laravel-column-sorting-made-easy/) in package with blade extension and Font Awesome icon support.
 
@@ -18,7 +18,7 @@ Pull this package in through Composer.
 ```
 {
     "require": {
-        "kyslik/column-sortable": "~3.0.0"
+        "kyslik/column-sortable": "~4.0.0"
     }
 }
 ```
@@ -153,6 +153,8 @@ $users = $user->sortable(['id' => 'desc'])->paginate(10);
 ```
 
 #### View
+In Laravel 5.2 **\Input** facade is not aliased by default, to do so open `config/app.php` and add `'Input'     => Illuminate\Support\Facades\Input::class,` to *aliases* array.
+
 _pagination included_
 
 ```
