@@ -73,7 +73,7 @@ trait Sortable
         $col = $parameters[0];
         $title = $parameters[1];
 
-        $icon = Config::get('columnsortable.sortable_icon');
+        $icon = Config::get('columnsortable');
 
         foreach (Config::get('columnsortable.columns') as $key => $value) {
             if(in_array($col, $value['rows'])) {

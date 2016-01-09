@@ -1,6 +1,5 @@
 <?php namespace Kyslik\ColumnSortable;
 
-
 use Illuminate\Support\ServiceProvider;
 
 class ColumnSortableServiceProvider extends ServiceProvider
@@ -20,7 +19,8 @@ class ColumnSortableServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->publishes([__DIR__ . '/../../config/columnsortable.php' => config_path('columnsortable.php')], 'columnsortable:config');
+        $config_path = __DIR__ . '/../config/columnsortable.php';
+        $this->publishes([$config_path => config_path('columnsortable.php')], 'columnsortable');
         $this->registerBladeExtensions();
     }
 
@@ -31,7 +31,8 @@ class ColumnSortableServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__ . '/../../config/columnsortable.php', 'columnsortable:config');
+        $config_path = __DIR__ . '/../config/columnsortable.php';
+        $this->mergeConfigFrom($config_path, 'columnsortable');
     }
 
     /**

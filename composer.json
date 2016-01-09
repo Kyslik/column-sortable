@@ -14,8 +14,8 @@
         "laravel/framework": "5.1.*"
     },
     "autoload": {
-        "psr-0": {
-            "Kyslik\\ColumnSortable": "src/"
+        "psr-4": {
+            "Kyslik\\ColumnSortable": "src/ColumnSortable/"
         }
     },
     "minimum-stability": "stable"

@@ -43,7 +43,7 @@ Add the package to your application service providers in `config/app.php`
 
 Publish the package configuration file to your application.
 
-    $ php artisan vendor:publish --provider="Kyslik\ColumnSortable\ColumnSortableServiceProvider" --tag="columnsortable:config"
+    $ php artisan vendor:publish --provider="Kyslik\ColumnSortable\ColumnSortableServiceProvider" --tag="columnsortable"
     
 See configuration file (`config/columnsortable.php`) yourself and make adjustments as you wish.
 
