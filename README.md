@@ -3,7 +3,7 @@
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
 [![Total Downloads](https://img.shields.io/packagist/dt/Kyslik/column-sortable.svg?style=flat-square)](https://packagist.org/packages/Kyslik/column-sortable)
 
-Package for handling column sorting in Laravel 5.1 (maintained) and [Laravel-5.0](https://github.com/Kyslik/column-sortable/tree/Laravel-5.0) (not maintained)
+Package for handling column sorting in Laravel 5.1 and [Laravel-5.2](https://github.com/Kyslik/column-sortable/tree/Laravel-5.2).
 
 Simply put: [this hack](http://hack.swic.name/laravel-column-sorting-made-easy/) in package with blade extension and Font Awesome icon support.
 
