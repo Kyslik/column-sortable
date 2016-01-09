@@ -15,7 +15,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Kyslik\\ColumnSortable": "src/ColumnSortable/"
+            "Kyslik\\ColumnSortable\\": "src/ColumnSortable/"
         }
     },
     "minimum-stability": "stable"
