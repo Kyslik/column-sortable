@@ -3,20 +3,20 @@
 return [
 
     /*
-    Spec columns, self explanatory.
+    Spec columns.
     */
     'columns' => [
+        'alpha_columns'    => [
+            'rows' => ['description', 'email', 'name', 'slug'],
+            'class' => 'fa fa-sort-alpha',
+        ],
+        'amount_columns'   => [
+            'rows' => ['amount', 'price'],
+            'class' => 'fa fa-sort-amount'
+        ],
         'numeric_columns'  => [
             'rows' => ['created_at', 'updated_at', 'level', 'id'],
             'class' => 'fa fa-sort-numeric'
-        ],
-        'amount_columns'   => [
-            'rows' => ['price'],
-            'class' => 'fa fa-sort-amount'
-        ],
-        'alpha_columns'    => [
-            'rows' => ['name', 'description', 'email', 'slug'],
-            'class' => 'fa fa-sort-alpha',
         ],
     ],
 
