@@ -42,14 +42,10 @@ class ColumnSortableServiceProvider extends ServiceProvider
      */
     protected function registerBladeExtensions()
     {
-
         $blade = $this->app['view']->getEngineResolver()->resolve('blade')->getCompiler();
 
-        $blade->directive('sortablelink', function ($expression)
-        {
+        $blade->directive('sortablelink', function ($expression) {
             return "<?php echo \Kyslik\ColumnSortable\Sortable::link(array {$expression});?>";
         });
-
     }
-
 }
