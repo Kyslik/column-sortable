@@ -6,6 +6,10 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Kyslik\ColumnSortable\Exceptions\InvalidSortArgumentException;
+use Kyslik\ColumnSortable\Exceptions\RelationDoesNotExistsException;
+use BadMethodCallException;
 
 /**
  * Trait Sortable
@@ -30,10 +34,24 @@ trait Sortable
         }
     }
 
+
+    private function setJoin($query, HasOne $relation)
+    {
+        $related = $relation->getRelated();
+        $relatedKey = $relation->getForeignKey();
+        $relatedTable = $related->getTable();
+        
+        $parent = $relation->getParent();
+        $parentKey = $parent->getTable() . '.' . $parent->primaryKey;
+        $parentTable = $parent->getTable();
+
+        return $query->select($parentTable . '.*')->join($relatedTable, $parentKey, '=', $relatedKey);
+    }
+
     /**
      * @param       $query
      * @param array $a
-     * @return mixed
+     * @return      $query
      */
     private function queryOrderBuilder($query, array $a)
     {
@@ -43,8 +61,31 @@ trait Sortable
         }
 
         $sort = array_get($a, 'sort', null);
-        if (!is_null($sort) && $this->columnExists($sort)) {
-            return $query->orderBy($sort, $order);
+        if (!is_null($sort)) {
+            $separator = Config::get('columnsortable.uri_relation_column_separator', '.');
+            if (str_contains($sort, $separator)) {
+                $oneToOneSort = explode($separator, Input::get('sort'));
+                if (count($oneToOneSort) !== 2) {
+                    throw new InvalidSortArgumentException;
+                }
+
+                $relation_name = $oneToOneSort[0];
+                $sort = $oneToOneSort[1];
+                try {
+                    $relation = $query->getRelation($relation_name);
+                } catch (BadMethodCallException $e) {
+                    throw new RelationDoesNotExistsException($relation_name);
+                }
+                $query = $this->setJoin($query, $relation);
+                
+                if ($this->columnExists($relation->getRelated(), $sort)) {
+                    return $query->orderBy($sort, $order);
+                }
+            }
+
+            if ($this->columnExists($this, $sort)) {
+                return $query->orderBy($sort, $order);
+            }
         }
         return $query;
     }
@@ -114,15 +155,16 @@ trait Sortable
     }
 
     /**
+     * @param $model
      * @param $column
      * @return bool
      */
-    private function columnExists($column)
+    private function columnExists($model, $column)
     {
-        if (!isset($this->sortable)) {
-            return Schema::hasColumn($this->getTable(), $column);
+        if (!isset($model->sortable)) {
+            return Schema::hasColumn($model->getTable(), $column);
         } else {
-            return in_array($column, $this->sortable);
+            return in_array($column, $model->sortable);
         }
     }
 }

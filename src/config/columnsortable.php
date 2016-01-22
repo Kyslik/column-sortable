@@ -33,6 +33,11 @@ return [
     /*
     Default anchor class, if value is null none is added. (must be type of null)
     */
-    'anchor_class'      => null
+    'anchor_class'      => null,
+
+    /*
+    Relation - column separator. ex: detail.phone_number means relation "detail" and column "phone_number".
+     */
+    'uri_relation_column_separator' => '.'
 
 ];
