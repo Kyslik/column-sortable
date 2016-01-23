@@ -37,14 +37,14 @@ trait Sortable
 
     private function setJoin($query, HasOne $relation)
     {
-        $related = $relation->getRelated();
-        $relatedKey = $relation->getForeignKey();
-        $relatedTable = $related->getTable();
+        $relatedModel = $relation->getRelated();
+        $relatedKey = $relation->getForeignKey(); // table.key
+        $relatedTable = $relatedModel->getTable();
         
-        $parent = $relation->getParent();
-        $parentKey = $parent->getTable() . '.' . $parent->primaryKey;
-        $parentTable = $parent->getTable();
-
+        $parentModel = $relation->getParent();
+        $parentTable = $parentModel->getTable();
+        $parentKey = $parentTable . '.' . $parentModel->primaryKey; // table.key
+        
         return $query->select($parentTable . '.*')->join($relatedTable, $parentKey, '=', $relatedKey);
     }
 
@@ -55,6 +55,8 @@ trait Sortable
      */
     private function queryOrderBuilder($query, array $a)
     {
+        $model = $this;
+
         $order = array_get($a, 'order', 'asc');
         if (!in_array($order, ['asc', 'desc'])) {
             $order = 'asc';
@@ -71,19 +73,18 @@ trait Sortable
 
                 $relation_name = $oneToOneSort[0];
                 $sort = $oneToOneSort[1];
+                
                 try {
                     $relation = $query->getRelation($relation_name);
                 } catch (BadMethodCallException $e) {
                     throw new RelationDoesNotExistsException($relation_name);
                 }
-                $query = $this->setJoin($query, $relation);
                 
-                if ($this->columnExists($relation->getRelated(), $sort)) {
-                    return $query->orderBy($sort, $order);
-                }
+                $query = $this->setJoin($query, $relation);
+                $model = $relation->getRelated();     
             }
 
-            if ($this->columnExists($this, $sort)) {
+            if ($this->columnExists($model, $sort)) {
                 return $query->orderBy($sort, $order);
             }
         }
