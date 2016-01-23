@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace Kyslik\ColumnSortable;
 
@@ -12,15 +12,14 @@ use Kyslik\ColumnSortable\Exceptions\RelationDoesNotExistsException;
 use BadMethodCallException;
 
 /**
- * Trait Sortable
- * @package Kyslik\ColumnSortable
+ * Trait Sortable.
  */
 trait Sortable
 {
-
     /**
      * @param            $query
      * @param array|null $default
+     *
      * @return mixed
      */
     public function scopeSortable($query, array $default = null)
@@ -34,24 +33,30 @@ trait Sortable
         }
     }
 
-
-    private function setJoin($query, HasOne $relation)
+    /**
+     * @param            $query
+     * @param HasOne     $relation
+     *
+     * @return query
+     */
+    private function queryJoinBuilder($query, HasOne $relation)
     {
         $relatedModel = $relation->getRelated();
         $relatedKey = $relation->getForeignKey(); // table.key
         $relatedTable = $relatedModel->getTable();
-        
+
         $parentModel = $relation->getParent();
         $parentTable = $parentModel->getTable();
-        $parentKey = $parentTable . '.' . $parentModel->primaryKey; // table.key
-        
-        return $query->select($parentTable . '.*')->join($relatedTable, $parentKey, '=', $relatedKey);
+        $parentKey = $parentTable.'.'.$parentModel->primaryKey; // table.key
+
+        return $query->select($parentTable.'.*')->join($relatedTable, $parentKey, '=', $relatedKey);
     }
 
     /**
      * @param       $query
      * @param array $a
-     * @return      $query
+     *
+     * @return query
      */
     private function queryOrderBuilder($query, array $a)
     {
@@ -68,31 +73,33 @@ trait Sortable
             if (str_contains($sort, $separator)) {
                 $oneToOneSort = explode($separator, Input::get('sort'));
                 if (count($oneToOneSort) !== 2) {
-                    throw new InvalidSortArgumentException;
+                    throw new InvalidSortArgumentException();
                 }
 
                 $relation_name = $oneToOneSort[0];
                 $sort = $oneToOneSort[1];
-                
+
                 try {
                     $relation = $query->getRelation($relation_name);
                 } catch (BadMethodCallException $e) {
                     throw new RelationDoesNotExistsException($relation_name);
                 }
-                
-                $query = $this->setJoin($query, $relation);
-                $model = $relation->getRelated();     
+
+                $query = $this->queryJoinBuilder($query, $relation);
+                $model = $relation->getRelated();
             }
 
             if ($this->columnExists($model, $sort)) {
                 return $query->orderBy($sort, $order);
             }
         }
+
         return $query;
     }
 
     /**
      * @param array $a
+     *
      * @return array
      */
     private function formatDefaultArray(array $a)
@@ -100,7 +107,7 @@ trait Sortable
         $order = null;
         reset($a);
 
-        if ((bool)count(array_filter(array_keys($a), 'is_string'))) {
+        if ((bool) count(array_filter(array_keys($a), 'is_string'))) {
             $sort = key($a);
             $order = array_get($a, $sort, null);
         } else {
@@ -110,11 +117,13 @@ trait Sortable
         if (!$sort) {
             return [];
         }
+
         return ['sort' => $sort, 'order' => $order];
     }
 
     /**
      * @param array $parameters
+     *
      * @return string
      */
     public static function link(array $parameters) //Extending Blade; Blade sends array.
@@ -127,37 +136,38 @@ trait Sortable
         $title = $parameters[1];
 
         $icon = Config::get('columnsortable.default_icon_set');
-        
+
         foreach (Config::get('columnsortable.columns') as $key => $value) {
             if (in_array($col, $value['rows'])) {
                 $icon = $value['class'];
             }
         }
-        
+
         if (Input::get('sort') == $col && in_array(Input::get('order'), ['asc', 'desc'])) {
-            $icon = $icon . '-' . Input::get('order');
+            $icon = $icon.'-'.Input::get('order');
         } else {
             $icon = Config::get('columnsortable.sortable_icon');
         }
 
         $parameters = [
             'sort' => $col,
-            'order' => Input::get('order') === 'desc' ? 'asc' : 'desc'
+            'order' => Input::get('order') === 'desc' ? 'asc' : 'desc',
         ];
 
         $query_string = http_build_query(array_merge(Request::route()->parameters(), $parameters));
 
         $anchor_class = Config::get('columnsortable.anchor_class', null);
         if ($anchor_class !== null) {
-            $anchor_class = 'class="' . $anchor_class . '"';
+            $anchor_class = 'class="'.$anchor_class.'"';
         }
 
-        return '<a ' . $anchor_class . ' href="' . url(Request::path() . '?' . $query_string) . '"' . '>' . htmlentities($title) . '</a>' . ' ' . '<i class="' . $icon . '"></i>';
+        return '<a '.$anchor_class.' href="'.url(Request::path().'?'.$query_string).'"'.'>'.htmlentities($title).'</a>'.' '.'<i class="'.$icon.'"></i>';
     }
 
     /**
      * @param $model
      * @param $column
+     *
      * @return bool
      */
     private function columnExists($model, $column)
