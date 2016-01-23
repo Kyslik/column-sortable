@@ -47,9 +47,9 @@ trait Sortable
 
         $parentModel = $relation->getParent();
         $parentTable = $parentModel->getTable();
-        $parentKey = $parentTable.'.'.$parentModel->primaryKey; // table.key
+        $parentKey = $parentTable . '.' . $parentModel->primaryKey; // table.key
 
-        return $query->select($parentTable.'.*')->join($relatedTable, $parentKey, '=', $relatedKey);
+        return $query->select($parentTable . '.*')->join($relatedTable, $parentKey, '=', $relatedKey);
     }
 
     /**
@@ -69,20 +69,14 @@ trait Sortable
 
         $sort = array_get($a, 'sort', null);
         if (!is_null($sort)) {
-            $separator = Config::get('columnsortable.uri_relation_column_separator', '.');
-            if (str_contains($sort, $separator)) {
-                $oneToOneSort = explode($separator, Input::get('sort'));
-                if (count($oneToOneSort) !== 2) {
-                    throw new InvalidSortArgumentException();
-                }
-
-                $relation_name = $oneToOneSort[0];
+            if ($oneToOneSort = $this->getOneToOneSortOrEmpty($sort)) {
+                $relationName = $oneToOneSort[0];
                 $sort = $oneToOneSort[1];
 
                 try {
-                    $relation = $query->getRelation($relation_name);
+                    $relation = $query->getRelation($relationName);
                 } catch (BadMethodCallException $e) {
-                    throw new RelationDoesNotExistsException($relation_name);
+                    throw new RelationDoesNotExistsException($relationName);
                 }
 
                 $query = $this->queryJoinBuilder($query, $relation);
@@ -132,36 +126,54 @@ trait Sortable
             $parameters[1] = ucfirst($parameters[0]);
         }
 
-        $col = $parameters[0];
+        $sort = $sortOriginal = $parameters[0];
         $title = $parameters[1];
 
         $icon = Config::get('columnsortable.default_icon_set');
 
+        if ($oneToOneSort = self::getOneToOneSortOrEmpty($sort)) {
+            $sort = $oneToOneSort[1];
+        }
+
         foreach (Config::get('columnsortable.columns') as $key => $value) {
-            if (in_array($col, $value['rows'])) {
+            if (in_array($sort, $value['rows'])) {
                 $icon = $value['class'];
             }
         }
 
-        if (Input::get('sort') == $col && in_array(Input::get('order'), ['asc', 'desc'])) {
-            $icon = $icon.'-'.Input::get('order');
+        if (Input::get('sort') == $sortOriginal && in_array(Input::get('order'), ['asc', 'desc'])) {
+            $icon = $icon . '-' . Input::get('order');
         } else {
             $icon = Config::get('columnsortable.sortable_icon');
         }
 
         $parameters = [
-            'sort' => $col,
+            'sort' => $sortOriginal,
             'order' => Input::get('order') === 'desc' ? 'asc' : 'desc',
         ];
 
-        $query_string = http_build_query(array_merge(Request::route()->parameters(), $parameters));
+        $queryString = http_build_query(array_merge(Request::route()->parameters(), $parameters));
 
-        $anchor_class = Config::get('columnsortable.anchor_class', null);
-        if ($anchor_class !== null) {
-            $anchor_class = 'class="'.$anchor_class.'"';
+        $anchorClass = Config::get('columnsortable.anchor_class', null);
+        if ($anchorClass !== null) {
+            $anchorClass = 'class="' . $anchorClass . '"';
         }
 
-        return '<a '.$anchor_class.' href="'.url(Request::path().'?'.$query_string).'"'.'>'.htmlentities($title).'</a>'.' '.'<i class="'.$icon.'"></i>';
+        return '<a ' . $anchorClass . ' href="'. url(Request::path() . '?' . $queryString) . '"' . '>' . htmlentities($title) . '</a>' . ' ' . '<i class="' . $icon . '"></i>';
+    }
+
+    private static function getOneToOneSortOrEmpty($sort)
+    {
+        $separator = Config::get('columnsortable.uri_relation_column_separator', '.');
+        if (str_contains($sort, $separator)) {
+            $oneToOneSort = explode($separator, $sort);
+            if (count($oneToOneSort) !== 2) {
+                throw new InvalidSortArgumentException();
+            }
+            return $oneToOneSort;
+        }
+
+        return null;
     }
 
     /**
