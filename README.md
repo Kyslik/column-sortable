@@ -1,9 +1,9 @@
-# Column sorting for Laravel 5.2
+# Column sorting for Laravel 5.*
 [![Latest Version](https://img.shields.io/github/release/Kyslik/column-sortable.svg?style=flat-square)](https://github.com/Kyslik/column-sortable/releases)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
 [![Total Downloads](https://img.shields.io/packagist/dt/Kyslik/column-sortable.svg?style=flat-square)](https://packagist.org/packages/Kyslik/column-sortable)
 
-Package for handling column sorting in Laravel 5.2 and [Laravel-5.1](https://github.com/Kyslik/column-sortable/tree/Laravel-5.1).
+Package for handling column sorting in Laravel 5.1 (and 5.2)
 
 Simply put: [this hack](http://hack.swic.name/laravel-column-sorting-made-easy/) in package with blade extension and Font Awesome icon support.
 
@@ -18,7 +18,7 @@ Pull this package in through Composer.
 ```
 {
     "require": {
-        "kyslik/column-sortable": "~4.0.0"
+        "kyslik/column-sortable": "~5.0.0"
     }
 }
 ```
@@ -108,8 +108,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	                       'name', 
 	                       'email', 
 	                       'created_at', 
-	                       'updated_at']; //omitable
-	
+	                       'updated_at'];	
 ```
 
 You're set to go.
@@ -131,7 +130,7 @@ since version **3.0.2** you can use non-named routes
 Route::get('users', ['uses' => 'HomeController@index']);
 ```
 
-####Controller's `index()` method
+#### Controller's `index()` method
 
 ```
 public function index(User $user)
@@ -164,4 +163,55 @@ _pagination included_
     {{ $user->name }}
 @endforeach
 {!! $users->appends(\Input::except('page'))->render() !!}
+```
+
+## One To One Relation sorting + example
+
+#### Define HasOne relation
+In order to make relation sorting work, you have to define HasOne relation in your model in question. 
+
+```
+/**
+* Get the user_detail record associated with the user.
+*/
+public function detail()    
+{
+    return $this->hasOne('App\UserDetail');
+}
+```
+
+In *User* model we define **hasOne** relation to *UserDetail* model (which holds phone number and address details).
+
+#### Define $sortable array
+
+Define `$sortable` array in both models (else, package uses `Sheme::hasColumn()` which is extra database query). 
+
+
+for *User*
+
+```
+protected $sortable = ['id', 'name', 'email', 'created_at', 'updated_at']; 
+```
+
+for *UserDetail*
+
+```
+protected $sortable = ['address', 'phone_number'];
+```
+
+#### Blade and relation sorting
+In order to tell package to sort using relation: 
+
+```
+@sortablelink ('detail.phone_number', 'phone')
+``` 
+>package works with relation "name" that you define in model instead of table name.
+
+
+#### Config file
+
+In config file you can set your own separator if `.` (dot) is not what you want.
+
+```
+'uri_relation_column_separator' => '.'
 ```
