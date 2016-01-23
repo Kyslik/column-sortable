@@ -18,10 +18,5 @@
             "Kyslik\\ColumnSortable\\": "src/ColumnSortable/"
         }
     },
-    "minimum-stability": "stable",
-    "extra": {
-        "branch-alias": {
-        "dev-master": "5.0.x-dev"
-        }
-    }
+    "minimum-stability": "stable"
 }
