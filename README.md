@@ -196,8 +196,10 @@ protected $sortable = ['id', 'name', 'email', 'created_at', 'updated_at'];
 for *UserDetail*
 
 ```
-protected $sortable = ['address', 'phone_number'];
+public $sortable = ['address', 'phone_number'];
 ```
+
+>note that `$sortable` array in *UserDetail* is declared as public and not protected because we need to access it inside *User* model.
 
 #### Blade and relation sorting
 In order to tell package to sort using relation: 
@@ -215,3 +217,9 @@ In config file you can set your own separator if `.` (dot) is not what you want.
 ```
 'uri_relation_column_separator' => '.'
 ```
+
+#### Exceptions to catch
+`InvalidSortArgumentException` is thrown when `explode()` fails to explode URI parameter "sort" in to two values.
+For example, `sort=detail..phone_number` - produces array with size of 3 which causes package to throw `InvalidSortArgumentException`.
+
+`RelationDoesNotExistsException` is thrown when `$query->getRelation()` method fails, that means when relation name is invalid (does not exists, is not declared in model).
