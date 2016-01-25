@@ -165,10 +165,10 @@ _pagination included_
 {!! $users->appends(\Input::except('page'))->render() !!}
 ```
 
-## One To One Relation sorting + example
+## One To One Relation sorting
 
 #### Define HasOne relation
-In order to make relation sorting work, you have to define HasOne relation in your model in question. 
+In order to make relation sorting work, you have to define **hasOne()** relation in your model in question. 
 
 ```
 /**
@@ -182,7 +182,7 @@ public function detail()
 
 In *User* model we define **hasOne** relation to *UserDetail* model (which holds phone number and address details).
 
-#### Define $sortable array
+#### Define `$sortable` array
 
 Define `$sortable` array in both models (else, package uses `Sheme::hasColumn()` which is extra database query). 
 
@@ -220,6 +220,6 @@ In config file you can set your own separator if `.` (dot) is not what you want.
 
 #### Exceptions to catch
 `InvalidSortArgumentException` is thrown when `explode()` fails to explode URI parameter "sort" in to two values.
-For example, `sort=detail..phone_number` - produces array with size of 3 which causes package to throw `InvalidSortArgumentException`.
+For example: `sort=detail..phone_number` - produces array with size of 3, which causes package to throw `InvalidSortArgumentException`.
 
 `RelationDoesNotExistsException` is thrown when `$query->getRelation()` method fails, that means when relation name is invalid (does not exists, is not declared in model).
