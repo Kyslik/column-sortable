@@ -9,7 +9,9 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Kyslik\ColumnSortable\Exceptions\InvalidSortArgumentException;
 use Kyslik\ColumnSortable\Exceptions\RelationDoesNotExistsException;
+use Kyslik\ColumnSortable\Exceptions\RelationIsNotInstanceOfHasOne;
 use BadMethodCallException;
+use ErrorException;
 
 /**
  * Trait Sortable.
@@ -75,11 +77,13 @@ trait Sortable
 
                 try {
                     $relation = $query->getRelation($relationName);
+                    $query = $this->queryJoinBuilder($query, $relation);
                 } catch (BadMethodCallException $e) {
                     throw new RelationDoesNotExistsException($relationName, 0, $e);
+                } catch (ErrorException $e) {
+                    throw new RelationIsNotInstanceOfHasOne($relationName, 0, $e);
                 }
 
-                $query = $this->queryJoinBuilder($query, $relation);
                 $model = $relation->getRelated();
             }
 
