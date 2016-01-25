@@ -76,7 +76,7 @@ trait Sortable
                 try {
                     $relation = $query->getRelation($relationName);
                 } catch (BadMethodCallException $e) {
-                    throw new RelationDoesNotExistsException($relationName);
+                    throw new RelationDoesNotExistsException($relationName, 0, $e);
                 }
 
                 $query = $this->queryJoinBuilder($query, $relation);
