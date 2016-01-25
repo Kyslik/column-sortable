@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Kyslik\ColumnSortable\Exceptions\InvalidSortArgumentException;
 use Kyslik\ColumnSortable\Exceptions\RelationDoesNotExistsException;
-use Kyslik\ColumnSortable\Exceptions\RelationIsNotInstanceOfHasOne;
+use Kyslik\ColumnSortable\Exceptions\RelationIsNotInstanceOfHasOneException;
 use BadMethodCallException;
 use ErrorException;
 
@@ -81,7 +81,7 @@ trait Sortable
                 } catch (BadMethodCallException $e) {
                     throw new RelationDoesNotExistsException($relationName, 0, $e);
                 } catch (ErrorException $e) {
-                    throw new RelationIsNotInstanceOfHasOne($relationName, 0, $e);
+                    throw new RelationIsNotInstanceOfHasOneException($relationName, 0, $e);
                 }
 
                 $model = $relation->getRelated();
