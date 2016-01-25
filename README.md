@@ -218,8 +218,22 @@ In config file you can set your own separator if `.` (dot) is not what you want.
 'uri_relation_column_separator' => '.'
 ```
 
-#### Exceptions to catch
-`InvalidSortArgumentException` is thrown when `explode()` fails to explode URI parameter "sort" in to two values.
-For example: `sort=detail..phone_number` - produces array with size of 3, which causes package to throw `InvalidSortArgumentException`.
+#### Exception to catch
+#####Package throws custom exception `ColumnSortableException` with three codes (0, 1, 2).
 
-`RelationDoesNotExistsException` is thrown when `$query->getRelation()` method fails, that means when relation name is invalid (does not exists, is not declared in model).
+Code **0** means that `explode()` fails to explode URI parameter "sort" in to two values.
+For example: `sort=detail..phone_number` - produces array with size of 3, which causes package to throw exception with code **0**.
+
+Code **1** means that `$query->getRelation()` method fails, that means when relation name is invalid (does not exists, is not declared in model).
+
+Code **2** means that provided relation through sort argument (_GET) is not instance of **hasOne**.
+
+In the end you need to catch only one exception like:
+
+```
+try {
+    $users = $user->with('detail')->sortable(['detail.phone_number'])->paginate(5);    
+    } catch (ColumnSortableException $e) {
+    dd($e);
+}
+```
