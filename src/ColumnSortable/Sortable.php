@@ -7,9 +7,7 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Kyslik\ColumnSortable\Exceptions\InvalidSortArgumentException;
-use Kyslik\ColumnSortable\Exceptions\RelationDoesNotExistsException;
-use Kyslik\ColumnSortable\Exceptions\RelationIsNotInstanceOfHasOneException;
+use Kyslik\ColumnSortable\Exceptions\ColumnSortableException;
 use BadMethodCallException;
 use ErrorException;
 
@@ -79,9 +77,9 @@ trait Sortable
                     $relation = $query->getRelation($relationName);
                     $query = $this->queryJoinBuilder($query, $relation);
                 } catch (BadMethodCallException $e) {
-                    throw new RelationDoesNotExistsException($relationName, 0, $e);
+                    throw new ColumnSortableException($relationName, 1, $e);
                 } catch (ErrorException $e) {
-                    throw new RelationIsNotInstanceOfHasOneException($relationName, 0, $e);
+                    throw new ColumnSortableException($relationName, 2, $e);
                 }
 
                 $model = $relation->getRelated();
@@ -172,7 +170,7 @@ trait Sortable
         if (str_contains($sort, $separator)) {
             $oneToOneSort = explode($separator, $sort);
             if (count($oneToOneSort) !== 2) {
-                throw new InvalidSortArgumentException();
+                throw new ColumnSortableException();
             }
             return $oneToOneSort;
         }
