@@ -226,9 +226,9 @@ For example: `sort=detail..phone_number` - produces array with size of 3, which 
 
 Code **1** means that `$query->getRelation()` method fails, that means when relation name is invalid (does not exists, is not declared in model).
 
-Code **2** means that provided relation through sort argument (_GET) is not instance of **hasOne**.
+Code **2** means that provided relation through sort argument is not instance of **hasOne**.
 
-In the end you need to catch only one exception like:
+In the end you need to catch only one exception, see following example:
 
 ```
 try {
