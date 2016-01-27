@@ -154,8 +154,7 @@ trait Sortable
             'order' => Input::get('order') === 'desc' ? 'asc' : 'desc',
         ];
 
-        $queryString = http_build_query(array_merge(Request::route()->parameters(), $parameters));
-
+        $queryString = http_build_query(array_merge(Request::except('sort', 'order', 'page'), $parameters));
         $anchorClass = Config::get('columnsortable.anchor_class', null);
         if ($anchorClass !== null) {
             $anchorClass = 'class="' . $anchorClass . '"';
