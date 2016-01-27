@@ -69,7 +69,7 @@ trait Sortable
 
         $sort = array_get($a, 'sort', null);
         if (!is_null($sort)) {
-            if ($oneToOneSort = $this->getOneToOneSortOrEmpty($sort)) {
+            if ($oneToOneSort = $this->getOneToOneSortOrNull($sort)) {
                 $relationName = $oneToOneSort[0];
                 $sort = $oneToOneSort[1];
 
@@ -133,7 +133,7 @@ trait Sortable
 
         $icon = Config::get('columnsortable.default_icon_set');
 
-        if ($oneToOneSort = self::getOneToOneSortOrEmpty($sort)) {
+        if ($oneToOneSort = self::getOneToOneSortOrNull($sort)) {
             $sort = $oneToOneSort[1];
         }
 
@@ -163,7 +163,12 @@ trait Sortable
         return '<a ' . $anchorClass . ' href="'. url(Request::path() . '?' . $queryString) . '"' . '>' . htmlentities($title) . '</a>' . ' ' . '<i class="' . $icon . '"></i>';
     }
 
-    private static function getOneToOneSortOrEmpty($sort)
+    /**
+     * @param $sort
+     *
+     * @return array|null
+     */
+    private static function getOneToOneSortOrNull($sort)
     {
         $separator = Config::get('columnsortable.uri_relation_column_separator', '.');
         if (str_contains($sort, $separator)) {
