@@ -184,7 +184,7 @@ In *User* model we define **hasOne** relation to *UserDetail* model (which holds
 
 #### Define `$sortable` array
 
-Define `$sortable` array in both models (else, package uses `Sheme::hasColumn()` which is extra database query). 
+Define `$sortable` array in both models (else, package uses `Scheme::hasColumn()` which is extra database query). 
 
 
 for *User*
@@ -199,7 +199,7 @@ for *UserDetail*
 public $sortable = ['address', 'phone_number'];
 ```
 
->note that `$sortable` array in *UserDetail* is declared as public and not protected because we need to access it inside *User* model.
+>note that `$sortable` array in *UserDetail* is declared as **public** and not protected because we need to access it inside *User* model.
 
 #### Blade and relation sorting
 In order to tell package to sort using relation: 
@@ -228,7 +228,7 @@ Code **1** means that `$query->getRelation()` method fails, that means when rela
 
 Code **2** means that provided relation through sort argument is not instance of **hasOne**.
 
-In the end you need to catch only one exception, see following example:
+Example how to catch:
 
 ```
 try {
@@ -237,3 +237,5 @@ try {
     dd($e);
 }
 ```
+
+>I strongly recommend to catch **ColumnSortableException** because there is a user input in question (GET parameter) and any user can modify it in such way that package throws ColumnSortableException with code 0.

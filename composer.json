@@ -1,7 +1,7 @@
 {
     "name": "kyslik/column-sortable",
     "description": "Package for handling column sorting in Laravel 5.1 and Laravel 5.2",
-    "keywords": ["sortable", "sorting", "column", "laravel", "laravel5", "one-to-one"],
+    "keywords": ["sortable", "sorting", "column", "laravel", "one-to-one"],
     "license": "MIT",
     "authors": [
         {
