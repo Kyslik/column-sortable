@@ -53,15 +53,15 @@ Sortablelink blade extension distinguishes between "types" (numeric, amount, alp
 
 ```
 'columns' => [
-        'numeric_columns'  => [ 
+        'numeric'  => [ 
             'rows' => ['created_at', 'updated_at', 'level', 'id'],
             'class' => 'fa fa-sort-numeric'
         ],
-        'amount_columns'   => [
+        'amount'   => [
             'rows' => ['price'],
             'class' => 'fa fa-sort-amount'
         ],
-        'alpha_columns'    => [
+        'alpha'    => [
             'rows' => ['name', 'description', 'email', 'slug'],
             'class' => 'fa fa-sort-alpha',
         ],
