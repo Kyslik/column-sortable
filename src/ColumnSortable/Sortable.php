@@ -144,7 +144,10 @@ trait Sortable
         }
 
         if (Input::get('sort') == $sortOriginal && in_array(Input::get('order'), ['asc', 'desc'])) {
-            $icon = $icon . '-' . Input::get('order');
+            $asc_suffix = Config::get('columnsortable.asc_suffix', '-asc');
+            $desc_suffix = Config::get('columnsortable.desc_suffix', '-desc');
+            
+            $icon = $icon . (Input::get('order') === 'asc' ? $asc_suffix : $desc_suffix);
         } else {
             $icon = Config::get('columnsortable.sortable_icon');
         }
