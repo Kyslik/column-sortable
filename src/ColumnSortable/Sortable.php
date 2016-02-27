@@ -33,22 +33,29 @@ trait Sortable
         }
     }
 
-    /**
+     /**
      * @param            $query
-     * @param HasOne     $relation
+     * @param Relation   $relation
      *
-     * @return query
+     * @throws InvalidArgumentException
+     * @return string query
      */
-    private function queryJoinBuilder($query, HasOne $relation)
+    private function queryJoinBuilder($query, Relation $relation)
     {
         $relatedModel = $relation->getRelated();
-        $relatedKey = $relation->getForeignKey(); // table.key
         $relatedTable = $relatedModel->getTable();
-
         $parentModel = $relation->getParent();
         $parentTable = $parentModel->getTable();
-        $parentKey = $parentTable . '.' . $parentModel->primaryKey; // table.key
 
+        if (is_a($relation, BelongsTo::class)) {
+            $relatedKey = $relatedTable . '.' . $relation->getOtherKey(); // table.key
+            $parentKey = $parentTable . '.' . $relation->getForeignKey(); // table.key
+        } else if (is_a($relation, HasOne::class)) {
+            $relatedKey = $relation->getForeignKey(); // table.key
+            $parentKey = $parentTable . '.' . $parentModel->primaryKey; // table.key
+        } else {
+            throw new InvalidArgumentException('Relation must be of type BelongsTo or HasOne');
+        }
         return $query->select($parentTable . '.*')->join($relatedTable, $parentKey, '=', $relatedKey);
     }
 
