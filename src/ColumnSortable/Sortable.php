@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Kyslik\ColumnSortable\Exceptions\ColumnSortableException;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\Relation;
 
 /**
@@ -27,15 +28,20 @@ trait Sortable
         if (Input::has('sort') && Input::has('order')) {
             return $this->queryOrderBuilder($query, Input::only(['sort', 'order']));
         } elseif (!is_null($default)) {
-            return $this->queryOrderBuilder($query, $this->formatDefaultArray($default));
+            foreach($default as $sort => $order) {
+              $query = $query->orderBy($sort, $order);
+            }
+            return $query;
         } else {
             return $query;
         }
     }
 
     /**
+     * You can use BelongsTo or HasOne in {$relation}
+     *
      * @param            $query
-     * @param HasOne     $relation
+     * @param Relation   $relation
      *
      * @return query
      */
@@ -47,8 +53,8 @@ trait Sortable
         $relatedTable = $relatedModel->getTable();
         $parentTable = $parentModel->getTable();
 
-        $relatedKey = $parentTable . '.' . $relation->getForeignKey(); // table.key
-        $parentKey = $relatedTable . '.' . $relatedModel->primaryKey; // table.key
+        $relatedKey = ($relation instanceof BelongsTo) ? $relation->getQualifiedForeignKey() : $relation->getForeignKey();
+        $parentKey = ($relation instanceof BelongsTo) ? $relation->getQualifiedOtherKeyName() : $relation->getQualifiedParentKeyName();
 
         return $query->select($parentTable . '.*')->leftJoin($relatedTable, $relatedKey, '=', $parentKey);
     }
@@ -71,7 +77,7 @@ trait Sortable
 
         if (!is_null($sort)) {
 
-            if ($oneToOneSort = $this->getOneToOneSortOrNull($sort)) {
+            if ($oneToOneSort = $this->getRelationSortOrNull($sort)) {
 
                 $relationName = $oneToOneSort[0];
                 $sort = $oneToOneSort[1];
@@ -80,7 +86,8 @@ trait Sortable
                     $relation = $query->getRelation($relationName);
                 } catch (\Exception $e) { }
 
-                if(isset($relation) && ($relation instanceof BelongsTo || $relation instanceof HasOne)) {
+                if(isset($relation)
+                && ($relation instanceof BelongsTo || $relation instanceof HasOne || $relation instanceof HasMany)) {
                   $model = $relation->getRelated();
                   $query = $this->queryJoinBuilder($query, $relation);
                 }
@@ -100,30 +107,6 @@ trait Sortable
     }
 
     /**
-     * @param array $a
-     *
-     * @return array
-     */
-    private function formatDefaultArray(array $a)
-    {
-        $order = null;
-        reset($a);
-
-        if ((bool) count(array_filter(array_keys($a), 'is_string'))) {
-            $sort = key($a);
-            $order = array_get($a, $sort, null);
-        } else {
-            $sort = current($a);
-        }
-
-        if (!$sort) {
-            return [];
-        }
-
-        return ['sort' => $sort, 'order' => $order];
-    }
-
-    /**
      * @param array $parameters
      *
      * @return string
@@ -139,7 +122,7 @@ trait Sortable
 
         $icon = Config::get('columnsortable.default_icon_set');
 
-        if ($oneToOneSort = self::getOneToOneSortOrNull($sort)) {
+        if ($oneToOneSort = self::getRelationSortOrNull($sort)) {
             $sort = $oneToOneSort[1];
         }
 
@@ -177,7 +160,7 @@ trait Sortable
      *
      * @return array|null
      */
-    private static function getOneToOneSortOrNull($sort)
+    private static function getRelationSortOrNull($sort)
     {
         $separator = Config::get('columnsortable.uri_relation_column_separator', '.');
         if (str_contains($sort, $separator)) {
