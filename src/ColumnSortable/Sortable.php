@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Kyslik\ColumnSortable\Exceptions\ColumnSortableException;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Database\Query\Builder;
 
 /**
  * Trait Sortable.
@@ -40,23 +41,40 @@ trait Sortable
     /**
      * You can use BelongsTo or HasOne in {$relation}
      *
-     * @param            $query
-     * @param Relation   $relation
+     * @param Builder $query
+     * @param array $relation
      *
-     * @return query
+     * @return relation
      */
-    private function queryJoinBuilder($query, Relation $relation)
+    private function queryJoinBuilder($query, $relations)
     {
+      $baseQuery = $query;
+      $relation = null;
+
+      $query = $query->select($this->getTable() . '.*');
+
+      foreach($relations as $relationName) {
+
+        try {
+          $relation = $baseQuery->getRelation($relationName);
+        } catch (\Exception $e) {
+          throw new ColumnSortableException($relationName, 2, $e);
+        }
+
         $relatedModel = $relation->getRelated();
         $parentModel = $relation->getParent();
-
-        $relatedTable = $relatedModel->getTable();
-        $parentTable = $parentModel->getTable();
 
         $relatedKey = ($relation instanceof BelongsTo) ? $relation->getQualifiedForeignKey() : $relation->getForeignKey();
         $parentKey = ($relation instanceof BelongsTo) ? $relation->getQualifiedOtherKeyName() : $relation->getQualifiedParentKeyName();
 
-        return $query->select($parentTable . '.*')->leftJoin($relatedTable, $relatedKey, '=', $parentKey);
+        $query = $query->leftJoin($relatedModel->getTable(), $relatedKey, '=', $parentKey);
+
+        $baseQuery = $relation->getQuery();
+
+      }
+
+      return $relation->getRelated();
+
     }
 
     /**
@@ -69,34 +87,29 @@ trait Sortable
     {
         $model = $this;
         $order = array_get($a, 'order', 'asc');
-        $sort = $sortName = array_get($a, 'sort', null);
+        $sortList = $this->getSortable();
+        $sortKey = array_get($a, 'sort', null);
+        $sortName = $sort = array_get($sortList, $sortKey, $sortKey);
+
+        if(!$this->sortExists($this, $sortName)) { //Ignore integer sortable keys
+          return $query;
+        }
 
         if (!in_array($order, ['asc', 'desc'])) {
             $order = 'asc';
         }
 
         if (!is_null($sort)) {
+            $relations = $this->getSortRelations($sort);
 
-            if ($oneToOneSort = $this->getRelationSortOrNull($sort)) {
-
-                $relationName = $oneToOneSort[0];
-                $sort = $oneToOneSort[1];
-
-                try {
-                    $relation = $query->getRelation($relationName);
-                } catch (\Exception $e) { }
-
-                if(isset($relation)
-                && ($relation instanceof BelongsTo || $relation instanceof HasOne || $relation instanceof HasMany)) {
-                  $model = $relation->getRelated();
-                  $query = $this->queryJoinBuilder($query, $relation);
-                }
-
+            if (!is_null($relations)) {
+              $model = $this->queryJoinBuilder($query, $relations['relations']);
+              $sort = $relations['field'];
             }
 
             $sort = $model->getTable() . '.' . $sort;
 
-            if ($this->columnExists($this, $sortName)) {
+            if ($this->sortExists($this, $sortName)) {
                 $query = $query->orderBy($sort, $order);
             }
 
@@ -121,10 +134,6 @@ trait Sortable
         $title = $parameters[1];
 
         $icon = Config::get('columnsortable.default_icon_set');
-
-        if ($oneToOneSort = self::getRelationSortOrNull($sort)) {
-            $sort = $oneToOneSort[1];
-        }
 
         foreach (Config::get('columnsortable.columns') as $key => $value) {
             if (in_array($sort, $value['rows'])) {
@@ -160,17 +169,15 @@ trait Sortable
      *
      * @return array|null
      */
-    private static function getRelationSortOrNull($sort)
+    private function getSortRelations($sort)
     {
         $separator = Config::get('columnsortable.uri_relation_column_separator', '.');
         if (str_contains($sort, $separator)) {
-            $oneToOneSort = explode($separator, $sort);
-            if (count($oneToOneSort) !== 2 && $this->sortable) {
-                return null;
-            }
-            return $oneToOneSort;
+          $items = explode($separator, $sort);
+          $field = array_pop($items);
+          $relations = $items;
+          return ['field' => $field, 'relations' => $relations];
         }
-
         return null;
     }
 
@@ -184,7 +191,7 @@ trait Sortable
      *
      * @return bool
      */
-    private function columnExists($model, $column) {
+    private function sortExists($model, $column) {
         return in_array($column, $model->getSortable());
     }
 }
