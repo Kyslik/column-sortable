@@ -1,3 +1,5 @@
+# This was forked to apply an unmerged pull request I needed for a project, original documentation follows
+
 # Column sorting for Laravel 5.*
 [![Latest Version](https://img.shields.io/github/release/Kyslik/column-sortable.svg?style=flat-square)](https://github.com/Kyslik/column-sortable/releases)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
@@ -24,13 +26,13 @@ Pull this package in through Composer.
 ```
 
     $ composer update
-    
+
 
 Add the package to your application service providers in `config/app.php`
 
 ```
 'providers' => [
-    
+
     App\Providers\RouteServiceProvider::class,
 
     /*
@@ -44,7 +46,7 @@ Add the package to your application service providers in `config/app.php`
 Publish the package configuration file to your application.
 
     $ php artisan vendor:publish --provider="Kyslik\ColumnSortable\ColumnSortableServiceProvider" --tag="columnsortable"
-    
+
 See configuration file (`config/columnsortable.php`) yourself and make adjustments as you wish.
 
 #### Config in few words
@@ -53,7 +55,7 @@ Sortablelink blade extension distinguishes between "types" (numeric, amount, alp
 
 ```
 'columns' => [
-        'numeric'  => [ 
+        'numeric'  => [
             'rows' => ['created_at', 'updated_at', 'level', 'id'],
             'class' => 'fa fa-sort-numeric'
         ],
@@ -94,7 +96,7 @@ You can omit **Title** parameter. In **3.0.3** you can set anchor class in confi
 
 First of all, include `Sortable` trait inside your `Eloquent` model(s). Define `$sortable` array (see example code below).
 
->`Scheme::hasColumn()` is run only when `$sortable` is not defined. 
+>`Scheme::hasColumn()` is run only when `$sortable` is not defined.
 
 ```
 use Kyslik\ColumnSortable\Sortable;
@@ -103,12 +105,12 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
 	use Authenticatable, CanResetPassword, Sortable;
 	...
-	
-	protected $sortable = ['id', 
-	                       'name', 
-	                       'email', 
-	                       'created_at', 
-	                       'updated_at'];	
+
+	protected $sortable = ['id',
+	                       'name',
+	                       'email',
+	                       'created_at',
+	                       'updated_at'];
 ```
 
 You're set to go.
@@ -168,7 +170,7 @@ _pagination included_
 ## One To One Relation sorting
 
 #### Define HasOne relation
-In order to make relation sorting work, you have to define **hasOne()** relation in your model in question. 
+In order to make relation sorting work, you have to define **hasOne()** relation in your model in question.
 
 ```
 /**
@@ -184,13 +186,13 @@ In *User* model we define **hasOne** relation to *UserDetail* model (which holds
 
 #### Define `$sortable` array
 
-Define `$sortable` array in both models (else, package uses `Scheme::hasColumn()` which is extra database query). 
+Define `$sortable` array in both models (else, package uses `Scheme::hasColumn()` which is extra database query).
 
 
 for *User*
 
 ```
-protected $sortable = ['id', 'name', 'email', 'created_at', 'updated_at']; 
+protected $sortable = ['id', 'name', 'email', 'created_at', 'updated_at'];
 ```
 
 for *UserDetail*
@@ -202,11 +204,11 @@ public $sortable = ['address', 'phone_number'];
 >note that `$sortable` array in *UserDetail* is declared as **public** and not protected because we need to access it inside *User* model.
 
 #### Blade and relation sorting
-In order to tell package to sort using relation: 
+In order to tell package to sort using relation:
 
 ```
 @sortablelink ('detail.phone_number', 'phone')
-``` 
+```
 >package works with relation "name" that you define in model instead of table name.
 
 

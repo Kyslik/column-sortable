@@ -19,5 +19,5 @@
             "Kyslik\\ColumnSortable\\": "src/ColumnSortable/"
         }
     },
-    "minimum-stability": "stable"
+    "minimum-stability": "dev"
 }
