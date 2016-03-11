@@ -8,11 +8,11 @@ use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Kyslik\ColumnSortable\Exceptions\ColumnSortableException;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Query\Builder;
 
+use Kyslik\ColumnSortable\Exceptions\ColumnSortableException;
 /**
  * Trait Sortable.
  */
@@ -70,7 +70,6 @@ trait Sortable
         $query = $query->leftJoin($relatedModel->getTable(), $relatedKey, '=', $parentKey);
 
         $baseQuery = $relation->getQuery();
-
       }
 
       return $relation->getRelated();
@@ -91,7 +90,7 @@ trait Sortable
         $sortKey = array_get($a, 'sort', null);
         $sortName = $sort = array_get($sortList, $sortKey, $sortKey);
 
-        if(!$this->sortExists($this, $sortName)) { //Ignore integer sortable keys
+        if(!$this->sortExists($this, $sortName)) { //ignore integer sortable keys
           return $query;
         }
 
@@ -144,7 +143,6 @@ trait Sortable
         if (Input::get('sort') == $sortOriginal && in_array(Input::get('order'), ['asc', 'desc'])) {
             $asc_suffix = Config::get('columnsortable.asc_suffix', '-asc');
             $desc_suffix = Config::get('columnsortable.desc_suffix', '-desc');
-
             $icon = $icon . (Input::get('order') === 'asc' ? $asc_suffix : $desc_suffix);
         } else {
             $icon = Config::get('columnsortable.sortable_icon');
