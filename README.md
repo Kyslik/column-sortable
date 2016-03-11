@@ -1,5 +1,3 @@
-# This was forked to apply an unmerged pull request I needed for a project, original documentation follows
-
 # Column sorting for Laravel 5.*
 [![Latest Version](https://img.shields.io/github/release/Kyslik/column-sortable.svg?style=flat-square)](https://github.com/Kyslik/column-sortable/releases)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
@@ -15,7 +13,7 @@ Simply put: [this hack](http://hack.swic.name/laravel-column-sorting-made-easy/)
 
 ### Composer
 
-Pull this package in through Composer.
+Pull this package in through Composer. (development version `dev-master`)
 
 ```
 {
