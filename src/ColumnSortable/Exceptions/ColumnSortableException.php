@@ -11,11 +11,11 @@ class ColumnSortableException extends Exception
         if ($code === 1) {
             $message = 'Sorry, relation \''. $message . '\' does not exist. Define it in your model.';
         } elseif ($code === 2) {
-            $message = 'Relation \'' . $message . '\' is not instance of Illuminate\Database\Eloquent\Relations\HasOne.';
+            $message = 'Relation \'' . $message . '\' is not instance of HasOne, HasMany or BelongsTo.';
         } else {
             $message = 'Invalid sort argument, explode() did not produce array with size of 2 elements.';
         }
-        
+
         parent::__construct($message, $code, $previous);
     }
 }
