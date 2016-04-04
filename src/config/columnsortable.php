@@ -58,6 +58,16 @@ return [
     /*
     allow request modification, when default sorting is set but is not in URI (first load)
      */
-    'allow_request_modification'  =>  true
+    'allow_request_modification'  =>  true,
+
+    /*
+    default order for: $user->sortable(['id']) usage
+     */
+    'default_order' => 'asc',
+
+    /*
+    default order for non-sorted columns
+     */
+    'default_order_unsorted' => 'asc'
 
 ];

@@ -69,7 +69,7 @@ trait Sortable
 
         $order = array_get($a, 'order', 'asc');
         if (!in_array($order, ['asc', 'desc'])) {
-            $order = 'asc';
+            $order = Config::get('columnsortable.default_order', 'asc');
         }
 
         $sort = array_get($a, 'sort', null);
@@ -105,12 +105,12 @@ trait Sortable
      */
     private function formatDefaultArray(array $a)
     {
-        $order = 'asc';
+        $order = Config::get('columnsortable.default_order', 'asc');
         reset($a);
 
         if ((bool) count(array_filter(array_keys($a), 'is_string'))) {
             $sort = key($a);
-            $order = array_get($a, $sort, 'asc');
+            $order = array_get($a, $sort, $order);
         } else {
             $sort = current($a);
         }
@@ -157,15 +157,16 @@ trait Sortable
         if (Input::get('sort') == $sortOriginal && in_array(Input::get('order'), ['asc', 'desc'])) {
             $asc_suffix = Config::get('columnsortable.asc_suffix', '-asc');
             $desc_suffix = Config::get('columnsortable.desc_suffix', '-desc');
-            
             $icon = $icon . (Input::get('order') === 'asc' ? $asc_suffix : $desc_suffix);
+            $order = Input::get('order') === 'desc' ? 'asc' : 'desc';
         } else {
             $icon = Config::get('columnsortable.sortable_icon');
+            $order = Config::get('columnsortable.default_order_unsorted', 'asc');
         }
 
         $parameters = [
             'sort' => $sortOriginal,
-            'order' => Input::get('order') === 'desc' ? 'asc' : 'desc',
+            'order' => $order,
         ];
 
         $queryString = http_build_query(array_merge(Request::except('sort', 'order', 'page'), $parameters));
