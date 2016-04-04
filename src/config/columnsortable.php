@@ -46,8 +46,13 @@ return [
     'anchor_class'      => null,
 
     /*
-    relation - column separator. ex: detail.phone_number means relation "detail" and column "phone_number"
+    relation - column separator ex: detail.phone_number means relation "detail" and column "phone_number"
      */
-    'uri_relation_column_separator' => '.'
+    'uri_relation_column_separator' => '.',
+
+    /*
+    formatting function applied to name of column, use null to turn formatting off
+     */
+    'formatting_function' => 'ucfirst'
 
 ];

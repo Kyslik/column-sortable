@@ -125,11 +125,17 @@ trait Sortable
     public static function link(array $parameters) //Extending Blade; Blade sends array.
     {
         if (count($parameters) === 1) {
-            $parameters[1] = ucfirst($parameters[0]);
+            $parameters[1] = $parameters[0];
         }
 
         $sort = $sortOriginal = $parameters[0];
         $title = $parameters[1];
+
+        $formatting_function = Config::get('columnsortable.formatting_function', null);
+        
+        if (!is_null($formatting_function) && function_exists($formatting_function)) {
+            $title = call_user_func($formatting_function, $title);
+        }
 
         $icon = Config::get('columnsortable.default_icon_set');
 
