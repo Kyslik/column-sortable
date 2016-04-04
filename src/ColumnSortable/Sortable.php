@@ -28,7 +28,7 @@ trait Sortable
             return $this->queryOrderBuilder($query, Input::only(['sort', 'order']));
         } elseif (!is_null($default)) {
             $default_array = $this->formatDefaultArray($default);
-            if (Config::get('columnsortable.allow_request_modification', false) && !empty($default_array)) {
+            if (Config::get('columnsortable.allow_request_modification', true) && !empty($default_array)) {
                 Request::merge($default_array);
             }
             return $this->queryOrderBuilder($query, $default_array);

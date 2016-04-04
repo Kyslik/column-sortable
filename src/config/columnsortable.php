@@ -58,6 +58,6 @@ return [
     /*
     allow request modification, when default sorting is set but is not in URI (first load)
      */
-    'allow_request_modification'  =>  false
+    'allow_request_modification'  =>  true
 
 ];
