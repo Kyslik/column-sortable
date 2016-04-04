@@ -27,7 +27,11 @@ trait Sortable
         if (Input::has('sort') && Input::has('order')) {
             return $this->queryOrderBuilder($query, Input::only(['sort', 'order']));
         } elseif (!is_null($default)) {
-            return $this->queryOrderBuilder($query, $this->formatDefaultArray($default));
+            $default_array = $this->formatDefaultArray($default);
+            if (Config::get('columnsortable.allow_request_modification', false) && !empty($default_array)) {
+                Request::merge($default_array);
+            }
+            return $this->queryOrderBuilder($query, $default_array);
         } else {
             return $query;
         }
@@ -41,6 +45,7 @@ trait Sortable
      */
     private function queryJoinBuilder($query, HasOne $relation)
     {
+
         $relatedModel = $relation->getRelated();
         $relatedKey = $relation->getForeignKey(); // table.key
         $relatedTable = $relatedModel->getTable();
@@ -100,12 +105,12 @@ trait Sortable
      */
     private function formatDefaultArray(array $a)
     {
-        $order = null;
+        $order = 'asc';
         reset($a);
 
         if ((bool) count(array_filter(array_keys($a), 'is_string'))) {
             $sort = key($a);
-            $order = array_get($a, $sort, null);
+            $order = array_get($a, $sort, 'asc');
         } else {
             $sort = current($a);
         }

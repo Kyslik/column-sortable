@@ -53,6 +53,11 @@ return [
     /*
     formatting function applied to name of column, use null to turn formatting off
      */
-    'formatting_function' => 'ucfirst'
+    'formatting_function' => 'ucfirst',
+
+    /*
+    allow request modification, when default sorting is set but is not in URI (first load)
+     */
+    'allow_request_modification'  =>  true
 
 ];
