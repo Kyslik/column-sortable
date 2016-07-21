@@ -137,7 +137,7 @@ trait Sortable
         $title = $parameters[1];
 
         $formatting_function = Config::get('columnsortable.formatting_function', null);
-        
+
         if (!is_null($formatting_function) && function_exists($formatting_function)) {
             $title = call_user_func($formatting_function, $title);
         }
@@ -175,7 +175,13 @@ trait Sortable
             $anchorClass = 'class="' . $anchorClass . '"';
         }
 
-        return '<a ' . $anchorClass . ' href="'. url(Request::path() . '?' . $queryString) . '"' . '>' . htmlentities($title) . '</a>' . ' ' . '<i class="' . $icon . '"></i>';
+        $clickableIcon = Config::get('columnsortable.clickable_icon', false);
+        $trailingTag = ' ' . '<i class="' . $icon . '"></i>' . '</a>' ;
+        if ($linkOnIcon == false) {
+            $trailingTag = '</a>' . ' ' . '<i class="' . $icon . '"></i>';
+        }
+
+        return '<a ' . $anchorClass . ' href="'. url(Request::path() . '?' . $queryString) . '"' . '>' . htmlentities($title) . $trailingTag;
     }
 
     /**
