@@ -22,32 +22,32 @@ return [
 
     /*
     defines icon set to use when sorted data is none above (alpha nor amount nor numeric)
-    */
+     */
     'default_icon_set' => 'fa fa-sort',
 
     /*
     icon that shows when generating sortable link while column is not sorted
-    */
+     */
     'sortable_icon'    => 'fa fa-sort',
 
     /*
-     * icon is clickable or not
+    generated icon is clickable non-clickable (default)
      */
     'clickable_icon' => false,
 
     /*
     suffix class that is appended when ascending order is applied
-    */
+     */
     'asc_suffix'        => '-asc',
 
     /*
     suffix class that is appended when descending order is applied
-    */
+     */
     'desc_suffix'       => '-desc',
 
     /*
     default anchor class, if value is null none is added
-    */
+     */
     'anchor_class'      => null,
 
     /*
@@ -74,5 +74,4 @@ return [
     default order for non-sorted columns
      */
     'default_order_unsorted' => 'asc'
-
 ];

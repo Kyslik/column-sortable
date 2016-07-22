@@ -176,7 +176,7 @@ trait Sortable
 
         $clickableIcon = Config::get('columnsortable.clickable_icon', false);
         $trailingTag = ' ' . '<i class="' . $icon . '"></i>' . '</a>' ;
-        if ($linkOnIcon == false) {
+        if ($clickableIcon === false) {
             $trailingTag = '</a>' . ' ' . '<i class="' . $icon . '"></i>';
         }
 
