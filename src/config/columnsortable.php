@@ -37,9 +37,10 @@ return [
 
     /*
     icon and anchor separator (any string)
+    in case of 'clickable_icon' => true; separator makes sense since (CSS) text-decoration: underlined;
      */
-    'icon_anchor_separator' => ' ',
-
+    'icon_text_separator' => ' ',
+    
     /*
     suffix class that is appended when ascending order is applied
      */
