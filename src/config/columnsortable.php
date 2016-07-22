@@ -36,6 +36,11 @@ return [
     'clickable_icon' => false,
 
     /*
+    icon and anchor separator (any string)
+     */
+    'icon_anchor_separator' => ' ',
+
+    /*
     suffix class that is appended when ascending order is applied
      */
     'asc_suffix'        => '-asc',

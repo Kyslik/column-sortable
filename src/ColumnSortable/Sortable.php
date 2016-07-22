@@ -174,10 +174,12 @@ trait Sortable
             $anchorClass = 'class="' . $anchorClass . '"';
         }
 
+        $iconAndAnchorSeparator = Config::get('columnsortable.icon_anchor_separator', '');
+        
         $clickableIcon = Config::get('columnsortable.clickable_icon', false);
-        $trailingTag = ' ' . '<i class="' . $icon . '"></i>' . '</a>' ;
+        $trailingTag = $iconAndAnchorSeparator . '<i class="' . $icon . '"></i>' . '</a>' ;
         if ($clickableIcon === false) {
-            $trailingTag = '</a>' . ' ' . '<i class="' . $icon . '"></i>';
+            $trailingTag = '</a>' . $iconAndAnchorSeparator . '<i class="' . $icon . '"></i>';
         }
 
         return '<a ' . $anchorClass . ' href="'. url(Request::path() . '?' . $queryString) . '"' . '>' . htmlentities($title) . $trailingTag;
