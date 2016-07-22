@@ -31,6 +31,11 @@ return [
     'sortable_icon'    => 'fa fa-sort',
 
     /*
+     * icon is clickable or not
+     */
+    'clickable_icon' => false,
+
+    /*
     suffix class that is appended when ascending order is applied
     */
     'asc_suffix'        => '-asc',
