@@ -45,7 +45,6 @@ trait Sortable
      */
     private function queryJoinBuilder($query, HasOne $relation)
     {
-
         $relatedModel = $relation->getRelated();
         $relatedKey = $relation->getForeignKey(); // table.key
         $relatedTable = $relatedModel->getTable();
