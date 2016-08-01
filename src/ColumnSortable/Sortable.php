@@ -168,7 +168,7 @@ trait Sortable
             'order' => $order,
         ];
 
-        $queryString = http_build_query(array_merge(Request::except('sort', 'order', 'page'), $parameters));
+        $queryString = http_build_query(array_merge(array_filter(Request::except('sort', 'order', 'page')), $parameters));
         $anchorClass = Config::get('columnsortable.anchor_class', null);
         if ($anchorClass !== null) {
             $anchorClass = 'class="' . $anchorClass . '"';
