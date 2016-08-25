@@ -45,7 +45,10 @@ class ColumnSortableServiceProvider extends ServiceProvider
         $blade = $this->app['view']->getEngineResolver()->resolve('blade')->getCompiler();
 
         $blade->directive('sortablelink', function ($expression) {
-            return "<?php echo \Kyslik\ColumnSortable\Sortable::link(array {$expression});?>";
+            if ($expression[0] === '(') {
+                return "<?php echo \Kyslik\ColumnSortable\Sortable::link(array {$expression});?>";
+            }
+            return "<?php echo \Kyslik\ColumnSortable\Sortable::link(array ({$expression}));?>";
         });
     }
 }
