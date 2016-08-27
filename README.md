@@ -9,11 +9,11 @@ Simply put: [this hack](http://hack.swic.name/laravel-column-sorting-made-easy/)
 
 >This is my shot at universal and easy to use model sorting in Laravel. The end result allows you to sort an Eloquent model using any column by clicking the column name. Everything is done in PHP, no JS involved.
 
-## Setup
+# Setup
 
-### Composer
+## Composer
 
-Pull this package in through Composer. (development version `dev-master`)
+Pull this package in through Composer. (development/latest version `dev-master`)
 
 ```
 {
@@ -39,7 +39,7 @@ Add the package to your application service providers in `config/app.php`
     Kyslik\ColumnSortable\ColumnSortableServiceProvider::class,
 ],
 ```
-### Publish configuration
+## Publish configuration
 
 Publish the package configuration file to your application.
 
@@ -47,9 +47,9 @@ Publish the package configuration file to your application.
 
 See configuration file (`config/columnsortable.php`) yourself and make adjustments as you wish.
 
-#### Config in few words
+### Config in few words
 
-Sortablelink blade extension distinguishes between "types" (numeric, amount, alpha) and applies different class for each of them. See following snippet:
+Sortablelink blade extension distinguishes between "types" (numeric, amount and alpha) and applies different class for each of them. See following snippet:
 
 ```
 'columns' => [
@@ -68,33 +68,28 @@ Sortablelink blade extension distinguishes between "types" (numeric, amount, alp
     ],
 ```
 
-Rest of the [config file](https://github.com/Kyslik/column-sortable/blob/master/src/config/columnsortable.php) should be crystal clear.
+Rest of the [config file](https://github.com/Kyslik/column-sortable/blob/master/src/config/columnsortable.php) should be crystal clear and I advise you to read it.
 
-#### Config update notes
-
->Updating 3.0.* to 3.0.3, use [`--force`](http://laravel.com/docs/5.1/packages#public-assets) option when publishing config file. See this [issue](https://github.com/Kyslik/column-sortable/issues/10), why is config file changed.
-
-### Font Awesome support
+### Font Awesome (default font classes)
 
 Install [Font-Awesome](https://github.com/FortAwesome/Font-Awesome) for visual joy. Search "sort" in [cheatsheet](http://fortawesome.github.io/Font-Awesome/cheatsheet/) and see used icons (12) yourself.
 
 ## Blade Extension
 
-There is one blade extension for you to use <strike>__(mind the space between the directive and brackets)__</strike> _fixed in L5.1? (need confirmation)_
-
+There is one blade extension for you to use
 ```
-@sortablelink ('column', 'Title')
+@sortablelink('column', 'Title')
 ```
 
-Column parameter is `order by` and **Title** parameter is displayed inside anchor tags.
-You can omit **Title** parameter. In **3.0.3** you can set anchor class in configuration file.
+**Column** (1st) parameter is `order by` and **Title** (2nd) parameter is displayed inside anchor tags.
+You can omit **Title** parameter.
 
+# Usage
 
-## Usage
+Use `Sortable` trait inside your `Eloquent` model(s). Define `$sortable` array (see example code below).
 
-First of all, include `Sortable` trait inside your `Eloquent` model(s). Define `$sortable` array (see example code below).
+>`Scheme::hasColumn()` is run only when `$sortable` is not defined - less DB hits per request.
 
->`Scheme::hasColumn()` is run only when `$sortable` is not defined.
 
 ```
 use Kyslik\ColumnSortable\Sortable;
@@ -115,22 +110,15 @@ You're set to go.
 
 Sortable trait adds Sortable scope to the models so you can use it with paginate.
 
-### Full Example
+## Full Example
 
-####Routes
-
+### Routes
 
 ```
 Route::get('users', ['as' => 'users.index', 'uses' => 'HomeController@index']);
 ```
 
-since version **3.0.2** you can use non-named routes
-
-```
-Route::get('users', ['uses' => 'HomeController@index']);
-```
-
-#### Controller's `index()` method
+### Controller's `index()` method
 
 ```
 public function index(User $user)
@@ -141,7 +129,7 @@ public function index(User $user)
 }
 ```
 
-Since version **3.0.4** you can set default sort (when nothing is in (URL) query strings yet).
+You can set default sort (when nothing is in (URL) query strings yet).
 
 ```
 //generate ->orderBy('name', 'asc')
@@ -151,13 +139,15 @@ $users = $user->sortable(['name'])->paginate(10); //default order is asc
 $users = $user->sortable(['id' => 'desc'])->paginate(10);
 ```
 
-#### View
-In Laravel 5.2 **\Input** facade is not aliased by default, to do so open `config/app.php` and add `'Input'     => Illuminate\Support\Facades\Input::class,` to *aliases* array.
+### View
+
+In Laravel 5.2 and 5.3 **\Input** facade is not aliased by default. To do so, open `config/app.php` and add `'Input'     => Illuminate\Support\Facades\Input::class,` to *aliases* array.
 
 _pagination included_
 
 ```
-@sortablelink ('name')
+@sortablelink('id', 'Id')
+@sortablelink('name')
 
 @foreach ($users as $user)
     {{ $user->name }}
@@ -165,9 +155,10 @@ _pagination included_
 {!! $users->appends(\Input::except('page'))->render() !!}
 ```
 
-## One To One Relation sorting
+# One To One Relation sorting
 
-#### Define HasOne relation
+## Define HasOne relation
+
 In order to make relation sorting work, you have to define **hasOne()** relation in your model in question.
 
 ```
@@ -182,7 +173,7 @@ public function detail()
 
 In *User* model we define **hasOne** relation to *UserDetail* model (which holds phone number and address details).
 
-#### Define `$sortable` array
+## Define `$sortable` array
 
 Define `$sortable` array in both models (else, package uses `Scheme::hasColumn()` which is extra database query).
 
@@ -201,7 +192,8 @@ public $sortable = ['address', 'phone_number'];
 
 >note that `$sortable` array in *UserDetail* is declared as **public** and not protected because we need to access it inside *User* model.
 
-#### Blade and relation sorting
+## Blade and relation sorting
+
 In order to tell package to sort using relation:
 
 ```
@@ -209,17 +201,15 @@ In order to tell package to sort using relation:
 ```
 >package works with relation "name" that you define in model instead of table name.
 
-
-#### Config file
-
 In config file you can set your own separator if `.` (dot) is not what you want.
 
 ```
 'uri_relation_column_separator' => '.'
 ```
 
-#### Exception to catch
-#####Package throws custom exception `ColumnSortableException` with three codes (0, 1, 2).
+# Exception to catch
+
+#### Package throws custom exception `ColumnSortableException` with three codes (0, 1, 2).
 
 Code **0** means that `explode()` fails to explode URI parameter "sort" in to two values.
 For example: `sort=detail..phone_number` - produces array with size of 3, which causes package to throw exception with code **0**.
