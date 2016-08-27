@@ -6,8 +6,10 @@
 - [Setup](#setup)
   - [Composer](#composer)
   - [Publish configuration](#publish-configuration)
-  - [Blade Extension](#blade-extension)
 - [Usage](#usage)
+  - [Blade Extension](#blade-extension)
+  - [Config in few words](#config-in-few-words)
+  - [Font Awesome (default font classes)](#font-awesome-default-font-classes)
   - [Full Example](#full-example)
 - [One To One Relation sorting](#one-to-one-relation-sorting)
   - [Define HasOne relation](#define-hasone-relation)
@@ -64,44 +66,7 @@ Publish the package configuration file to your application.
 
     $ php artisan vendor:publish --provider="Kyslik\ColumnSortable\ColumnSortableServiceProvider" --tag="columnsortable"
 
-See configuration file (`config/columnsortable.php`) yourself and make adjustments as you wish.
-
-### Config in few words
-
-Sortablelink blade extension distinguishes between "types" (numeric, amount and alpha) and applies different class for each of them. See following snippet:
-
-```
-'columns' => [
-        'numeric'  => [
-            'rows' => ['created_at', 'updated_at', 'level', 'id'],
-            'class' => 'fa fa-sort-numeric'
-        ],
-        'amount'   => [
-            'rows' => ['price'],
-            'class' => 'fa fa-sort-amount'
-        ],
-        'alpha'    => [
-            'rows' => ['name', 'description', 'email', 'slug'],
-            'class' => 'fa fa-sort-alpha',
-        ],
-    ],
-```
-
-Rest of the [config file](https://github.com/Kyslik/column-sortable/blob/master/src/config/columnsortable.php) should be crystal clear and I advise you to read it.
-
-### Font Awesome (default font classes)
-
-Install [Font-Awesome](https://github.com/FortAwesome/Font-Awesome) for visual joy. Search "sort" in [cheatsheet](http://fortawesome.github.io/Font-Awesome/cheatsheet/) and see used icons (12) yourself.
-
-## Blade Extension
-
-There is one blade extension for you to use
-```
-@sortablelink('column', 'Title')
-```
-
-**Column** (1st) parameter is `order by` and **Title** (2nd) parameter is displayed inside anchor tags.
-You can omit **Title** parameter.
+See configuration file [(`config/columnsortable.php`)](https://github.com/Kyslik/column-sortable/blob/master/src/config/columnsortable.php) yourself and make adjustments as you wish.
 
 # Usage
 
@@ -128,6 +93,43 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 You're set to go.
 
 Sortable trait adds Sortable scope to the models so you can use it with paginate.
+
+## Blade Extension
+
+There is one blade extension for you to use
+```
+@sortablelink('column', 'Title')
+```
+
+**Column** (1st) parameter is `order by` and **Title** (2nd) parameter is displayed inside anchor tags.
+You can omit **Title** parameter.
+
+## Config in few words
+
+Sortablelink blade extension distinguishes between "types" (numeric, amount and alpha) and applies different class for each of them. See following snippet:
+
+```
+'columns' => [
+        'numeric'  => [
+            'rows' => ['created_at', 'updated_at', 'level', 'id'],
+            'class' => 'fa fa-sort-numeric'
+        ],
+        'amount'   => [
+            'rows' => ['price'],
+            'class' => 'fa fa-sort-amount'
+        ],
+        'alpha'    => [
+            'rows' => ['name', 'description', 'email', 'slug'],
+            'class' => 'fa fa-sort-alpha',
+        ],
+    ],
+```
+
+Rest of the [config file](https://github.com/Kyslik/column-sortable/blob/master/src/config/columnsortable.php) should be crystal clear and I advise you to read it.
+
+## Font Awesome (default font classes)
+
+Install [Font-Awesome](https://github.com/FortAwesome/Font-Awesome) for visual joy. Search "sort" in [cheatsheet](http://fortawesome.github.io/Font-Awesome/cheatsheet/) and see used icons (12) yourself.
 
 ## Full Example
 
