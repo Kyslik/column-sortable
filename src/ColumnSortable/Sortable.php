@@ -12,7 +12,7 @@ use BadMethodCallException;
 use ErrorException;
 
 /**
- * Trait Sortable.
+ * Sortable trait.
  */
 trait Sortable
 {
@@ -126,7 +126,7 @@ trait Sortable
      *
      * @return string
      */
-    public static function link(array $parameters) //Extending Blade; Blade sends array.
+    public static function link(array $parameters)
     {
         if (count($parameters) === 1) {
             $title = self::getOneToOneSortOrNull($parameters[0]);
@@ -136,7 +136,6 @@ trait Sortable
         }
         
         $sort = $sortOriginal = $parameters[0];
-        
         unset($parameters);
 
         $formatting_function = Config::get('columnsortable.formatting_function', null);
