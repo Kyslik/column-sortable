@@ -129,11 +129,15 @@ trait Sortable
     public static function link(array $parameters) //Extending Blade; Blade sends array.
     {
         if (count($parameters) === 1) {
-            $parameters[1] = $parameters[0];
+            $title = self::getOneToOneSortOrNull($parameters[0]);
+            $title = (is_null($title)) ? $parameters[0] : $title[1];
+        } else {
+            $title = $parameters[1];
         }
-
+        
         $sort = $sortOriginal = $parameters[0];
-        $title = $parameters[1];
+        
+        unset($parameters);
 
         $formatting_function = Config::get('columnsortable.formatting_function', null);
 
