@@ -1,3 +1,22 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+
+- [Column sorting for Laravel 5.*](#column-sorting-for-laravel-5)
+- [Setup](#setup)
+  - [Composer](#composer)
+  - [Publish configuration](#publish-configuration)
+  - [Blade Extension](#blade-extension)
+- [Usage](#usage)
+  - [Full Example](#full-example)
+- [One To One Relation sorting](#one-to-one-relation-sorting)
+  - [Define HasOne relation](#define-hasone-relation)
+  - [Define `$sortable` array](#define-sortable-array)
+  - [Blade and relation sorting](#blade-and-relation-sorting)
+- [Exception to catch](#exception-to-catch)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # Column sorting for Laravel 5.*
 [![Latest Version](https://img.shields.io/github/release/Kyslik/column-sortable.svg?style=flat-square)](https://github.com/Kyslik/column-sortable/releases)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
