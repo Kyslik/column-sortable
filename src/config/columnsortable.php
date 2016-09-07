@@ -74,10 +74,10 @@ return [
     /*
     default order for: $user->sortable('id') usage
      */
-    'default_order' => 'asc',
+    'default_direction' => 'asc',
 
     /*
     default order for non-sorted columns
      */
-    'default_order_unsorted' => 'asc'
+    'default_direction_unsorted' => 'asc'
 ];

@@ -52,7 +52,7 @@ trait Sortable
         $direction = array_get($sortArray, 'order', 'asc');
 
         if (!in_array($direction, ['asc', 'desc'])) {
-            $direction = Config::get('columnsortable.default_order', 'asc');
+            $direction = Config::get('columnsortable.default_direction', 'asc');
         }
 
         $sort = array_get($sortArray, 'sort', null);
@@ -126,7 +126,7 @@ trait Sortable
             return [];
         }
 
-        $configDefaultOrder = Config::get('columnsortable.default_order', 'asc');
+        $configDefaultOrder = Config::get('columnsortable.default_direction', 'asc');
 
         if (is_string($sort)) {
             return ['sort' => $sort, 'order' => $configDefaultOrder];

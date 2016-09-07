@@ -34,7 +34,7 @@ Simply put: [this hack](http://hack.swic.name/laravel-column-sorting-made-easy/)
 
 ## Composer
 
-Pull this package in through Composer. (development/latest version `dev-master`)
+Pull this package in through Composer (development/latest version `dev-master`)
 
 ```
 {
@@ -154,7 +154,7 @@ public function index(User $user)
 ```
 
 You can set default sort when nothing is in (URL) query strings yet.
-> **For example**: page is loaded for first time, default order is [configurable](https://github.com/Kyslik/column-sortable/blob/master/src/config/columnsortable.php#L77) (asc)
+> **For example**: page is loaded for first time, default direction is [configurable](https://github.com/Kyslik/column-sortable/blob/master/src/config/columnsortable.php#L77) (asc)
 
 ```
 $users = $user->sortable('name')->paginate(10);

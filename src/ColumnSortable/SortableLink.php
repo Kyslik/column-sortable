@@ -56,7 +56,7 @@ class SortableLink
             $order = Request::get('order') === 'desc' ? 'asc' : 'desc';
         } else {
             $icon = Config::get('columnsortable.sortable_icon');
-            $order = Config::get('columnsortable.default_order_unsorted', 'asc');
+            $order = Config::get('columnsortable.default_direction_unsorted', 'asc');
         }
 
         $parameters = [
