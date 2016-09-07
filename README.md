@@ -64,7 +64,7 @@ Add the package to your application service providers in `config/app.php`
 
 Publish the package configuration file to your application.
 
-    $ php artisan vendor:publish --provider="Kyslik\ColumnSortable\ColumnSortableServiceProvider" --tag="columnsortable"
+    $ php artisan vendor:publish --provider="Kyslik\ColumnSortable\ColumnSortableServiceProvider" --tag="config"
 
 See configuration file [(`config/columnsortable.php`)](https://github.com/Kyslik/column-sortable/blob/master/src/config/columnsortable.php) yourself and make adjustments as you wish.
 
@@ -72,22 +72,25 @@ See configuration file [(`config/columnsortable.php`)](https://github.com/Kyslik
 
 Use `Sortable` trait inside your `Eloquent` model(s). Define `$sortable` array (see example code below).
 
->`Scheme::hasColumn()` is run only when `$sortable` is not defined - less DB hits per request.
+> **Note**: `Scheme::hasColumn()` is run only when `$sortable` is not defined - less DB hits per request.
 
 
 ```
 use Kyslik\ColumnSortable\Sortable;
 
-class User extends Model implements AuthenticatableContract, CanResetPasswordContract {
-
+class User extends Model implements AuthenticatableContract, CanResetPasswordContract 
+{
 	use Authenticatable, CanResetPassword, Sortable;
 	...
 
-	protected $sortable = ['id',
-	                       'name',
-	                       'email',
-	                       'created_at',
-	                       'updated_at'];
+	public $sortable = ['id',
+	                    'name',
+	                    'email',
+	                    'created_at',
+	                    'updated_at'];
+	                    
+	...
+}
 ```
 
 You're set to go.
@@ -110,19 +113,19 @@ Sortablelink blade extension distinguishes between "types" (numeric, amount and 
 
 ```
 'columns' => [
-        'numeric'  => [
-            'rows' => ['created_at', 'updated_at', 'level', 'id'],
-            'class' => 'fa fa-sort-numeric'
-        ],
-        'amount'   => [
-            'rows' => ['price'],
-            'class' => 'fa fa-sort-amount'
-        ],
-        'alpha'    => [
-            'rows' => ['name', 'description', 'email', 'slug'],
-            'class' => 'fa fa-sort-alpha',
-        ],
+    'numeric'  => [
+        'rows' => ['created_at', 'updated_at', 'level', 'id'],
+        'class' => 'fa fa-sort-numeric'
     ],
+    'amount'   => [
+        'rows' => ['price'],
+        'class' => 'fa fa-sort-amount'
+    ],
+    'alpha'    => [
+        'rows' => ['name', 'description', 'email', 'slug'],
+        'class' => 'fa fa-sort-alpha',
+    ],
+],
 ```
 
 Rest of the [config file](https://github.com/Kyslik/column-sortable/blob/master/src/config/columnsortable.php) should be crystal clear and I advise you to read it.
@@ -145,24 +148,26 @@ Route::get('users', ['as' => 'users.index', 'uses' => 'HomeController@index']);
 public function index(User $user)
 {
     $users = $user->sortable()->paginate(10);
-
-	return view('user.index')->withUsers($users);
+    
+    return view('user.index')->withUsers($users);
 }
 ```
 
-You can set default sort (when nothing is in (URL) query strings yet).
+You can set default sort when nothing is in (URL) query strings yet.
+> **For example**: page is loaded for first time, default order is [configurable](https://github.com/Kyslik/column-sortable/blob/master/src/config/columnsortable.php#L77) (asc)
 
 ```
+$users = $user->sortable('name')->paginate(10);
 //generate ->orderBy('name', 'asc')
-$users = $user->sortable(['name'])->paginate(10); //default order is asc
 
-//generate ->orderBy('id', 'desc')
-$users = $user->sortable(['id' => 'desc'])->paginate(10);
+$users = $user->sortable(['name'])->paginate(10); 
+//generate ->orderBy('name', 'asc')
+
+$users = $user->sortable(['name' => 'desc'])->paginate(10);
+//generate ->orderBy('name', 'desc')
 ```
 
 ### View
-
-In Laravel 5.2 and 5.3 **\Input** facade is not aliased by default. To do so, open `config/app.php` and add `'Input'     => Illuminate\Support\Facades\Input::class,` to *aliases* array.
 
 _pagination included_
 
@@ -173,14 +178,16 @@ _pagination included_
 @foreach ($users as $user)
     {{ $user->name }}
 @endforeach
-{!! $users->appends(\Input::except('page'))->render() !!}
+{!! $users->appends(\Request::except('page'))->render() !!}
 ```
+
+>**Note**: Blade's ability to recognize directives depends on having space before directive itself `<tr> @sortablelink('Name')`
 
 # One To One Relation sorting
 
-## Define HasOne relation
+## Define hasOne relation
 
-In order to make relation sorting work, you have to define **hasOne()** relation in your model in question.
+In order to make relation sorting work, you have to define **hasOne()** relation in your model.
 
 ```
 /**
@@ -188,13 +195,13 @@ In order to make relation sorting work, you have to define **hasOne()** relation
 */
 public function detail()    
 {
-    return $this->hasOne('App\UserDetail');
+    return $this->hasOne(App\UserDetail::class);
 }
 ```
 
 In *User* model we define **hasOne** relation to *UserDetail* model (which holds phone number and address details).
 
-## Define `$sortable` array
+## Define `$sortable` arrays
 
 Define `$sortable` array in both models (else, package uses `Scheme::hasColumn()` which is extra database query).
 
@@ -202,7 +209,7 @@ Define `$sortable` array in both models (else, package uses `Scheme::hasColumn()
 for *User*
 
 ```
-protected $sortable = ['id', 'name', 'email', 'created_at', 'updated_at'];
+public $sortable = ['id', 'name', 'email', 'created_at', 'updated_at'];
 ```
 
 for *UserDetail*
@@ -211,8 +218,6 @@ for *UserDetail*
 public $sortable = ['address', 'phone_number'];
 ```
 
->note that `$sortable` array in *UserDetail* is declared as **public** and not protected because we need to access it inside *User* model.
-
 ## Blade and relation sorting
 
 In order to tell package to sort using relation:
@@ -220,7 +225,7 @@ In order to tell package to sort using relation:
 ```
 @sortablelink ('detail.phone_number', 'phone')
 ```
->package works with relation "name" that you define in model instead of table name.
+>**Note**: package works with relation "name" (method) that you define in model instead of table name.
 
 In config file you can set your own separator if `.` (dot) is not what you want.
 
@@ -249,4 +254,4 @@ try {
 }
 ```
 
->I strongly recommend to catch **ColumnSortableException** because there is a user input in question (GET parameter) and any user can modify it in such way that package throws ColumnSortableException with code 0.
+>**Note**: I strongly recommend to catch **ColumnSortableException** because there is a user input in question (GET parameter) and any user can modify it in such way that package throws ColumnSortableException with code 0.

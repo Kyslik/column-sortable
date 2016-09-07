@@ -1,10 +1,16 @@
-<?php namespace Kyslik\ColumnSortable;
+<?php
 
+namespace Kyslik\ColumnSortable;
+
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 
+/**
+ * Class ColumnSortableServiceProvider
+ * @package Kyslik\ColumnSortable
+ */
 class ColumnSortableServiceProvider extends ServiceProvider
 {
-    
     /**
      * Indicates if loading of the provider is deferred.
      *
@@ -19,9 +25,14 @@ class ColumnSortableServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $config_path = __DIR__ . '/../config/columnsortable.php';
-        $this->publishes([$config_path => config_path('columnsortable.php')], 'columnsortable');
-        $this->registerBladeExtensions();
+        $this->publishes([
+            __DIR__ . '/../config/columnsortable.php' => config_path('columnsortable.php')
+        ], 'config');
+
+        Blade::directive('sortablelink', function ($expression) {
+            $expression = ($expression[0] === '(') ? substr($expression, 1, -1) : $expression;
+            return "<?php echo \Kyslik\ColumnSortable\SortableLink::render({$expression});?>";
+        });
     }
 
     /**
@@ -31,24 +42,6 @@ class ColumnSortableServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $config_path = __DIR__ . '/../config/columnsortable.php';
-        $this->mergeConfigFrom($config_path, 'columnsortable');
-    }
-
-    /**
-     * Register Blade extensions.
-     *
-     * @return void
-     */
-    protected function registerBladeExtensions()
-    {
-        $blade = $this->app['view']->getEngineResolver()->resolve('blade')->getCompiler();
-
-        $blade->directive('sortablelink', function ($expression) {
-            if ($expression[0] === '(') {
-                return "<?php echo \Kyslik\ColumnSortable\Sortable::link(array {$expression});?>";
-            }
-            return "<?php echo \Kyslik\ColumnSortable\Sortable::link(array ({$expression}));?>";
-        });
+        $this->mergeConfigFrom(__DIR__ . '/../config/columnsortable.php', 'columnsortable');
     }
 }

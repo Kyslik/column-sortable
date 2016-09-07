@@ -72,7 +72,7 @@ return [
     'allow_request_modification'  =>  true,
 
     /*
-    default order for: $user->sortable(['id']) usage
+    default order for: $user->sortable('id') usage
      */
     'default_order' => 'asc',
 
