@@ -99,13 +99,17 @@ Sortable trait adds Sortable scope to the models so you can use it with paginate
 
 ## Blade Extension
 
-There is one blade extension for you to use
+There is one blade extension for you to use **@sortablelink**
+
 ```
 @sortablelink('column', 'Title')
+@sortablelink('name')
 ```
 
 **Column** (1st) parameter is `order by` and **Title** (2nd) parameter is displayed inside anchor tags.
 You can omit **Title** parameter.
+
+>**WARNING**: @sortablelink directive only accepts single quotes
 
 ## Config in few words
 

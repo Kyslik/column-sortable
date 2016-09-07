@@ -48,7 +48,6 @@ trait Sortable
     private function queryOrderBuilder($query, array $sortArray)
     {
         $model = $this;
-        //dd($model);
         $direction = array_get($sortArray, 'order', 'asc');
 
         if (!in_array($direction, ['asc', 'desc'])) {
