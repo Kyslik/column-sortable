@@ -1,23 +1,34 @@
 {
-    "name": "kyslik/column-sortable",
-    "description": "Package for handling column sorting in Laravel 5.1, 5.2 and 5.3",
-    "keywords": ["sortable", "sorting", "column", "laravel", "one-to-one"],
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Martin Kiesel",
-            "email": "martinkiesel@gmail.com"
-        }
-    ],
-    "require": {
-        "php": ">=5.6.4",
-        "Illuminate/Support": "5.1.* || 5.2.* || 5.3.*",
-        "Illuminate/Database": "5.1.* || 5.2.* || 5.3.*"
-    },
-    "autoload": {
-        "psr-4": {
-            "Kyslik\\ColumnSortable\\": "src/ColumnSortable/"
-        }
-    },
-    "minimum-stability": "dev"
+  "name": "kyslik/column-sortable",
+  "description": "Package for handling column sorting in Laravel 5.1, 5.2 and 5.3",
+  "keywords": [
+    "sortable",
+    "sorting",
+    "column",
+    "sort",
+    "laravel",
+    "one-to-one"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Martin Kiesel",
+      "email": "martinkiesel@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=5.6.4",
+    "Illuminate/Support": "^5",
+    "Illuminate/Database": "^5"
+  },
+  "require-dev": {
+    "mockery/mockery": "0.9.*",
+    "phpunit/phpunit": "~5.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Kyslik\\ColumnSortable\\": "src/ColumnSortable/"
+    }
+  },
+  "minimum-stability": "stable"
 }
