@@ -2,14 +2,13 @@
 
 namespace Kyslik\ColumnSortable;
 
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Input;
-use Illuminate\Support\Facades\Request;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Kyslik\ColumnSortable\Exceptions\ColumnSortableException;
 use BadMethodCallException;
 use ErrorException;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Schema;
+use Kyslik\ColumnSortable\Exceptions\ColumnSortableException;
 
 /**
  * Sortable trait.
@@ -17,15 +16,102 @@ use ErrorException;
 trait Sortable
 {
     /**
-     * @param            $query
+     * @param array $parameters
+     *
+     * @return string
+     */
+    public static function link(array $parameters)
+    {
+        if (count($parameters) === 1) {
+            $title = self::getOneToOneSortOrNull($parameters[0]);
+            $title = (is_null($title)) ? $parameters[0] : $title[1];
+        } else {
+            $title = $parameters[1];
+        }
+
+        $sort = $sortOriginal = $parameters[0];
+        unset($parameters);
+
+        $formatting_function = Config::get('columnsortable.formatting_function', null);
+
+        if (!is_null($formatting_function) && function_exists($formatting_function)) {
+            $title = call_user_func($formatting_function, $title);
+        }
+
+        $icon = Config::get('columnsortable.default_icon_set');
+
+        if ($oneToOneSort = self::getOneToOneSortOrNull($sort)) {
+            $sort = $oneToOneSort[1];
+        }
+
+        foreach (Config::get('columnsortable.columns') as $key => $value) {
+            if (in_array($sort, $value['rows'])) {
+                $icon = $value['class'];
+            }
+        }
+
+        if (Request::get('sort') == $sortOriginal && in_array(Request::get('order'), ['asc', 'desc'])) {
+            $asc_suffix = Config::get('columnsortable.asc_suffix', '-asc');
+            $desc_suffix = Config::get('columnsortable.desc_suffix', '-desc');
+            $icon = $icon . (Request::get('order') === 'asc' ? $asc_suffix : $desc_suffix);
+            $order = Request::get('order') === 'desc' ? 'asc' : 'desc';
+        } else {
+            $icon = Config::get('columnsortable.sortable_icon');
+            $order = Config::get('columnsortable.default_order_unsorted', 'asc');
+        }
+
+        $parameters = [
+            'sort' => $sortOriginal,
+            'order' => $order,
+        ];
+
+        $queryString = http_build_query(array_merge(array_filter(Request::except('sort', 'order', 'page')),
+            $parameters));
+        $anchorClass = Config::get('columnsortable.anchor_class', null);
+        if ($anchorClass !== null) {
+            $anchorClass = 'class="' . $anchorClass . '"';
+        }
+
+        $iconAndTextSeparator = Config::get('columnsortable.icon_text_separator', '');
+
+        $clickableIcon = Config::get('columnsortable.clickable_icon', false);
+        $trailingTag = $iconAndTextSeparator . '<i class="' . $icon . '"></i>' . '</a>';
+        if ($clickableIcon === false) {
+            $trailingTag = '</a>' . $iconAndTextSeparator . '<i class="' . $icon . '"></i>';
+        }
+
+        return '<a ' . $anchorClass . ' href="' . url(Request::path() . '?' . $queryString) . '"' . '>' . htmlentities($title) . $trailingTag;
+    }
+
+    /**
+     * @param $sort
+     * @return array|null
+     * @throws ColumnSortableException
+     */
+    private static function getOneToOneSortOrNull($sort)
+    {
+        $separator = Config::get('columnsortable.uri_relation_column_separator', '.');
+        if (str_contains($sort, $separator)) {
+            $oneToOneSort = explode($separator, $sort);
+            if (count($oneToOneSort) !== 2) {
+                throw new ColumnSortableException();
+            }
+            return $oneToOneSort;
+        }
+
+        return null;
+    }
+
+    /**
+     * @param \Illuminate\Database\Query\Builder $query
      * @param array|null $default
      *
-     * @return mixed
+     * @return \Illuminate\Database\Query\Builder
      */
     public function scopeSortable($query, array $default = null)
     {
-        if (Input::has('sort') && Input::has('order')) {
-            return $this->queryOrderBuilder($query, Input::only(['sort', 'order']));
+        if (Request::has('sort') && Request::has('order')) {
+            return $this->queryOrderBuilder($query, Request::only(['sort', 'order']));
         } elseif (!is_null($default)) {
             $default_array = $this->formatDefaultArray($default);
             if (Config::get('columnsortable.allow_request_modification', true) && !empty($default_array)) {
@@ -38,29 +124,10 @@ trait Sortable
     }
 
     /**
-     * @param            $query
-     * @param HasOne     $relation
-     *
-     * @return query
-     */
-    private function queryJoinBuilder($query, HasOne $relation)
-    {
-        $relatedModel = $relation->getRelated();
-        $relatedKey = $relation->getForeignKey(); // table.key
-        $relatedTable = $relatedModel->getTable();
-
-        $parentModel = $relation->getParent();
-        $parentTable = $parentModel->getTable();
-        $parentKey = $parentTable . '.' . $parentModel->primaryKey; // table.key
-
-        return $query->select($parentTable . '.*')->join($relatedTable, $parentKey, '=', $relatedKey);
-    }
-
-    /**
-     * @param       $query
+     * @param \Illuminate\Database\Query\Builder $query
      * @param array $a
-     *
-     * @return query
+     * @return \Illuminate\Database\Query\Builder
+     * @throws ColumnSortableException
      */
     private function queryOrderBuilder($query, array $a)
     {
@@ -98,113 +165,22 @@ trait Sortable
     }
 
     /**
-     * @param array $a
+     * @param \Illuminate\Database\Query\Builder $query
+     * @param HasOne $relation
      *
-     * @return array
+     * @return \Illuminate\Database\Query\Builder
      */
-    private function formatDefaultArray(array $a)
+    private function queryJoinBuilder($query, HasOne $relation)
     {
-        $order = Config::get('columnsortable.default_order', 'asc');
-        reset($a);
+        $relatedModel = $relation->getRelated();
+        $relatedKey = $relation->getForeignKey(); // table.key
+        $relatedTable = $relatedModel->getTable();
 
-        if ((bool) count(array_filter(array_keys($a), 'is_string'))) {
-            $sort = key($a);
-            $order = array_get($a, $sort, $order);
-        } else {
-            $sort = current($a);
-        }
+        $parentModel = $relation->getParent();
+        $parentTable = $parentModel->getTable();
+        $parentKey = $parentTable . '.' . $parentModel->primaryKey; // table.key
 
-        if (!$sort) {
-            return [];
-        }
-
-        return ['sort' => $sort, 'order' => $order];
-    }
-
-    /**
-     * @param array $parameters
-     *
-     * @return string
-     */
-    public static function link(array $parameters)
-    {
-        if (count($parameters) === 1) {
-            $title = self::getOneToOneSortOrNull($parameters[0]);
-            $title = (is_null($title)) ? $parameters[0] : $title[1];
-        } else {
-            $title = $parameters[1];
-        }
-        
-        $sort = $sortOriginal = $parameters[0];
-        unset($parameters);
-
-        $formatting_function = Config::get('columnsortable.formatting_function', null);
-
-        if (!is_null($formatting_function) && function_exists($formatting_function)) {
-            $title = call_user_func($formatting_function, $title);
-        }
-
-        $icon = Config::get('columnsortable.default_icon_set');
-
-        if ($oneToOneSort = self::getOneToOneSortOrNull($sort)) {
-            $sort = $oneToOneSort[1];
-        }
-
-        foreach (Config::get('columnsortable.columns') as $key => $value) {
-            if (in_array($sort, $value['rows'])) {
-                $icon = $value['class'];
-            }
-        }
-
-        if (Input::get('sort') == $sortOriginal && in_array(Input::get('order'), ['asc', 'desc'])) {
-            $asc_suffix = Config::get('columnsortable.asc_suffix', '-asc');
-            $desc_suffix = Config::get('columnsortable.desc_suffix', '-desc');
-            $icon = $icon . (Input::get('order') === 'asc' ? $asc_suffix : $desc_suffix);
-            $order = Input::get('order') === 'desc' ? 'asc' : 'desc';
-        } else {
-            $icon = Config::get('columnsortable.sortable_icon');
-            $order = Config::get('columnsortable.default_order_unsorted', 'asc');
-        }
-
-        $parameters = [
-            'sort' => $sortOriginal,
-            'order' => $order,
-        ];
-
-        $queryString = http_build_query(array_merge(array_filter(Request::except('sort', 'order', 'page')), $parameters));
-        $anchorClass = Config::get('columnsortable.anchor_class', null);
-        if ($anchorClass !== null) {
-            $anchorClass = 'class="' . $anchorClass . '"';
-        }
-
-        $iconAndTextSeparator = Config::get('columnsortable.icon_text_separator', '');
-
-        $clickableIcon = Config::get('columnsortable.clickable_icon', false);
-        $trailingTag = $iconAndTextSeparator . '<i class="' . $icon . '"></i>' . '</a>' ;
-        if ($clickableIcon === false) {
-            $trailingTag = '</a>' . $iconAndTextSeparator . '<i class="' . $icon . '"></i>';
-        }
-
-        return '<a ' . $anchorClass . ' href="'. url(Request::path() . '?' . $queryString) . '"' . '>' . htmlentities($title) . $trailingTag;
-    }
-
-    /**
-     * @param $sort
-     *
-     * @return array|null
-     */
-    private static function getOneToOneSortOrNull($sort)
-    {
-        $separator = Config::get('columnsortable.uri_relation_column_separator', '.');
-        if (str_contains($sort, $separator)) {
-            $oneToOneSort = explode($separator, $sort);
-            if (count($oneToOneSort) !== 2) {
-                throw new ColumnSortableException();
-            }
-            return $oneToOneSort;
-        }
-
-        return null;
+        return $query->select($parentTable . '.*')->join($relatedTable, $parentKey, '=', $relatedKey);
     }
 
     /**
@@ -220,5 +196,29 @@ trait Sortable
         } else {
             return in_array($column, $model->sortable);
         }
+    }
+
+    /**
+     * @param array $a
+     *
+     * @return array
+     */
+    private function formatDefaultArray(array $a)
+    {
+        $order = Config::get('columnsortable.default_order', 'asc');
+        reset($a);
+
+        if ((bool)count(array_filter(array_keys($a), 'is_string'))) {
+            $sort = key($a);
+            $order = array_get($a, $sort, $order);
+        } else {
+            $sort = current($a);
+        }
+
+        if (!$sort) {
+            return [];
+        }
+
+        return ['sort' => $sort, 'order' => $order];
     }
 }
