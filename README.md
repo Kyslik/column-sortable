@@ -39,7 +39,7 @@ Pull this package in through Composer (development/latest version `dev-master`)
 ```
 {
     "require": {
-        "kyslik/column-sortable": "~5.0.0"
+        "kyslik/column-sortable": "~5.0"
     }
 }
 ```
