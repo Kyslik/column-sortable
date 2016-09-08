@@ -19,21 +19,10 @@ class SortableLink
      */
     public static function render(array $parameters)
     {
-        if (count($parameters) === 1) {
-            $title = self::getOneToOneSortOrNull($parameters[0]);
-            $title = (is_null($title)) ? $parameters[0] : $title[1];
-        } else {
-            $title = $parameters[1];
-        }
+        list($sort, $title) = self::parseParameters($parameters);
+        $sortOriginal = $sort;
 
-        $sort = $sortOriginal = $parameters[0];
         unset($parameters);
-
-        $formatting_function = Config::get('columnsortable.formatting_function', null);
-
-        if (!is_null($formatting_function) && function_exists($formatting_function)) {
-            $title = call_user_func($formatting_function, $title);
-        }
 
         $icon = Config::get('columnsortable.default_icon_set');
 
@@ -41,7 +30,7 @@ class SortableLink
             $sort = $oneToOneSort[1];
         }
 
-        foreach (Config::get('columnsortable.columns') as $key => $value) {
+        foreach (Config::get('columnsortable.columns') as $value) {
             if (in_array($sort, $value['rows'])) {
                 $icon = $value['class'];
             }
@@ -99,5 +88,26 @@ class SortableLink
         }
 
         return null;
+    }
+
+    /**
+     * @param array $parameters
+     * @return array
+     */
+    private static function parseParameters(array $parameters)
+    {
+        if (count($parameters) === 1) {
+            $title = self::getOneToOneSortOrNull($parameters[0]);
+            $title = (is_null($title)) ? $parameters[0] : $title[1];
+        } else {
+            $title = $parameters[1];
+        }
+
+        $formatting_function = Config::get('columnsortable.formatting_function', null);
+        if (!is_null($formatting_function) && function_exists($formatting_function)) {
+            $title = call_user_func($formatting_function, $title);
+        }
+
+        return [$parameters[0], $title];
     }
 }
