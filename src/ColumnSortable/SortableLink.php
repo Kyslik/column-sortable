@@ -14,13 +14,11 @@ class SortableLink
 {
 
     /**
-     * @param String $parameters
+     * @param array $parameters
      * @return string
      */
-    public static function render($parameters)
+    public static function render(array $parameters)
     {
-        $parameters = str_getcsv($parameters, ',', '\'');
-
         if (count($parameters) === 1) {
             $title = self::getOneToOneSortOrNull($parameters[0]);
             $title = (is_null($title)) ? $parameters[0] : $title[1];

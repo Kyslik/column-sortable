@@ -109,8 +109,6 @@ There is one blade extension for you to use **@sortablelink**
 **Column** (1st) parameter is `order by` and **Title** (2nd) parameter is displayed inside anchor tags.
 You can omit **Title** parameter.
 
->**WARNING**: @sortablelink directive only accepts single quotes
-
 ## Config in few words
 
 Sortablelink blade extension distinguishes between "types" (numeric, amount and alpha) and applies different class for each of them. See following snippet:

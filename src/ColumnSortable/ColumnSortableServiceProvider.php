@@ -32,7 +32,7 @@ class ColumnSortableServiceProvider extends ServiceProvider
         Blade::directive('sortablelink', function ($expression) {
             //TODO: only accepts single quotes 'Email', would be nice to accept double quotes as well.
             $expression = ($expression[0] === '(') ? substr($expression, 1, -1) : $expression;
-            return "<?php echo \Kyslik\ColumnSortable\SortableLink::render(\"{$expression}\");?>";
+            return "<?php echo \Kyslik\ColumnSortable\SortableLink::render(array ({$expression}));?>";
         });
     }
 
