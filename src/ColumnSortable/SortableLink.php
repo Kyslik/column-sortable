@@ -70,27 +70,6 @@ class SortableLink
     }
 
     /**
-     * @param $sort
-     * @return array|null
-     * @throws ColumnSortableException
-     */
-    public static function getOneToOneSortOrNull($sort)
-    {
-        $separator = Config::get('columnsortable.uri_relation_column_separator', '.');
-
-        if (str_contains($sort, $separator)) {
-            $oneToOneSort = explode($separator, $sort);
-            if (count($oneToOneSort) !== 2) {
-                throw new ColumnSortableException();
-            }
-
-            return $oneToOneSort;
-        }
-
-        return null;
-    }
-
-    /**
      * @param array $parameters
      * @return array
      */
@@ -109,5 +88,26 @@ class SortableLink
         }
 
         return [$parameters[0], $title];
+    }
+
+    /**
+     * @param $sort
+     * @return array|null
+     * @throws ColumnSortableException
+     */
+    public static function getOneToOneSortOrNull($sort)
+    {
+        $separator = Config::get('columnsortable.uri_relation_column_separator', '.');
+
+        if (str_contains($sort, $separator)) {
+            $oneToOneSort = explode($separator, $sort);
+            if (count($oneToOneSort) !== 2) {
+                throw new ColumnSortableException();
+            }
+
+            return $oneToOneSort;
+        }
+
+        return null;
     }
 }

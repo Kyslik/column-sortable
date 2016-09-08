@@ -24,7 +24,6 @@ trait Sortable
     public function scopeSortable($query, $default = null)
     {
         if (Request::has('sort') && Request::has('order')) {
-
             return $this->queryOrderBuilder($query, Request::only(['sort', 'order']));
         } elseif (!is_null($default)) {
             $defaultSortArray = $this->getDefaultSortArray($default);
@@ -34,7 +33,6 @@ trait Sortable
 
             return $this->queryOrderBuilder($query, $defaultSortArray);
         } else {
-
             return $query;
         }
     }

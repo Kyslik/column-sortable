@@ -13,7 +13,7 @@ class ColumnSortableException extends Exception
                 $message = 'Invalid sort argument.';
                 break;
             case 1:
-                $message = 'Relation \''. $message . '\' does not exist.';
+                $message = 'Relation \'' . $message . '\' does not exist.';
                 break;
             case 2:
                 $message = 'Relation \'' . $message . '\' is not instance of HasOne, HasMany or BelongsTo.';
