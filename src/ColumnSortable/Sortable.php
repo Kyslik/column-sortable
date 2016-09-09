@@ -55,7 +55,8 @@ trait Sortable
         $sort = array_get($sortArray, 'sort', null);
 
         if (!is_null($sort)) {
-            if ($oneToOneSort = SortableLink::getOneToOneSortOrNull($sort)) {
+            $oneToOneSort = SortableLink::explodeSortParameter($sort);
+            if (!empty($oneToOneSort)) {
                 $relationName = $oneToOneSort[0];
                 $sort = $oneToOneSort[1];
                 try {

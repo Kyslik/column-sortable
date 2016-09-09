@@ -19,40 +19,37 @@ class SortableLink
      */
     public static function render(array $parameters)
     {
-        list($sort, $title) = self::parseParameters($parameters);
-        $sortOriginal = $sort;
+        list($sortColumn, $sortParameter, $title) = self::parseParameters($parameters);
 
-        unset($parameters);
+        $title = self::applyFormatting($title);
 
         $icon = Config::get('columnsortable.default_icon_set');
 
-        if ($oneToOneSort = self::getOneToOneSortOrNull($sort)) {
-            $sort = $oneToOneSort[1];
-        }
-
         foreach (Config::get('columnsortable.columns') as $value) {
-            if (in_array($sort, $value['rows'])) {
+            if (in_array($sortColumn, $value['rows'])) {
                 $icon = $value['class'];
             }
         }
 
-        if (Request::get('sort') == $sortOriginal && in_array(Request::get('order'), ['asc', 'desc'])) {
-            $asc_suffix = Config::get('columnsortable.asc_suffix', '-asc');
-            $desc_suffix = Config::get('columnsortable.desc_suffix', '-desc');
-            $icon = $icon . (Request::get('order') === 'asc' ? $asc_suffix : $desc_suffix);
-            $order = Request::get('order') === 'desc' ? 'asc' : 'desc';
+        if (Request::get('sort') == $sortParameter && in_array(Request::get('order'), ['asc', 'desc'])) {
+            $icon .= (Request::get('order') === 'asc' ? Config::get('columnsortable.asc_suffix',
+                '-asc') : Config::get('columnsortable.desc_suffix', '-desc'));
+            $direction = Request::get('order') === 'desc' ? 'asc' : 'desc';
         } else {
             $icon = Config::get('columnsortable.sortable_icon');
-            $order = Config::get('columnsortable.default_direction_unsorted', 'asc');
+            $direction = Config::get('columnsortable.default_direction_unsorted', 'asc');
         }
 
-        $parameters = [
-            'sort' => $sortOriginal,
-            'order' => $order,
-        ];
+        $queryString = http_build_query(
+            array_merge(
+                array_filter(Request::except('sort', 'order', 'page')),
+                [
+                    'sort' => $sortParameter,
+                    'order' => $direction,
+                ]
+            )
+        );
 
-        $queryString = http_build_query(array_merge(array_filter(Request::except('sort', 'order', 'page')),
-            $parameters));
         $anchorClass = Config::get('columnsortable.anchor_class', null);
         if ($anchorClass !== null) {
             $anchorClass = 'class="' . $anchorClass . '"';
@@ -73,41 +70,49 @@ class SortableLink
      * @param array $parameters
      * @return array
      */
-    private static function parseParameters(array $parameters)
+    public static function parseParameters(array $parameters)
     {
-        if (count($parameters) === 1) {
-            $title = self::getOneToOneSortOrNull($parameters[0]);
-            $title = (is_null($title)) ? $parameters[0] : $title[1];
-        } else {
-            $title = $parameters[1];
-        }
+        $explodeResult = self::explodeSortParameter($parameters[0]);
+        $sortColumn = (empty($explodeResult)) ? $parameters[0] : $explodeResult[1];
+        $title = (count($parameters) === 1) ? $sortColumn : $parameters[1];
 
-        $formatting_function = Config::get('columnsortable.formatting_function', null);
-        if (!is_null($formatting_function) && function_exists($formatting_function)) {
-            $title = call_user_func($formatting_function, $title);
-        }
-
-        return [$parameters[0], $title];
+        return [$sortColumn, $parameters[0], $title];
     }
 
     /**
-     * @param $sort
-     * @return array|null
-     * @throws ColumnSortableException
+     * Explodes parameter if possible and returns array [relation, column]
+     * Empty array is returned if explode could not run eg: separator was not found.
+     *
+     * @param $parameter
+     * @return array
+     * @throws \Kyslik\ColumnSortable\Exceptions\ColumnSortableException when explode does not produce array of size two
      */
-    public static function getOneToOneSortOrNull($sort)
+    public static function explodeSortParameter($parameter)
     {
         $separator = Config::get('columnsortable.uri_relation_column_separator', '.');
 
-        if (str_contains($sort, $separator)) {
-            $oneToOneSort = explode($separator, $sort);
+        if (str_contains($parameter, $separator)) {
+            $oneToOneSort = explode($separator, $parameter);
             if (count($oneToOneSort) !== 2) {
                 throw new ColumnSortableException();
             }
 
             return $oneToOneSort;
         }
+        //TODO: should return ['column', 'relation']
+        return [];
+    }
 
-        return null;
+    /**
+     * @param string $title
+     * @return string
+     */
+    private static function applyFormatting($title)
+    {
+        $formatting_function = Config::get('columnsortable.formatting_function', null);
+        if (!is_null($formatting_function) && function_exists($formatting_function)) {
+            $title = call_user_func($formatting_function, $title);
+        }
+        return $title;
     }
 }
