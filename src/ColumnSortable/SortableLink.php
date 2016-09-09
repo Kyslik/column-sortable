@@ -40,6 +40,16 @@ class SortableLink
             $direction = Config::get('columnsortable.default_direction_unsorted', 'asc');
         }
 
+        $iconAndTextSeparator = Config::get('columnsortable.icon_text_separator', '');
+
+        $clickableIcon = Config::get('columnsortable.clickable_icon', false);
+        $trailingTag = $iconAndTextSeparator . '<i class="' . $icon . '"></i>' . '</a>';
+        if ($clickableIcon === false) {
+            $trailingTag = '</a>' . $iconAndTextSeparator . '<i class="' . $icon . '"></i>';
+        }
+
+        $anchorClass = self::getAnchorClass();
+
         $queryString = http_build_query(
             array_merge(
                 array_filter(Request::except('sort', 'order', 'page')),
@@ -50,20 +60,7 @@ class SortableLink
             )
         );
 
-        $anchorClass = Config::get('columnsortable.anchor_class', null);
-        if ($anchorClass !== null) {
-            $anchorClass = 'class="' . $anchorClass . '"';
-        }
-
-        $iconAndTextSeparator = Config::get('columnsortable.icon_text_separator', '');
-
-        $clickableIcon = Config::get('columnsortable.clickable_icon', false);
-        $trailingTag = $iconAndTextSeparator . '<i class="' . $icon . '"></i>' . '</a>';
-        if ($clickableIcon === false) {
-            $trailingTag = '</a>' . $iconAndTextSeparator . '<i class="' . $icon . '"></i>';
-        }
-
-        return '<a ' . $anchorClass . ' href="' . url(Request::path() . '?' . $queryString) . '"' . '>' . htmlentities($title) . $trailingTag;
+        return '<a' . $anchorClass . ' href="' . url(Request::path() . '?' . $queryString) . '"' . '>' . htmlentities($title) . $trailingTag;
     }
 
     /**
@@ -114,5 +111,17 @@ class SortableLink
             $title = call_user_func($formatting_function, $title);
         }
         return $title;
+    }
+
+    /**
+     * @return string
+     */
+    private static function getAnchorClass()
+    {
+        $anchorClass = Config::get('columnsortable.anchor_class', null);
+        if ($anchorClass !== null) {
+            return ' class="' . $anchorClass . '"';
+        }
+        return '';
     }
 }

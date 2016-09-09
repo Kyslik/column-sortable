@@ -17,16 +17,16 @@ trait Sortable
 {
     /**
      * @param \Illuminate\Database\Query\Builder $query
-     * @param array|null $default
+     * @param array|null $defaultSortParameters
      *
      * @return \Illuminate\Database\Query\Builder
      */
-    public function scopeSortable($query, $default = null)
+    public function scopeSortable($query, $defaultSortParameters = null)
     {
         if (Request::has('sort') && Request::has('order')) {
             return $this->queryOrderBuilder($query, Request::only(['sort', 'order']));
-        } elseif (!is_null($default)) {
-            $defaultSortArray = $this->getDefaultSortArray($default);
+        } elseif (!is_null($defaultSortParameters)) {
+            $defaultSortArray = $this->formatToSortParameters($defaultSortParameters);
             if (Config::get('columnsortable.allow_request_modification', true) && !empty($defaultSortArray)) {
                 Request::merge($defaultSortArray);
             }
@@ -39,44 +39,59 @@ trait Sortable
 
     /**
      * @param \Illuminate\Database\Query\Builder $query
-     * @param array $sortArray
+     * @param array $sortParameters
      * @return \Illuminate\Database\Query\Builder
      * @throws ColumnSortableException
      */
-    private function queryOrderBuilder($query, array $sortArray)
+    private function queryOrderBuilder($query, array $sortParameters)
     {
         $model = $this;
-        $direction = array_get($sortArray, 'order', 'asc');
 
+        list($column, $direction) = $this->parseSortParameters($sortParameters);
+
+        if (is_null($column)) {
+            return $query;
+        }
+
+        $explodeResult = SortableLink::explodeSortParameter($column);
+        if (!empty($explodeResult)) {
+            $relationName = $explodeResult[0];
+            $column = $explodeResult[1];
+
+            try {
+                $relation = $query->getRelation($relationName);
+                $query = $this->queryJoinBuilder($query, $relation);
+            } catch (BadMethodCallException $e) {
+                throw new ColumnSortableException($relationName, 1, $e);
+            } catch (ErrorException $e) {
+                throw new ColumnSortableException($relationName, 2, $e);
+            }
+
+            $model = $relation->getRelated();
+        }
+
+        if ($this->columnExists($model, $column)) {
+            return $query->orderBy($column, $direction);
+        }
+
+        return $query;
+    }
+
+    /**
+     * @param array $sortParameters
+     * @return array
+     */
+    private function parseSortParameters(array $sortParameters)
+    {
+        $column = array_get($sortParameters, 'sort');
+        if (empty($column)) return [null, null];
+
+        $direction = array_get($sortParameters, 'order', []);
         if (!in_array($direction, ['asc', 'desc'])) {
             $direction = Config::get('columnsortable.default_direction', 'asc');
         }
 
-        $sort = array_get($sortArray, 'sort', null);
-
-        if (!is_null($sort)) {
-            $oneToOneSort = SortableLink::explodeSortParameter($sort);
-            if (!empty($oneToOneSort)) {
-                $relationName = $oneToOneSort[0];
-                $sort = $oneToOneSort[1];
-                try {
-                    $relation = $query->getRelation($relationName);
-                    $query = $this->queryJoinBuilder($query, $relation);
-                } catch (BadMethodCallException $e) {
-                    throw new ColumnSortableException($relationName, 1, $e);
-                } catch (ErrorException $e) {
-                    throw new ColumnSortableException($relationName, 2, $e);
-                }
-
-                $model = $relation->getRelated();
-            }
-
-            if ($this->columnExists($model, $sort)) {
-                return $query->orderBy($sort, $direction);
-            }
-        }
-
-        return $query;
+        return [$column, $direction];
     }
 
     /**
@@ -118,7 +133,7 @@ trait Sortable
      *
      * @return array
      */
-    private function getDefaultSortArray($sort)
+    private function formatToSortParameters($sort)
     {
         if (empty($sort)) {
             return [];

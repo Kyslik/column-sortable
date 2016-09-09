@@ -17,7 +17,7 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
     /**
      * @var
      */
-    private $configDefaultOrder;
+    private $configDefaultDirection;
 
     /**
      * Method setUp() runs before each test.
@@ -30,7 +30,7 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
         $this->app['config']->set('database.connections.sqlite.database', ':memory:');
 
         $this->user = new User();
-        $this->configDefaultOrder = Config::get('columnsortable.default_direction', 'asc');
+        $this->configDefaultDirection = Config::get('columnsortable.default_direction', 'asc');
     }
 
     public function testSortableWithoutDefaultAndRequestParameters()
@@ -51,7 +51,23 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
         $expected = ['column' => 'name', 'direction' => 'desc'];
         $this->assertEquals($expected, head($resultArray));
 
+        Input::replace(['sort' => 'name', 'order' => '']);
+        $result = $this->user->scopeSortable($this->user->newQuery())->getQuery()->orders;
+        $this->assertNull($result);
+
+        Input::replace(['sort' => '', 'order' => 'asc']);
+        $result = $this->user->scopeSortable($this->user->newQuery())->getQuery()->orders;
+        $this->assertNull($result);
+
+        Input::replace(['sort' => '', 'order' => '']);
+        $result = $this->user->scopeSortable($this->user->newQuery())->getQuery()->orders;
+        $this->assertNull($result);
+
         Input::replace(['sort' => 'name']);
+        $result = $this->user->scopeSortable($this->user->newQuery())->getQuery()->orders;
+        $this->assertNull($result);
+
+        Input::replace(['sort' => '']);
         $result = $this->user->scopeSortable($this->user->newQuery())->getQuery()->orders;
         $this->assertNull($result);
     }
@@ -75,45 +91,88 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
         $default = 'name';
 
         $resultArray = $this->user->scopeSortable($this->user->newQuery(), $default)->getQuery()->orders;
-        $expected = ['column' => 'name', 'direction' => $this->configDefaultOrder];
+        $expected = ['column' => 'name', 'direction' => $this->configDefaultDirection];
         $this->assertEquals($expected, head($resultArray));
 
         $default = ['name'];
 
         $resultArray = $this->user->scopeSortable($this->user->newQuery(), $default)->getQuery()->orders;
-        $expected = ['column' => 'name', 'direction' => $this->configDefaultOrder];
+        $expected = ['column' => 'name', 'direction' => $this->configDefaultDirection];
         $this->assertEquals($expected, head($resultArray));
     }
 
-    public function testGetDefaultSortArray()
+    public function testParseSortParameters()
     {
         $array = [];
-        $resultArray = $this->invokeMethod($this->user, 'getDefaultSortArray', [$array]);
+        $resultArray = $this->invokeMethod($this->user, 'parseSortParameters', [$array]);
+        $expected = [null, null];
+        $this->assertEquals($expected, $resultArray);
+
+        $array = ['sort' => ''];
+        $resultArray = $this->invokeMethod($this->user, 'parseSortParameters', [$array]);
+        $expected = [null, null];
+        $this->assertEquals($expected, $resultArray);
+
+        $array = ['order' => ''];
+        $resultArray = $this->invokeMethod($this->user, 'parseSortParameters', [$array]);
+        $expected = [null, null];
+        $this->assertEquals($expected, $resultArray);
+
+        $array = ['order' => 'foo'];
+        $resultArray = $this->invokeMethod($this->user, 'parseSortParameters', [$array]);
+        $expected = [null, null];
+        $this->assertEquals($expected, $resultArray);
+
+        $array = ['sort' => 'foo', 'order' => ''];
+        $resultArray = $this->invokeMethod($this->user, 'parseSortParameters', [$array]);
+        $expected = ['foo', $this->configDefaultDirection];
+        $this->assertEquals($expected, $resultArray);
+
+        $array = ['sort' => 'foo', 'order' => 'desc'];
+        $resultArray = $this->invokeMethod($this->user, 'parseSortParameters', [$array]);
+        $expected = ['foo', 'desc'];
+        $this->assertEquals($expected, $resultArray);
+
+        $array = ['sort' => 'foo', 'order' => 'asc'];
+        $resultArray = $this->invokeMethod($this->user, 'parseSortParameters', [$array]);
+        $expected = ['foo', 'asc'];
+        $this->assertEquals($expected, $resultArray);
+
+        $array = ['sort' => 'foo', 'order' => 'bar'];
+        $resultArray = $this->invokeMethod($this->user, 'parseSortParameters', [$array]);
+        $expected = ['foo', $this->configDefaultDirection];
+        $this->assertEquals($expected, $resultArray);
+    }
+
+    public function testFormatToSortParameters()
+    {
+        $array = [];
+        $resultArray = $this->invokeMethod($this->user, 'formatToSortParameters', [$array]);
         $expected = [];
         $this->assertEquals($expected, $resultArray);
 
         $array = null;
-        $resultArray = $this->invokeMethod($this->user, 'getDefaultSortArray', [$array]);
+        $resultArray = $this->invokeMethod($this->user, 'formatToSortParameters', [$array]);
         $expected = [];
         $this->assertEquals($expected, $resultArray);
 
         $array = 'foo';
-        $resultArray = $this->invokeMethod($this->user, 'getDefaultSortArray', [$array]);
-        $expected = ['sort' => 'foo', 'order' => $this->configDefaultOrder];
+        $resultArray = $this->invokeMethod($this->user, 'formatToSortParameters', [$array]);
+        $expected = ['sort' => 'foo', 'order' => $this->configDefaultDirection];
         $this->assertEquals($expected, $resultArray);
 
         $array = ['foo'];
-        $resultArray = $this->invokeMethod($this->user, 'getDefaultSortArray', [$array]);
-        $expected = ['sort' => 'foo', 'order' => $this->configDefaultOrder];
+        $resultArray = $this->invokeMethod($this->user, 'formatToSortParameters', [$array]);
+        $expected = ['sort' => 'foo', 'order' => $this->configDefaultDirection];
         $this->assertEquals($expected, $resultArray);
 
         $array = ['foo' => 'desc'];
-        $resultArray = $this->invokeMethod($this->user, 'getDefaultSortArray', [$array]);
+        $resultArray = $this->invokeMethod($this->user, 'formatToSortParameters', [$array]);
         $expected = ['sort' => 'foo', 'order' => 'desc'];
         $this->assertEquals($expected, $resultArray);
 
         $array = ['foo' => 'desc', 'bar' => 'asc'];
-        $resultArray = $this->invokeMethod($this->user, 'getDefaultSortArray', [$array]);
+        $resultArray = $this->invokeMethod($this->user, 'formatToSortParameters', [$array]);
         $expected = ['sort' => 'foo', 'order' => 'desc'];
         $this->assertEquals($expected, $resultArray);
     }
