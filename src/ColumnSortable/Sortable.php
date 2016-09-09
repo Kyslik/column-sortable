@@ -3,7 +3,6 @@
 namespace Kyslik\ColumnSortable;
 
 use BadMethodCallException;
-use ErrorException;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Config;
@@ -52,6 +51,10 @@ trait Sortable
 
         if (is_null($column)) {
             return $query;
+        }
+
+        if (method_exists($this, camel_case($column) . 'Sortable')) {
+            return call_user_func_array(array($this, camel_case($column) . 'Sortable'), array($query, $direction));
         }
 
         $explodeResult = SortableLink::explodeSortParameter($column);
