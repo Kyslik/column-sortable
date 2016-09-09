@@ -105,6 +105,16 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
     }
 
     /**
+     * @expectedException  \Exception
+     * @expectedExceptionCode 0
+     */
+    public function testSortableQueryJoinBuilderThrowsExeption() {
+        $query = $this->user->hasMany(Profile::class)->newQuery();
+        $relation = $query->getRelation('profile');
+        $this->invokeMethod($this->user, 'queryJoinBuilder', [$query, $relation]);
+    }
+
+    /**
      * This test might be useless, because testFormatToSortParameters() does same
      */
     public function testSortableWithDefaultUsesConfig()

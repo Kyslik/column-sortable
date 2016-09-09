@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Schema;
 use Kyslik\ColumnSortable\Exceptions\ColumnSortableException;
-use League\Flysystem\Exception;
 
 /**
  * Sortable trait.
@@ -65,7 +64,7 @@ trait Sortable
                 $query = $this->queryJoinBuilder($query, $relation);
             } catch (BadMethodCallException $e) {
                 throw new ColumnSortableException($relationName, 1, $e);
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 throw new ColumnSortableException($relationName, 2, $e);
             }
 
@@ -102,7 +101,7 @@ trait Sortable
      * @param \Illuminate\Database\Query\Builder $query
      * @param  $relation
      * @return \Illuminate\Database\Query\Builder
-     * @throws Exception
+     * @throws \Exception
      */
     private function queryJoinBuilder($query, $relation)
     {
@@ -122,7 +121,7 @@ trait Sortable
             $parentPrimaryKey = $parentTable . '.' . $relation->getForeignKey();
             return $query->select($parentTable . '.*')->join($relatedTable, $parentPrimaryKey, '=', $relatedPrimaryKey);
         } else {
-            throw new Exception();
+            throw new \Exception();
         }
     }
 
