@@ -11,10 +11,10 @@
   - [Config in few words](#config-in-few-words)
   - [Font Awesome (default font classes)](#font-awesome-default-font-classes)
   - [Full Example](#full-example)
-- [One To One Relation sorting](#one-to-one-relation-sorting)
-  - [Define HasOne relation](#define-hasone-relation)
-  - [Define `$sortable` array](#define-sortable-array)
+- [HasOne / BelongsTo Relation sorting](#hasone--belongsto-relation-sorting)
+  - [Define `$sortable` arrays](#define-sortable-arrays)
   - [Blade and relation sorting](#blade-and-relation-sorting)
+- [ColumnSortable overloading (advanced)](#columnsortable-overloading-advanced)
 - [Exception to catch](#exception-to-catch)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -103,11 +103,20 @@ There is one blade extension for you to use **@sortablelink**
 
 ```
 @sortablelink('column', 'Title')
-@sortablelink('name')
 ```
 
 **Column** (1st) parameter is `order by` and **Title** (2nd) parameter is displayed inside anchor tags.
 You can omit **Title** parameter.
+
+Possible examples and usages of blade extension:
+```
+@sortablelink('name')
+@sortablelink('name', 'Username')
+@sortablelink('address', trans('fields.address'))
+```
+If you do not fill **Title** (2nd parameter) column name is used instead.
+
+> **Note**: you can set default formatting function that is applied on **Title** (2nd parameter), by default this is set to [`ucfirst`](http://php.net/manual/en/function.ucfirst.php).
 
 ## Config in few words
 
@@ -185,9 +194,9 @@ _pagination included_
 
 >**Note**: Blade's ability to recognize directives depends on having space before directive itself `<tr> @sortablelink('Name')`
 
-# One To One Relation sorting
+# HasOne / BelongsTo Relation sorting
 
-## Define hasOne relation
+### Define hasOne relation
 
 In order to make relation sorting work, you have to define **hasOne()** relation in your model.
 
@@ -198,6 +207,18 @@ In order to make relation sorting work, you have to define **hasOne()** relation
 public function detail()    
 {
     return $this->hasOne(App\UserDetail::class);
+}
+```
+
+### Define belongsTo relation
+
+```
+/**
+ * Get the user that owns the phone.
+ */
+public function user()
+{
+    return $this->belongsTo(App\User::class);
 }
 ```
 
@@ -225,15 +246,47 @@ public $sortable = ['address', 'phone_number'];
 In order to tell package to sort using relation:
 
 ```
-@sortablelink ('detail.phone_number', 'phone')
+@sortablelink('detail.phone_number', 'phone')
+@sortablelink('user.name', 'phone')
 ```
 >**Note**: package works with relation "name" (method) that you define in model instead of table name.
+
+>**WARNING**: do not use combination of two different relations at the same time, you are going to get errors that relation is not defined.
 
 In config file you can set your own separator if `.` (dot) is not what you want.
 
 ```
 'uri_relation_column_separator' => '.'
 ```
+
+# ColumnSortable overloading (advanced)
+
+It is possible to overload ColumnSortable relation feature, basically you can write your own join(s) / queries and apply orderBy() manualy.
+
+See example:
+
+```
+class User extends Model
+{
+    use Sortable;
+    
+    public $sortable = ['name'];
+    ...
+    
+    public function addressSortable($query, $direction)
+    {
+        return $query->join('user_details', 'users.id', '=', 'user_details.user_id')
+                    ->orderBy('address', $direction)
+                    ->select('users.*');
+    }
+    ...
+```
+
+Controller is the same `$users = $user->sortable()->paginate(10);`
+
+In view just use `@sortablelink('address')`
+
+>Huge thanks to @neutralrockets and his comments on #8.
 
 # Exception to catch
 
