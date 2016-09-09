@@ -17,6 +17,11 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
     /**
      * @var
      */
+    private $profile;
+
+    /**
+     * @var
+     */
     private $configDefaultDirection;
 
     /**
@@ -30,6 +35,8 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
         $this->app['config']->set('database.connections.sqlite.database', ':memory:');
 
         $this->user = new User();
+        $this->profile = new Profile();
+
         $this->configDefaultDirection = Config::get('columnsortable.default_direction', 'asc');
     }
 
@@ -83,8 +90,22 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
         $this->assertEquals($expected, head($resultArray));
     }
 
+    public function testSortableQueryJoinBuilder() {
+        $query = $this->user->newQuery()->with(['profile']);
+        $relation = $query->getRelation('profile');
+        $resultQuery = $this->invokeMethod($this->user, 'queryJoinBuilder', [$query, $relation]);
+        $expectedQuery = $this->user->newQuery()->select('users.*')->join('profiles', 'users.id', '=', 'profiles.user_id');
+        $this->assertEquals($expectedQuery->toSql(), $resultQuery->toSql());
+
+        $query = $this->profile->newQuery()->with(['user']);
+        $relation = $query->getRelation('user');
+        $resultQuery = $this->invokeMethod($this->user, 'queryJoinBuilder', [$query, $relation]);
+        $expectedQuery = $this->profile->newQuery()->select('profiles.*')->join('users', 'profiles.user_id', '=', 'users.id');
+        $this->assertEquals($expectedQuery->toSql(), $resultQuery->toSql());
+    }
+
     /**
-     * This test might be useless, because testGetDefaultSortArray() does same
+     * This test might be useless, because testFormatToSortParameters() does same
      */
     public function testSortableWithDefaultUsesConfig()
     {

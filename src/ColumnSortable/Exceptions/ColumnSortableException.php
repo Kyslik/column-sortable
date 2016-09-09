@@ -16,7 +16,7 @@ class ColumnSortableException extends Exception
                 $message = 'Relation \'' . $message . '\' does not exist.';
                 break;
             case 2:
-                $message = 'Relation \'' . $message . '\' is not instance of HasOne, HasMany or BelongsTo.';
+                $message = 'Relation \'' . $message . '\' is not instance of HasOne or BelongsTo.'; //hasMany
                 break;
         }
 

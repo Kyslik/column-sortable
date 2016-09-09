@@ -4,11 +4,13 @@ namespace Kyslik\ColumnSortable;
 
 use BadMethodCallException;
 use ErrorException;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Schema;
 use Kyslik\ColumnSortable\Exceptions\ColumnSortableException;
+use League\Flysystem\Exception;
 
 /**
  * Sortable trait.
@@ -63,7 +65,7 @@ trait Sortable
                 $query = $this->queryJoinBuilder($query, $relation);
             } catch (BadMethodCallException $e) {
                 throw new ColumnSortableException($relationName, 1, $e);
-            } catch (ErrorException $e) {
+            } catch (Exception $e) {
                 throw new ColumnSortableException($relationName, 2, $e);
             }
 
@@ -84,7 +86,9 @@ trait Sortable
     private function parseSortParameters(array $sortParameters)
     {
         $column = array_get($sortParameters, 'sort');
-        if (empty($column)) return [null, null];
+        if (empty($column)) {
+            return [null, null];
+        }
 
         $direction = array_get($sortParameters, 'order', []);
         if (!in_array($direction, ['asc', 'desc'])) {
@@ -96,21 +100,30 @@ trait Sortable
 
     /**
      * @param \Illuminate\Database\Query\Builder $query
-     * @param HasOne $relation
-     *
+     * @param  $relation
      * @return \Illuminate\Database\Query\Builder
+     * @throws Exception
      */
-    private function queryJoinBuilder($query, HasOne $relation)
+    private function queryJoinBuilder($query, $relation)
     {
         $relatedModel = $relation->getRelated();
-        $relatedKey = $relation->getForeignKey(); // table.key
         $relatedTable = $relatedModel->getTable();
 
         $parentModel = $relation->getParent();
         $parentTable = $parentModel->getTable();
-        $parentKey = $parentTable . '.' . $parentModel->primaryKey; // table.key
 
-        return $query->select($parentTable . '.*')->join($relatedTable, $parentKey, '=', $relatedKey);
+
+        if ($relation instanceof HasOne) {
+            $relatedPrimaryKey = $relation->getForeignKey();
+            $parentPrimaryKey = $parentTable . '.' . $parentModel->primaryKey;
+            return $query->select($parentTable . '.*')->join($relatedTable, $parentPrimaryKey, '=', $relatedPrimaryKey);
+        } elseif ($relation instanceof BelongsTo) {
+            $relatedPrimaryKey = $relatedTable . '.' . $relatedModel->primaryKey;
+            $parentPrimaryKey = $parentTable . '.' . $relation->getForeignKey();
+            return $query->select($parentTable . '.*')->join($relatedTable, $parentPrimaryKey, '=', $relatedPrimaryKey);
+        } else {
+            throw new Exception();
+        }
     }
 
     /**
