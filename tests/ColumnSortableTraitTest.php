@@ -90,7 +90,8 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
         $this->assertEquals($expected, head($resultArray));
     }
 
-    public function testSortableQueryJoinBuilder() {
+    public function testSortableQueryJoinBuilder()
+    {
         $query = $this->user->newQuery()->with(['profile']);
         $relation = $query->getRelation('profile');
         $resultQuery = $this->invokeMethod($this->user, 'queryJoinBuilder', [$query, $relation]);
@@ -104,11 +105,21 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
         $this->assertEquals($expectedQuery->toSql(), $resultQuery->toSql());
     }
 
+    public function testSortableOverridingQueryOrderBuilder()
+    {
+        $sortParameters = ['sort' => 'address', 'order' => 'desc'];
+        $query = $this->user->newQuery();
+        $resultQuery = $this->invokeMethod($this->user, 'queryOrderBuilder', [$query, $sortParameters]);
+        $expectedQuery = $this->user->newQuery()->join('profiles', 'users.id', '=', 'profiles.user_id')->orderBy('address', 'desc')->select('users.*');
+        $this->assertEquals($expectedQuery, $resultQuery);
+    }
+
     /**
      * @expectedException  \Exception
      * @expectedExceptionCode 0
      */
-    public function testSortableQueryJoinBuilderThrowsExeption() {
+    public function testSortableQueryJoinBuilderThrowsExeption()
+    {
         $query = $this->user->hasMany(Profile::class)->newQuery();
         $relation = $query->getRelation('profile');
         $this->invokeMethod($this->user, 'queryJoinBuilder', [$query, $relation]);
@@ -224,20 +235,6 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
 
         return $method->invokeArgs($object, $parameters);
     }
-
-    /**
-     * @ignore
-     *
-     */
-    public function dummy()
-    {
-        $this->markTestSkipped();
-        $query = $this->user->newQuery()->with(['profile']); //query with relation
-        Input::replace(['sort' => 'profile.phone', 'order' => 'asc']); //replace GET data in request
-
-        $d = $this->user->scopeSortable($query); //
-        dd($query->relation); // get orders that scopeSortable produced or ->toSql() to get raw SQL
-    }
 }
 
 /**
@@ -263,6 +260,13 @@ class User extends Model
     {
         return $this->hasOne(Profile::class, 'user_id', 'id');
     }
+
+    public function addressSortable($query, $direction)
+    {
+        return $query->join('profiles', 'users.id', '=', 'profiles.user_id')
+                    ->orderBy('address', $direction)
+                    ->select('users.*');
+    }
 }
 
 /**
@@ -274,7 +278,8 @@ class Profile extends Model
      * @var array
      */
     public $sortable = [
-        'phone'
+        'phone',
+        'address'
     ];
 
     /**
