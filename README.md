@@ -70,7 +70,7 @@ See configuration file [(`config/columnsortable.php`)](https://github.com/Kyslik
 
 # Usage
 
-Use `Sortable` trait inside your `Eloquent` model(s). Define `$sortable` array (see example code below).
+Use **Sortable** trait inside your *Eloquent* model(s). Define `$sortable` array (see example code below).
 
 > **Note**: `Scheme::hasColumn()` is run only when `$sortable` is not defined - less DB hits per request.
 
@@ -95,11 +95,11 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
 You're set to go.
 
-Sortable trait adds Sortable scope to the models so you can use it with paginate.
+**Sortable** trait adds Sortable scope to the models so you can use it with paginate.
 
 ## Blade Extension
 
-There is one blade extension for you to use **@sortablelink**
+There is one blade extension for you to use **@sortablelink()**
 
 ```
 @sortablelink('column', 'Title')
@@ -118,9 +118,11 @@ If you do not fill **Title** (2nd parameter) column name is used instead.
 
 > **Note**: you can set default formatting function that is applied on **Title** (2nd parameter), by default this is set to [`ucfirst`](http://php.net/manual/en/function.ucfirst.php).
 
-## Config in few words
+## Configuration in few words
 
-Sortablelink blade extension distinguishes between "types" (numeric, amount and alpha) and applies different class for each of them. See following snippet:
+**Sortablelink** blade extension distinguishes between "types" (numeric, amount and alpha) and applies different class for each of them.  
+
+See following snippet:
 
 ```
 'columns' => [
@@ -143,7 +145,7 @@ Rest of the [config file](https://github.com/Kyslik/column-sortable/blob/master/
 
 ## Font Awesome (default font classes)
 
-Install [Font-Awesome](https://github.com/FortAwesome/Font-Awesome) for visual joy. Search "sort" in [cheatsheet](http://fortawesome.github.io/Font-Awesome/cheatsheet/) and see used icons (12) yourself.
+Install [Font-Awesome](https://github.com/FortAwesome/Font-Awesome) for visual [Joy](http://www.imdb.com/character/ch0411388/). Search "sort" in [cheatsheet](http://fortawesome.github.io/Font-Awesome/cheatsheet/) and see used icons (12) yourself.
 
 ## Full Example
 
@@ -226,7 +228,7 @@ In *User* model we define **hasOne** relation to *UserDetail* model (which holds
 
 ## Define `$sortable` arrays
 
-Define `$sortable` array in both models (else, package uses `Scheme::hasColumn()` which is extra database query).
+Define `$sortable` array in both models (else, package uses `Scheme::hasColumn()` which is an extra database query).
 
 
 for *User*
@@ -261,7 +263,7 @@ In config file you can set your own separator if `.` (dot) is not what you want.
 
 # ColumnSortable overloading (advanced)
 
-It is possible to overload ColumnSortable relation feature, basically you can write your own join(s) / queries and apply orderBy() manualy.
+It is possible to overload ColumnSortable relation feature, basically you can write your own join(s) / queries and apply `orderBy()` manualy.
 
 See example:
 
