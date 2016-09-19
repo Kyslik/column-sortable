@@ -171,13 +171,13 @@ You can set default sort when nothing is in (URL) query strings yet.
 
 ```
 $users = $user->sortable('name')->paginate(10);
-//generate ->orderBy('name', 'asc')
+//generate ->orderBy('users.name', 'asc')
 
 $users = $user->sortable(['name'])->paginate(10); 
-//generate ->orderBy('name', 'asc')
+//generate ->orderBy('users.name', 'asc')
 
 $users = $user->sortable(['name' => 'desc'])->paginate(10);
-//generate ->orderBy('name', 'desc')
+//generate ->orderBy('users.name', 'desc')
 ```
 
 ### View

@@ -75,6 +75,7 @@ trait Sortable
         }
 
         if ($this->columnExists($model, $column)) {
+            $column = $model->getTable() . '.' . $column;
             return $query->orderBy($column, $direction);
         }
 

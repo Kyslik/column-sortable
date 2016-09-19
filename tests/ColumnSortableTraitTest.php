@@ -48,14 +48,15 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
 
     public function testSortableWithRequestParameters()
     {
+        $usersTable = $this->user->getTable();
         Input::replace(['sort' => 'name', 'order' => 'asc']);
         $resultArray = $this->user->scopeSortable($this->user->newQuery())->getQuery()->orders;
-        $expected = ['column' => 'name', 'direction' => 'asc'];
+        $expected = ['column' => $usersTable . '.name', 'direction' => 'asc'];
         $this->assertEquals($expected, head($resultArray));
 
         Input::replace(['sort' => 'name', 'order' => 'desc']);
         $resultArray = $this->user->scopeSortable($this->user->newQuery())->getQuery()->orders;
-        $expected = ['column' => 'name', 'direction' => 'desc'];
+        $expected = ['column' => $usersTable . '.name', 'direction' => 'desc'];
         $this->assertEquals($expected, head($resultArray));
 
         Input::replace(['sort' => 'name', 'order' => '']);
@@ -81,12 +82,13 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
 
     public function testSortableWithDefaultAndWithoutRequestParameters()
     {
+        $usersTable = $this->user->getTable();
         $default = [
             'name' => 'desc',
         ];
 
         $resultArray = $this->user->scopeSortable($this->user->newQuery(), $default)->getQuery()->orders;
-        $expected = ['column' => 'name', 'direction' => 'desc'];
+        $expected = ['column' => $usersTable . '.name', 'direction' => 'desc'];
         $this->assertEquals($expected, head($resultArray));
     }
 
@@ -130,16 +132,17 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
      */
     public function testSortableWithDefaultUsesConfig()
     {
+        $usersTable = $this->user->getTable();
         $default = 'name';
 
         $resultArray = $this->user->scopeSortable($this->user->newQuery(), $default)->getQuery()->orders;
-        $expected = ['column' => 'name', 'direction' => $this->configDefaultDirection];
+        $expected = ['column' => $usersTable . '.name', 'direction' => $this->configDefaultDirection];
         $this->assertEquals($expected, head($resultArray));
 
         $default = ['name'];
 
         $resultArray = $this->user->scopeSortable($this->user->newQuery(), $default)->getQuery()->orders;
-        $expected = ['column' => 'name', 'direction' => $this->configDefaultDirection];
+        $expected = ['column' => $usersTable . '.name', 'direction' => $this->configDefaultDirection];
         $this->assertEquals($expected, head($resultArray));
     }
 
