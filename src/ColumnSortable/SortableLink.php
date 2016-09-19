@@ -19,7 +19,7 @@ class SortableLink
      */
     public static function render(array $parameters)
     {
-        list($sortColumn, $sortParameter, $title) = self::parseParameters($parameters);
+        list($sortColumn, $sortParameter, $title, $queryParameters) = self::parseParameters($parameters);
 
         $title = self::applyFormatting($title);
 
@@ -52,6 +52,7 @@ class SortableLink
 
         $queryString = http_build_query(
             array_merge(
+                $queryParameters,
                 array_filter(Request::except('sort', 'order', 'page')),
                 [
                     'sort' => $sortParameter,
@@ -69,11 +70,14 @@ class SortableLink
      */
     public static function parseParameters(array $parameters)
     {
+        //TODO: let 2nd parameter be both title, or default query parameters
+        //TODO: needs some checks before determining $title
         $explodeResult = self::explodeSortParameter($parameters[0]);
         $sortColumn = (empty($explodeResult)) ? $parameters[0] : $explodeResult[1];
         $title = (count($parameters) === 1) ? $sortColumn : $parameters[1];
+        $queryParameters = (isset($parameters[2]) && is_array($parameters[2])) ? $parameters[2] : [];
 
-        return [$sortColumn, $parameters[0], $title];
+        return [$sortColumn, $parameters[0], $title, $queryParameters];
     }
 
     /**

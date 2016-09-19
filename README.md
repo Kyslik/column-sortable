@@ -102,18 +102,21 @@ You're set to go.
 There is one blade extension for you to use **@sortablelink()**
 
 ```
-@sortablelink('column', 'Title')
+@sortablelink('column', 'Title', ['parameter' => 'smile'])
 ```
 
-**Column** (1st) parameter is `order by` and **Title** (2nd) parameter is displayed inside anchor tags.
-You can omit **Title** parameter.
+**Column** (1st) parameter is `order by`, **Title** (2nd) parameter is displayed inside anchor tags and `array()` parameter (3rd) is default (GET) query strings parameter.  
+
+You can omit 2nd and 3rd parameter.
 
 Possible examples and usages of blade extension:
+
 ```
 @sortablelink('name')
 @sortablelink('name', 'Username')
-@sortablelink('address', trans('fields.address'))
+@sortablelink('address', trans('fields.address'), ['filter' => 'actve,visible'])
 ```
+
 If you do not fill **Title** (2nd parameter) column name is used instead.
 
 > **Note**: you can set default formatting function that is applied on **Title** (2nd parameter), by default this is set to [`ucfirst`](http://php.net/manual/en/function.ucfirst.php).
