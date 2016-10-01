@@ -291,7 +291,9 @@ Controller is the same `$users = $user->sortable()->paginate(10);`
 
 In view just use `@sortablelink('address')`
 
->Huge thanks to @neutralrockets and his comments on #8.
+>Huge thanks to @neutralrockets and his comments on [#8](https://github.com/Kyslik/column-sortable/issues/8).
+
+One more example: [#41](https://github.com/Kyslik/column-sortable/issues/41#issuecomment-250895909)
 
 # Exception to catch
 
