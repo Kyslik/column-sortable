@@ -10,6 +10,7 @@
     "one-to-one"
   ],
   "license": "MIT",
+  "type": "package",
   "authors": [
     {
       "name": "Martin Kiesel",
