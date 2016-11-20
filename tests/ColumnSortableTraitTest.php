@@ -97,14 +97,33 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
         $query = $this->user->newQuery()->with(['profile']);
         $relation = $query->getRelation('profile');
         $resultQuery = $this->invokeMethod($this->user, 'queryJoinBuilder', [$query, $relation]);
-        $expectedQuery = $this->user->newQuery()->select('users.*')->join('profiles', 'users.id', '=', 'profiles.user_id');
+        $expectedQuery = $this->user->newQuery()->select('users.*')->join('profiles', 'users.id', '=',
+            'profiles.user_id');
         $this->assertEquals($expectedQuery->toSql(), $resultQuery->toSql());
 
         $query = $this->profile->newQuery()->with(['user']);
         $relation = $query->getRelation('user');
         $resultQuery = $this->invokeMethod($this->user, 'queryJoinBuilder', [$query, $relation]);
-        $expectedQuery = $this->profile->newQuery()->select('profiles.*')->join('users', 'profiles.user_id', '=', 'users.id');
+        $expectedQuery = $this->profile->newQuery()->select('profiles.*')->join('users', 'profiles.user_id', '=',
+            'users.id');
         $this->assertEquals($expectedQuery->toSql(), $resultQuery->toSql());
+    }
+
+    /**
+     * Call protected/private method of a class.
+     *
+     * @param object &$object Instantiated object that we will run method on.
+     * @param string $methodName Method name to call
+     * @param array $parameters Array of parameters to pass into method.
+     * @return mixed Method return.
+     */
+    protected function invokeMethod(&$object, $methodName, array $parameters = [])
+    {
+        $reflection = new \ReflectionClass(get_class($object));
+        $method = $reflection->getMethod($methodName);
+        $method->setAccessible(true);
+
+        return $method->invokeArgs($object, $parameters);
     }
 
     public function testSortableOverridingQueryOrderBuilder()
@@ -112,7 +131,17 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
         $sortParameters = ['sort' => 'address', 'order' => 'desc'];
         $query = $this->user->newQuery();
         $resultQuery = $this->invokeMethod($this->user, 'queryOrderBuilder', [$query, $sortParameters]);
-        $expectedQuery = $this->user->newQuery()->join('profiles', 'users.id', '=', 'profiles.user_id')->orderBy('address', 'desc')->select('users.*');
+        $expectedQuery = $this->user->newQuery()->join('profiles', 'users.id', '=',
+            'profiles.user_id')->orderBy('address', 'desc')->select('users.*');
+        $this->assertEquals($expectedQuery, $resultQuery);
+    }
+
+    public function testSortableAs()
+    {
+        $sortParameters = ['sort' => 'nick_name', 'order' => 'asc'];
+        $query = $this->user->newQuery()->select('name as nick_name');
+        $resultQuery = $this->invokeMethod($this->user, 'queryOrderBuilder', [$query, $sortParameters]);
+        $expectedQuery = $this->user->newQuery()->select('name as nick_name')->orderBy('nick_name', 'asc');
         $this->assertEquals($expectedQuery, $resultQuery);
     }
 
@@ -221,23 +250,6 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
         $expected = ['sort' => 'foo', 'order' => 'desc'];
         $this->assertEquals($expected, $resultArray);
     }
-
-    /**
-     * Call protected/private method of a class.
-     *
-     * @param object &$object Instantiated object that we will run method on.
-     * @param string $methodName Method name to call
-     * @param array $parameters Array of parameters to pass into method.
-     * @return mixed Method return.
-     */
-    protected function invokeMethod(&$object, $methodName, array $parameters = array())
-    {
-        $reflection = new \ReflectionClass(get_class($object));
-        $method = $reflection->getMethod($methodName);
-        $method->setAccessible(true);
-
-        return $method->invokeArgs($object, $parameters);
-    }
 }
 
 /**
@@ -256,6 +268,10 @@ class User extends Model
         'amount'
     ];
 
+    public $sortableAs = [
+        'nick_name'
+    ];
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
@@ -267,8 +283,8 @@ class User extends Model
     public function addressSortable($query, $direction)
     {
         return $query->join('profiles', 'users.id', '=', 'profiles.user_id')
-                    ->orderBy('address', $direction)
-                    ->select('users.*');
+            ->orderBy('address', $direction)
+            ->select('users.*');
     }
 }
 

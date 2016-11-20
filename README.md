@@ -8,13 +8,19 @@
   - [Publish configuration](#publish-configuration)
 - [Usage](#usage)
   - [Blade Extension](#blade-extension)
-  - [Config in few words](#config-in-few-words)
+  - [Configuration in few words](#configuration-in-few-words)
   - [Font Awesome (default font classes)](#font-awesome-default-font-classes)
   - [Full Example](#full-example)
+    - [Routes](#routes)
+    - [Controller's `index()` method](#controllers-index-method)
+    - [View](#view)
 - [HasOne / BelongsTo Relation sorting](#hasone--belongsto-relation-sorting)
+    - [Define hasOne relation](#define-hasone-relation)
+    - [Define belongsTo relation](#define-belongsto-relation)
   - [Define `$sortable` arrays](#define-sortable-arrays)
   - [Blade and relation sorting](#blade-and-relation-sorting)
 - [ColumnSortable overloading (advanced)](#columnsortable-overloading-advanced)
+- [`$sortableAs` (aliasing)](#sortableas-aliasing)
 - [Exception to catch](#exception-to-catch)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -252,7 +258,7 @@ In order to tell package to sort using relation:
 
 ```
 @sortablelink('detail.phone_number', 'phone')
-@sortablelink('user.name', 'phone')
+@sortablelink('user.name', 'name')
 ```
 >**Note**: package works with relation "name" (method) that you define in model instead of table name.
 
@@ -294,6 +300,34 @@ In view just use `@sortablelink('address')`
 >Huge thanks to @neutralrockets and his comments on [#8](https://github.com/Kyslik/column-sortable/issues/8).
 
 One more example: [#41](https://github.com/Kyslik/column-sortable/issues/41#issuecomment-250895909)
+
+# `$sortableAs` (aliasing)
+
+It is possible to declare `$sortableAs` array and use it to alias (bypass column exists check), 
+and ignore prefixing with table. 
+
+In model 
+```
+...
+$sortableAs = ['nick_name'];
+...
+
+```
+
+In controller
+
+```
+$users = $user->select(['name as nick_name'])->sortable(['nick_name'])->paginate(10);
+```
+
+In view
+```
+@sortablelink('nick_name', 'nick')
+```
+
+
+Please see [#44](https://github.com/Kyslik/column-sortable/issues/44).
+
 
 # Exception to catch
 
