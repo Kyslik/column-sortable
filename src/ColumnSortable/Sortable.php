@@ -27,6 +27,7 @@ trait Sortable
             return $this->queryOrderBuilder($query, Request::only(['sort', 'order']));
         } elseif (!is_null($defaultSortParameters)) {
             $defaultSortArray = $this->formatToSortParameters($defaultSortParameters);
+            
             if (Config::get('columnsortable.allow_request_modification', true) && !empty($defaultSortArray)) {
                 Request::merge($defaultSortArray);
             }
@@ -40,7 +41,9 @@ trait Sortable
     /**
      * @param \Illuminate\Database\Query\Builder $query
      * @param array $sortParameters
+     *
      * @return \Illuminate\Database\Query\Builder
+     *
      * @throws ColumnSortableException
      */
     private function queryOrderBuilder($query, array $sortParameters)
@@ -86,6 +89,7 @@ trait Sortable
 
     /**
      * @param array $sortParameters
+     *
      * @return array
      */
     private function parseSortParameters(array $sortParameters)
@@ -106,7 +110,9 @@ trait Sortable
     /**
      * @param \Illuminate\Database\Query\Builder $query
      * @param  $relation
+     *
      * @return \Illuminate\Database\Query\Builder
+     *
      * @throws \Exception
      */
     private function queryJoinBuilder($query, $relation)
@@ -139,11 +145,8 @@ trait Sortable
      */
     private function columnExists($model, $column)
     {
-        if (!isset($model->sortable)) {
-            return Schema::hasColumn($model->getTable(), $column);
-        } else {
-            return in_array($column, $model->sortable);
-        }
+        return (isset($model->sortable)) ? in_array($column, $model->sortable) :
+                                           Schema::hasColumn($model->getTable(), $column);
     }
 
     /**
@@ -165,11 +168,8 @@ trait Sortable
 
         reset($sort);
         $each = each($sort);
-
-        if ($each[0] === 0) {
-            return ['sort' => $each[1], 'order' => $configDefaultOrder];
-        } else {
-            return ['sort' => $each[0], 'order' => $each[1]];
-        }
+        
+        return ($each[0] === 0) ? ['sort' => $each[1], 'order' => $configDefaultOrder] :
+                                  ['sort' => $each[0], 'order' => $each[1]];
     }
 }
