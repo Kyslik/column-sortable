@@ -14,7 +14,8 @@
   "authors": [
     {
       "name": "Martin Kiesel",
-      "email": "martinkiesel@gmail.com"
+      "email": "martinkiesel@gmail.com",
+      "role": "Developer"
     }
   ],
   "require": {

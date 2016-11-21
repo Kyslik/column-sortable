@@ -15,6 +15,7 @@ class SortableLink
 
     /**
      * @param array $parameters
+     *
      * @return string
      */
     public static function render(array $parameters)
@@ -66,6 +67,7 @@ class SortableLink
 
     /**
      * @param array $parameters
+     *
      * @return array
      */
     public static function parseParameters(array $parameters)
@@ -85,7 +87,9 @@ class SortableLink
      * Empty array is returned if explode could not run eg: separator was not found.
      *
      * @param $parameter
+     *
      * @return array
+     *
      * @throws \Kyslik\ColumnSortable\Exceptions\ColumnSortableException when explode does not produce array of size two
      */
     public static function explodeSortParameter($parameter)
@@ -106,6 +110,7 @@ class SortableLink
 
     /**
      * @param string $title
+     *
      * @return string
      */
     private static function applyFormatting($title)
