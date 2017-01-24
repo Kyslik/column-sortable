@@ -31,7 +31,7 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/Kyslik/column-sortable.svg?style=flat-square)](https://packagist.org/packages/Kyslik/column-sortable)
 [![Build Status](https://travis-ci.org/Kyslik/column-sortable.svg?branch=master)](https://travis-ci.org/Kyslik/column-sortable)
 
-Package for handling column sorting in Laravel 5.1, 5.2 and 5.3.
+Package for handling column sorting in Laravel 5.[1-4].
 
 Simply put: [this hack](http://hack.swic.name/laravel-column-sorting-made-easy/) in package with blade extension and Font Awesome icon support.
 
@@ -46,13 +46,14 @@ Pull this package in through Composer (development/latest version `dev-master`)
 ```
 {
     "require": {
-        "kyslik/column-sortable": "~5.0"
+        "kyslik/column-sortable": "5.3.*"
     }
 }
 ```
 
     $ composer update
 
+>**Note**: Major and minor versions should match with Laravel, build versions are separate from Laravel versioning scheme. Example: If you are using Laravel 5.2, column-sortable version should be `5.2.*`.
 
 Add the package to your application service providers in `config/app.php`
 
