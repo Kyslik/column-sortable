@@ -125,7 +125,7 @@ trait Sortable
 
 
         if ($relation instanceof HasOne) {
-            $relatedPrimaryKey = $relation->getForeignKey();
+            $relatedPrimaryKey = $relation->getQualifiedForeignKeyName();
             $parentPrimaryKey = $parentTable . '.' . $parentModel->primaryKey;
             return $query->select($parentTable . '.*')->join($relatedTable, $parentPrimaryKey, '=', $relatedPrimaryKey);
         } elseif ($relation instanceof BelongsTo) {
