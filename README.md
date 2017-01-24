@@ -79,7 +79,7 @@ See configuration file [(`config/columnsortable.php`)](https://github.com/Kyslik
 
 Use **Sortable** trait inside your *Eloquent* model(s). Define `$sortable` array (see example code below).
 
-> **Note**: `Scheme::hasColumn()` is run only when `$sortable` is not defined - less DB hits per request.
+>**Note**: `Scheme::hasColumn()` is run only when `$sortable` is not defined - less DB hits per request.
 
 
 ```
@@ -121,12 +121,12 @@ Possible examples and usages of blade extension:
 ```
 @sortablelink('name')
 @sortablelink('name', 'Username')
-@sortablelink('address', trans('fields.address'), ['filter' => 'actve,visible'])
+@sortablelink('address', trans('fields.address'), ['filter' => 'active,visible'])
 ```
 
 If you do not fill **Title** (2nd parameter) column name is used instead.
 
-> **Note**: you can set default formatting function that is applied on **Title** (2nd parameter), by default this is set to [`ucfirst`](http://php.net/manual/en/function.ucfirst.php).
+>**Note**: you can set default formatting function that is applied on **Title** (2nd parameter), by default this is set to [`ucfirst`](http://php.net/manual/en/function.ucfirst.php).
 
 ## Configuration in few words
 
@@ -177,7 +177,7 @@ public function index(User $user)
 ```
 
 You can set default sort when nothing is in (URL) query strings yet.
-> **For example**: page is loaded for first time, default direction is [configurable](https://github.com/Kyslik/column-sortable/blob/master/src/config/columnsortable.php#L77) (asc)
+>**For example**: page is loaded for first time, default direction is [configurable](https://github.com/Kyslik/column-sortable/blob/master/src/config/columnsortable.php#L77) (asc)
 
 ```
 $users = $user->sortable('name')->paginate(10);
