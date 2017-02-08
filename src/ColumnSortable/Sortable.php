@@ -27,7 +27,7 @@ trait Sortable
             return $this->queryOrderBuilder($query, Request::only(['sort', 'order']));
         } elseif (!is_null($defaultSortParameters)) {
             $defaultSortArray = $this->formatToSortParameters($defaultSortParameters);
-            
+
             if (Config::get('columnsortable.allow_request_modification', true) && !empty($defaultSortArray)) {
                 Request::merge($defaultSortArray);
             }
@@ -117,20 +117,16 @@ trait Sortable
      */
     private function queryJoinBuilder($query, $relation)
     {
-        $relatedModel = $relation->getRelated();
-        $relatedTable = $relatedModel->getTable();
-
-        $parentModel = $relation->getParent();
-        $parentTable = $parentModel->getTable();
-
+        $relatedTable = $relation->getRelated()->getTable();
+        $parentTable = $relation->getParent()->getTable();
 
         if ($relation instanceof HasOne) {
             $relatedPrimaryKey = $relation->getQualifiedForeignKeyName();
-            $parentPrimaryKey = $parentTable . '.' . $parentModel->primaryKey;
+            $parentPrimaryKey = $relation->getQualifiedParentKeyName();
             return $query->select($parentTable . '.*')->join($relatedTable, $parentPrimaryKey, '=', $relatedPrimaryKey);
         } elseif ($relation instanceof BelongsTo) {
-            $relatedPrimaryKey = $relatedTable . '.' . $relatedModel->primaryKey;
-            $parentPrimaryKey = $parentTable . '.' . $relation->getForeignKey();
+            $relatedPrimaryKey = $relation->getQualifiedOwnerKeyName();
+            $parentPrimaryKey = $relation->getQualifiedForeignKey();
             return $query->select($parentTable . '.*')->join($relatedTable, $parentPrimaryKey, '=', $relatedPrimaryKey);
         } else {
             throw new \Exception();
@@ -168,7 +164,7 @@ trait Sortable
 
         reset($sort);
         $each = each($sort);
-        
+
         return ($each[0] === 0) ? ['sort' => $each[1], 'order' => $configDefaultOrder] :
                                   ['sort' => $each[0], 'order' => $each[1]];
     }
