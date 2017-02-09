@@ -123,11 +123,11 @@ trait Sortable
         if ($relation instanceof HasOne) {
             $relatedPrimaryKey = $relation->getForeignKey();
             $parentPrimaryKey = $relation->getQualifiedParentKeyName();
-            return $query->select($parentTable . '.*')->join($relatedTable, $parentPrimaryKey, '=', $relatedPrimaryKey);
+            return $query->select($parentTable . '.*')->leftJoin($relatedTable, $parentPrimaryKey, '=', $relatedPrimaryKey);
         } elseif ($relation instanceof BelongsTo) {
             $relatedPrimaryKey = $relation->getQualifiedOtherKeyName();
             $parentPrimaryKey = $relation->getQualifiedForeignKey();
-            return $query->select($parentTable . '.*')->join($relatedTable, $parentPrimaryKey, '=', $relatedPrimaryKey);
+            return $query->select($parentTable . '.*')->leftJoin($relatedTable, $parentPrimaryKey, '=', $relatedPrimaryKey);
         } else {
             throw new \Exception();
         }
