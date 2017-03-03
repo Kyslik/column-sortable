@@ -23,10 +23,14 @@ class SortableLink
         list($sortColumn, $sortParameter, $title, $queryParameters) = self::parseParameters($parameters);
 
         $title = self::applyFormatting($title);
+        
+        if ($mergeTitleAs = Config::get('columnsortable.inject_title_as', null)) {
+            Request::merge([$mergeTitleAs => $title]);
+        }
 
         $icon = Config::get('columnsortable.default_icon_set');
 
-        foreach (Config::get('columnsortable.columns') as $value) {
+        foreach (Config::get('columnsortable.columns', []) as $value) {
             if (in_array($sortColumn, $value['rows'])) {
                 $icon = $value['class'];
             }
