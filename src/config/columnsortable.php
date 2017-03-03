@@ -67,6 +67,12 @@ return [
     'formatting_function' => 'ucfirst',
 
     /*
+    inject title parameter in query strings, use null to turn injection off
+    example: 'inject_title' => 't' will result in ..user/?t="formatted title of sorted column"
+     */
+    'inject_title_as' => null,
+
+    /*
     allow request modification, when default sorting is set but is not in URI (first load)
      */
     'allow_request_modification' => true,

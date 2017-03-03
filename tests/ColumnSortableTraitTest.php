@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Input;
 
 /**
@@ -37,7 +36,7 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
         $this->user = new User();
         $this->profile = new Profile();
 
-        $this->configDefaultDirection = Config::get('columnsortable.default_direction', 'asc');
+        $this->configDefaultDirection = 'asc';
     }
 
     public function testSortableWithoutDefaultAndRequestParameters()

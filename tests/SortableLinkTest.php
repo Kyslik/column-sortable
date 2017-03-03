@@ -1,4 +1,7 @@
 <?php
+
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Request;
 use Kyslik\ColumnSortable\Exceptions\ColumnSortableException;
 use Kyslik\ColumnSortable\SortableLink;
 
@@ -7,6 +10,24 @@ use Kyslik\ColumnSortable\SortableLink;
  */
 class SortableLinkTest extends \Orchestra\Testbench\TestCase
 {
+
+    public function testInjectTitleInQueryStrings()
+    {
+        Config::set('columnsortable.inject_title_as', 'title');
+        SortableLink::render(['column', 'ColumnTitle']);
+
+        $expected = ['title' => 'ColumnTitle'];
+        $this->assertEquals($expected, Request::all());
+    }
+
+    public function testInjectTitleInQueryStringsIsOff()
+    {
+        Config::set('columnsortable.inject_title_as', null);
+        SortableLink::render(['column', 'ColumnTitle']);
+
+        $this->assertEquals([], Request::all());
+    }
+
     public function testParseParameters()
     {
         $parameters = ['column'];
