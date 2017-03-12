@@ -29,7 +29,7 @@ class ColumnSortableServiceProvider extends ServiceProvider
             __DIR__ . '/../config/columnsortable.php' => config_path('columnsortable.php')
         ], 'config');
 
-        Blade::directive('sortablelink', function ($expression) {
+        Blade::directive('sortablelink', function($expression) {
             $expression = ($expression[0] === '(') ? substr($expression, 1, -1) : $expression;
             return "<?php echo \Kyslik\ColumnSortable\SortableLink::render(array ({$expression}));?>";
         });
