@@ -141,8 +141,7 @@ trait Sortable
      */
     private function columnExists($model, $column)
     {
-        return (isset($model->sortable)) ? in_array($column, $model->sortable) :
-                                           Schema::hasColumn($model->getTable(), $column);
+        return (isset($model->sortable)) ? in_array($column, $model->sortable) : Schema::hasColumn($model->getTable(), $column);
     }
 
     /**
@@ -165,7 +164,6 @@ trait Sortable
         reset($sort);
         $each = each($sort);
 
-        return ($each[0] === 0) ? ['sort' => $each[1], 'order' => $configDefaultOrder] :
-                                  ['sort' => $each[0], 'order' => $each[1]];
+        return ($each[0] === 0) ? ['sort' => $each[1], 'order' => $configDefaultOrder] : ['sort' => $each[0], 'order' => $each[1]];
     }
 }
