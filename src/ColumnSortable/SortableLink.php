@@ -58,7 +58,7 @@ class SortableLink
         $queryString = http_build_query(
             array_merge(
                 $queryParameters,
-                array_filter(Request::except('sort', 'order', 'page')),
+                array_filter(Request::except('sort', 'order', 'page'), 'strlen'),
                 [
                     'sort' => $sortParameter,
                     'order' => $direction,
