@@ -10,11 +10,14 @@ use Kyslik\ColumnSortable\SortableLink;
 class SortableLinkTest extends \Orchestra\Testbench\TestCase
 {
 
-    public function testSomething()
+    public function testQueryStringParameterWithBooleanStaysInLink()
     {
         Request::replace(['key' => 0, 'another-key' => null, 'another-one' => 1]);
         $link = SortableLink::render(['column']);
-        $this->assertTrue(str_contains($link, ['key=0', 'another-key=null', 'another-one=1']));
+
+        $this->assertTrue(str_contains($link, ['key=0']));
+        $this->assertTrue(str_contains($link, ['another-one=1']));
+        $this->assertFalse(str_contains($link, ['another-key=null']));
     }
 
 
