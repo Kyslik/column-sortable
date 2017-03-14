@@ -17,6 +17,7 @@ class SortableLinkTest extends \Orchestra\Testbench\TestCase
         $this->assertTrue(str_contains($link, ['key=0', 'another-key=null', 'another-one=1']));
     }
 
+
     public function testInjectTitleInQueryStrings()
     {
         Config::set('columnsortable.inject_title_as', 'title');
@@ -26,6 +27,7 @@ class SortableLinkTest extends \Orchestra\Testbench\TestCase
         $this->assertEquals($expected, Request::all());
     }
 
+
     public function testInjectTitleInQueryStringsIsOff()
     {
         Config::set('columnsortable.inject_title_as', null);
@@ -33,6 +35,7 @@ class SortableLinkTest extends \Orchestra\Testbench\TestCase
 
         $this->assertEquals([], Request::all());
     }
+
 
     public function testParseParameters()
     {
@@ -67,6 +70,7 @@ class SortableLinkTest extends \Orchestra\Testbench\TestCase
         $this->assertEquals($expected, $resultArray);
     }
 
+
     public function testGetOneToOneSort()
     {
         $sortParameter = 'relation-name.column';
@@ -79,6 +83,7 @@ class SortableLinkTest extends \Orchestra\Testbench\TestCase
         $expected = [];
         $this->assertEquals($expected, $resultArray);
     }
+
 
     /**
      * @expectedException  Kyslik\ColumnSortable\Exceptions\ColumnSortableException

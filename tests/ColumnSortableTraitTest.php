@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Input;
  */
 class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
 {
+
     /**
      * @var
      */
@@ -22,6 +23,7 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
      * @var
      */
     private $configDefaultDirection;
+
 
     /**
      * Method setUp() runs before each test.
@@ -39,23 +41,25 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
         $this->configDefaultDirection = 'asc';
     }
 
+
     public function testSortableWithoutDefaultAndRequestParameters()
     {
         $query = $this->user->scopeSortable($this->user->newQuery());
         $this->assertEmpty($query->getQuery()->orders);
     }
 
+
     public function testSortableWithRequestParameters()
     {
         $usersTable = $this->user->getTable();
         Input::replace(['sort' => 'name', 'order' => 'asc']);
         $resultArray = $this->user->scopeSortable($this->user->newQuery())->getQuery()->orders;
-        $expected = ['column' => $usersTable . '.name', 'direction' => 'asc'];
+        $expected = ['column' => $usersTable.'.name', 'direction' => 'asc'];
         $this->assertEquals($expected, head($resultArray));
 
         Input::replace(['sort' => 'name', 'order' => 'desc']);
         $resultArray = $this->user->scopeSortable($this->user->newQuery())->getQuery()->orders;
-        $expected = ['column' => $usersTable . '.name', 'direction' => 'desc'];
+        $expected = ['column' => $usersTable.'.name', 'direction' => 'desc'];
         $this->assertEquals($expected, head($resultArray));
 
         Input::replace(['sort' => 'name', 'order' => '']);
@@ -79,6 +83,7 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
         $this->assertNull($result);
     }
 
+
     public function testSortableWithDefaultAndWithoutRequestParameters()
     {
         $usersTable = $this->user->getTable();
@@ -87,9 +92,10 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
         ];
 
         $resultArray = $this->user->scopeSortable($this->user->newQuery(), $default)->getQuery()->orders;
-        $expected = ['column' => $usersTable . '.name', 'direction' => 'desc'];
+        $expected = ['column' => $usersTable.'.name', 'direction' => 'desc'];
         $this->assertEquals($expected, head($resultArray));
     }
+
 
     public function testSortableQueryJoinBuilder()
     {
@@ -108,12 +114,14 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
         $this->assertEquals($expectedQuery->toSql(), $resultQuery->toSql());
     }
 
+
     /**
      * Call protected/private method of a class.
      *
-     * @param object &$object Instantiated object that we will run method on.
+     * @param object &$object    Instantiated object that we will run method on.
      * @param string $methodName Method name to call
-     * @param array $parameters Array of parameters to pass into method.
+     * @param array  $parameters Array of parameters to pass into method.
+     *
      * @return mixed Method return.
      */
     protected function invokeMethod(&$object, $methodName, array $parameters = [])
@@ -125,6 +133,7 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
         return $method->invokeArgs($object, $parameters);
     }
 
+
     public function testSortableOverridingQueryOrderBuilder()
     {
         $sortParameters = ['sort' => 'address', 'order' => 'desc'];
@@ -135,6 +144,7 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
         $this->assertEquals($expectedQuery, $resultQuery);
     }
 
+
     public function testSortableAs()
     {
         $sortParameters = ['sort' => 'nick_name', 'order' => 'asc'];
@@ -143,6 +153,7 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
         $expectedQuery = $this->user->newQuery()->select('name as nick_name')->orderBy('nick_name', 'asc');
         $this->assertEquals($expectedQuery, $resultQuery);
     }
+
 
     /**
      * @expectedException  \Exception
@@ -155,6 +166,7 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
         $this->invokeMethod($this->user, 'queryJoinBuilder', [$query, $relation]);
     }
 
+
     /**
      * This test might be useless, because testFormatToSortParameters() does same
      */
@@ -164,15 +176,16 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
         $default = 'name';
 
         $resultArray = $this->user->scopeSortable($this->user->newQuery(), $default)->getQuery()->orders;
-        $expected = ['column' => $usersTable . '.name', 'direction' => $this->configDefaultDirection];
+        $expected = ['column' => $usersTable.'.name', 'direction' => $this->configDefaultDirection];
         $this->assertEquals($expected, head($resultArray));
 
         $default = ['name'];
 
         $resultArray = $this->user->scopeSortable($this->user->newQuery(), $default)->getQuery()->orders;
-        $expected = ['column' => $usersTable . '.name', 'direction' => $this->configDefaultDirection];
+        $expected = ['column' => $usersTable.'.name', 'direction' => $this->configDefaultDirection];
         $this->assertEquals($expected, head($resultArray));
     }
+
 
     public function testParseSortParameters()
     {
@@ -217,6 +230,7 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
         $this->assertEquals($expected, $resultArray);
     }
 
+
     public function testFormatToSortParameters()
     {
         $array = [];
@@ -256,6 +270,7 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
  */
 class User extends Model
 {
+
     use \Kyslik\ColumnSortable\Sortable;
 
     /**
@@ -271,6 +286,7 @@ class User extends Model
         'nick_name'
     ];
 
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
@@ -279,11 +295,11 @@ class User extends Model
         return $this->hasOne(Profile::class, 'user_id', 'id');
     }
 
+
     public function addressSortable($query, $direction)
     {
-        return $query->join('profiles', 'users.id', '=', 'profiles.user_id')
-            ->orderBy('address', $direction)
-            ->select('users.*');
+        return $query->join('profiles', 'users.id', '=', 'profiles.user_id')->orderBy('address',
+                $direction)->select('users.*');
     }
 }
 
@@ -292,6 +308,7 @@ class User extends Model
  */
 class Profile extends Model
 {
+
     /**
      * @var array
      */
@@ -299,6 +316,7 @@ class Profile extends Model
         'phone',
         'address'
     ];
+
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

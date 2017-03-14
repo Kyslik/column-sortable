@@ -15,9 +15,10 @@ use Kyslik\ColumnSortable\Exceptions\ColumnSortableException;
  */
 trait Sortable
 {
+
     /**
      * @param \Illuminate\Database\Query\Builder $query
-     * @param array|null $defaultSortParameters
+     * @param array|null                         $defaultSortParameters
      *
      * @return \Illuminate\Database\Query\Builder
      */
@@ -25,10 +26,10 @@ trait Sortable
     {
         if (Request::has('sort') && Request::has('order')) {
             return $this->queryOrderBuilder($query, Request::only(['sort', 'order']));
-        } elseif (!is_null($defaultSortParameters)) {
+        } elseif ( ! is_null($defaultSortParameters)) {
             $defaultSortArray = $this->formatToSortParameters($defaultSortParameters);
 
-            if (Config::get('columnsortable.allow_request_modification', true) && !empty($defaultSortArray)) {
+            if (Config::get('columnsortable.allow_request_modification', true) && ! empty($defaultSortArray)) {
                 Request::merge($defaultSortArray);
             }
 
@@ -38,9 +39,10 @@ trait Sortable
         }
     }
 
+
     /**
      * @param \Illuminate\Database\Query\Builder $query
-     * @param array $sortParameters
+     * @param array                              $sortParameters
      *
      * @return \Illuminate\Database\Query\Builder
      *
@@ -56,12 +58,12 @@ trait Sortable
             return $query;
         }
 
-        if (method_exists($this, camel_case($column) . 'Sortable')) {
-            return call_user_func_array([$this, camel_case($column) . 'Sortable'], [$query, $direction]);
+        if (method_exists($this, camel_case($column).'Sortable')) {
+            return call_user_func_array([$this, camel_case($column).'Sortable'], [$query, $direction]);
         }
 
         $explodeResult = SortableLink::explodeSortParameter($column);
-        if (!empty($explodeResult)) {
+        if ( ! empty($explodeResult)) {
             $relationName = $explodeResult[0];
             $column = $explodeResult[1];
 
@@ -80,12 +82,13 @@ trait Sortable
         if (isset($model->sortableAs) && in_array($column, $model->sortableAs)) {
             $query = $query->orderBy($column, $direction);
         } elseif ($this->columnExists($model, $column)) {
-            $column = $model->getTable() . '.' . $column;
+            $column = $model->getTable().'.'.$column;
             $query = $query->orderBy($column, $direction);
         }
 
         return $query;
     }
+
 
     /**
      * @param array $sortParameters
@@ -100,16 +103,17 @@ trait Sortable
         }
 
         $direction = array_get($sortParameters, 'order', []);
-        if (!in_array($direction, ['asc', 'desc'])) {
+        if ( ! in_array($direction, ['asc', 'desc'])) {
             $direction = Config::get('columnsortable.default_direction', 'asc');
         }
 
         return [$column, $direction];
     }
 
+
     /**
      * @param \Illuminate\Database\Query\Builder $query
-     * @param  $relation
+     * @param                                    $relation
      *
      * @return \Illuminate\Database\Query\Builder
      *
@@ -123,15 +127,18 @@ trait Sortable
         if ($relation instanceof HasOne) {
             $relatedPrimaryKey = $relation->getQualifiedForeignKeyName();
             $parentPrimaryKey = $relation->getQualifiedParentKeyName();
-            return $query->select($parentTable . '.*')->join($relatedTable, $parentPrimaryKey, '=', $relatedPrimaryKey);
+
+            return $query->select($parentTable.'.*')->join($relatedTable, $parentPrimaryKey, '=', $relatedPrimaryKey);
         } elseif ($relation instanceof BelongsTo) {
             $relatedPrimaryKey = $relation->getQualifiedOwnerKeyName();
             $parentPrimaryKey = $relation->getQualifiedForeignKey();
-            return $query->select($parentTable . '.*')->join($relatedTable, $parentPrimaryKey, '=', $relatedPrimaryKey);
+
+            return $query->select($parentTable.'.*')->join($relatedTable, $parentPrimaryKey, '=', $relatedPrimaryKey);
         } else {
             throw new \Exception();
         }
     }
+
 
     /**
      * @param $model
@@ -141,8 +148,10 @@ trait Sortable
      */
     private function columnExists($model, $column)
     {
-        return (isset($model->sortable)) ? in_array($column, $model->sortable) : Schema::hasColumn($model->getTable(), $column);
+        return (isset($model->sortable)) ? in_array($column, $model->sortable) : Schema::hasColumn($model->getTable(),
+            $column);
     }
+
 
     /**
      * @param array|string $sort
@@ -164,6 +173,9 @@ trait Sortable
         reset($sort);
         $each = each($sort);
 
-        return ($each[0] === 0) ? ['sort' => $each[1], 'order' => $configDefaultOrder] : ['sort' => $each[0], 'order' => $each[1]];
+        return ($each[0] === 0) ? ['sort' => $each[1], 'order' => $configDefaultOrder] : [
+            'sort'  => $each[0],
+            'order' => $each[1]
+        ];
     }
 }
