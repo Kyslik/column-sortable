@@ -28,30 +28,9 @@ class SortableLink
             Request::merge([$mergeTitleAs => $title]);
         }
 
-        $icon = Config::get('columnsortable.default_icon_set');
+        list($icon, $direction) = self::determineDirection($sortColumn, $sortParameter);
 
-        foreach (Config::get('columnsortable.columns', []) as $value) {
-            if (in_array($sortColumn, $value['rows'])) {
-                $icon = $value['class'];
-            }
-        }
-
-        if (Request::get('sort') == $sortParameter && in_array(Request::get('order'), ['asc', 'desc'])) {
-            $icon .= (Request::get('order') === 'asc' ? Config::get('columnsortable.asc_suffix',
-                '-asc') : Config::get('columnsortable.desc_suffix', '-desc'));
-            $direction = Request::get('order') === 'desc' ? 'asc' : 'desc';
-        } else {
-            $icon = Config::get('columnsortable.sortable_icon');
-            $direction = Config::get('columnsortable.default_direction_unsorted', 'asc');
-        }
-
-        $iconAndTextSeparator = Config::get('columnsortable.icon_text_separator', '');
-
-        $clickableIcon = Config::get('columnsortable.clickable_icon', false);
-        $trailingTag = $iconAndTextSeparator . '<i class="' . $icon . '"></i>' . '</a>';
-        if ($clickableIcon === false) {
-            $trailingTag = '</a>' . $iconAndTextSeparator . '<i class="' . $icon . '"></i>';
-        }
+        $trailingTag = self::formTrailingTag($icon);
 
         $anchorClass = self::getAnchorClass();
 
@@ -136,5 +115,70 @@ class SortableLink
             return ' class="' . $anchorClass . '"';
         }
         return '';
+    }
+
+
+    /**
+     * @param $sortColumn
+     *
+     * @return string
+     */
+    private static function selectIcon($sortColumn)
+    {
+        $icon = Config::get('columnsortable.default_icon_set');
+
+        foreach (Config::get('columnsortable.columns', []) as $value) {
+            if (in_array($sortColumn, $value['rows'])) {
+                $icon = $value['class'];
+            }
+        }
+
+        return $icon;
+    }
+
+
+    /**
+     * @param $sortColumn
+     * @param $sortParameter
+     *
+     * @return array
+     */
+    private static function determineDirection($sortColumn, $sortParameter)
+    {
+        $icon = self::selectIcon($sortColumn);
+
+        if (Request::get('sort') == $sortParameter && in_array(Request::get('order'), ['asc', 'desc'])) {
+            $icon .= (Request::get('order') === 'asc' ? Config::get('columnsortable.asc_suffix',
+                '-asc') : Config::get('columnsortable.desc_suffix', '-desc'));
+            $direction = Request::get('order') === 'desc' ? 'asc' : 'desc';
+
+            return [$icon, $direction];
+        } else {
+            $icon = Config::get('columnsortable.sortable_icon');
+            $direction = Config::get('columnsortable.default_direction_unsorted', 'asc');
+
+            return [$icon, $direction];
+        }
+    }
+
+
+    /**
+     * @param $icon
+     *
+     * @return string
+     */
+    private static function formTrailingTag($icon)
+    {
+        $iconAndTextSeparator = Config::get('columnsortable.icon_text_separator', '');
+
+        $clickableIcon = Config::get('columnsortable.clickable_icon', false);
+        $trailingTag = $iconAndTextSeparator.'<i class="'.$icon.'"></i>'.'</a>';
+        if ($clickableIcon === false) {
+            $trailingTag = '</a>'.$iconAndTextSeparator.'<i class="'.$icon.'"></i>';
+
+            return $trailingTag;
+        }
+
+        return $trailingTag;
     }
 }
