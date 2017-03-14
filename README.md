@@ -29,7 +29,7 @@
 [![Latest Version](https://img.shields.io/github/release/Kyslik/column-sortable.svg?style=flat-square)](https://github.com/Kyslik/column-sortable/releases)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
 [![Total Downloads](https://img.shields.io/packagist/dt/Kyslik/column-sortable.svg?style=flat-square)](https://packagist.org/packages/Kyslik/column-sortable)
-[![Build Status](https://travis-ci.org/Kyslik/column-sortable.svg?branch=master)](https://travis-ci.org/Kyslik/column-sortable)
+[![Build Status](https://travis-ci.org/Kyslik/column-sortable.svg?branch=L5.1-3)](https://travis-ci.org/Kyslik/column-sortable)
 
 Package for handling column sorting in Laravel 5.[1-4].
 
@@ -46,7 +46,7 @@ Pull this package in through Composer (development/latest version `dev-master`)
 ```
 {
     "require": {
-        "kyslik/column-sortable": "5.1.*"
+        "kyslik/column-sortable": "5.3.*"
     }
 }
 ```

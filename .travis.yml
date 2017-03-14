@@ -36,4 +36,4 @@ script: vendor/bin/phpunit
 
 branches:
   only:
-    - L5.1
+    - L5.1-3
