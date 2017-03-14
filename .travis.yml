@@ -36,4 +36,4 @@ script: vendor/bin/phpunit
 
 branches:
   only:
-    - master
+    - L5.1
