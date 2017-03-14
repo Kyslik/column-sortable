@@ -23,7 +23,7 @@ class SortableLink
         list($sortColumn, $sortParameter, $title, $queryParameters) = self::parseParameters($parameters);
 
         $title = self::applyFormatting($title);
-        
+
         if ($mergeTitleAs = Config::get('columnsortable.inject_title_as', null)) {
             Request::merge([$mergeTitleAs => $title]);
         }

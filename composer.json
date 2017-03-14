@@ -1,6 +1,6 @@
 {
   "name": "kyslik/column-sortable",
-  "description": "Package for handling column sorting in Laravel 5",
+  "description": "Package for handling column sorting in Laravel 5.4",
   "keywords": [
     "sortable",
     "sorting",
@@ -32,5 +32,6 @@
       "Kyslik\\ColumnSortable\\": "src/ColumnSortable/"
     }
   },
-  "minimum-stability": "dev"
+  "minimum-stability": "dev",
+  "prefer-stable": true
 }

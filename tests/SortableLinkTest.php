@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Request;
-use Kyslik\ColumnSortable\Exceptions\ColumnSortableException;
 use Kyslik\ColumnSortable\SortableLink;
 
 /**
@@ -10,6 +9,13 @@ use Kyslik\ColumnSortable\SortableLink;
  */
 class SortableLinkTest extends \Orchestra\Testbench\TestCase
 {
+
+    public function testSomething()
+    {
+        Request::replace(['key' => 0, 'another-key' => null, 'another-one' => 1]);
+        $link = SortableLink::render(['column']);
+        $this->assertTrue(str_contains($link, ['key=0', 'another-key=null', 'another-one=1']));
+    }
 
     public function testInjectTitleInQueryStrings()
     {
