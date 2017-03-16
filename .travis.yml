@@ -1,4 +1,7 @@
 language: php
+git:
+  depth: 3
+sudo: false
 
 php:
   - 5.6
@@ -6,18 +9,9 @@ php:
   - 7.1
 
 env:
-  global:
-    - setup=basic
-
-matrix:
-  allow_failures:
-    - php: 7.1
-  fast_finish: true
-  include:
-    - php: 5.6
-      env: setup=stable
-
-sudo: false
+  - version=L5-3
+  - version=L5-2
+  - version=L5-1
 
 cache:
   directories:
@@ -28,9 +22,9 @@ before_install:
   - travis_retry composer self-update
 
 install:
-  - if [[ $setup = 'basic' ]]; then travis_retry composer install --no-interaction --prefer-dist --no-suggest; fi
-  - if [[ $setup = 'stable' ]]; then travis_retry composer update --prefer-dist --no-interaction --prefer-stable --no-suggest; fi
-  - if [[ $setup = 'lowest' ]]; then travis_retry composer update --prefer-dist --no-interaction --prefer-lowest --prefer-stable --no-suggest; fi
+  travis_retry composer install --no-interaction --prefer-dist --no-suggest;
+  - if [[ $setup = 'L5-2' ]]; then travis_retry composer require --dev --update-with-dependencies --no-suggest --no-interaction orchestra/testbench:"3.2.*"; fi
+  - if [[ $setup = 'L5-1' ]]; then travis_retry composer require --dev --update-with-dependencies --no-suggest --no-interaction orchestra/testbench:"3.1.*"; fi
 
 script: vendor/bin/phpunit
 
