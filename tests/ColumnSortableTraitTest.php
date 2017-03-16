@@ -144,6 +144,18 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
         $this->assertEquals($expectedQuery, $resultQuery);
     }
 
+    public function testSortableOverridingQueryOrderBuilderOnRelation()
+    {
+        $sortParameters = ['sort' => 'profile.composite', 'order' => 'desc'];
+        $query = $this->user->newQuery();
+
+        $resultQuery = $this->invokeMethod($this->user, 'queryOrderBuilder', [$query, $sortParameters]);
+
+        $expectedQuery = $this->user->newQuery()->join('profiles', 'users.id', '=',
+            'profiles.user_id')->orderBy('phone', 'desc')->orderBy('address', 'desc')->select('users.*');
+
+        $this->assertEquals($expectedQuery, $resultQuery);
+    }
 
     public function testSortableAs()
     {
@@ -314,7 +326,8 @@ class Profile extends Model
      */
     public $sortable = [
         'phone',
-        'address'
+        'address',
+        'composite'
     ];
 
 
@@ -324,5 +337,10 @@ class Profile extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function compositeSortable($query, $direction)
+    {
+        return $query->orderBy('phone', $direction)->orderBy('address', $direction);
     }
 }
