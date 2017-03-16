@@ -56,10 +56,6 @@ trait Sortable
             return $query;
         }
 
-        if (method_exists($this, camel_case($column) . 'Sortable')) {
-            return call_user_func_array([$this, camel_case($column) . 'Sortable'], [$query, $direction]);
-        }
-
         $explodeResult = SortableLink::explodeSortParameter($column);
         if (!empty($explodeResult)) {
             $relationName = $explodeResult[0];
@@ -75,6 +71,10 @@ trait Sortable
             }
 
             $model = $relation->getRelated();
+        }
+
+        if (method_exists($model, camel_case($column).'Sortable')) {
+            return call_user_func_array([$model, camel_case($column).'Sortable'], [$query, $direction]);
         }
 
         if (isset($model->sortableAs) && in_array($column, $model->sortableAs)) {
