@@ -23,7 +23,7 @@ class SortableLink
         list($sortColumn, $sortParameter, $title, $queryParameters) = self::parseParameters($parameters);
 
         $title = self::applyFormatting($title);
-        
+
         if ($mergeTitleAs = Config::get('columnsortable.inject_title_as', null)) {
             Request::merge([$mergeTitleAs => $title]);
         }
@@ -34,19 +34,11 @@ class SortableLink
 
         $anchorClass = self::getAnchorClass();
 
-        $queryString = http_build_query(
-            array_merge(
-                $queryParameters,
-                array_filter(Request::except('sort', 'order', 'page'), 'strlen'),
-                [
-                    'sort' => $sortParameter,
-                    'order' => $direction,
-                ]
-            )
-        );
+        $queryString = self::buildQueryString($queryParameters, $sortParameter, $direction);
 
-        return '<a' . $anchorClass . ' href="' . url(Request::path() . '?' . $queryString) . '"' . '>' . htmlentities($title) . $trailingTag;
+        return '<a'.$anchorClass.' href="'.url(Request::path().'?'.$queryString).'"'.'>'.htmlentities($title).$trailingTag;
     }
+
 
     /**
      * @param array $parameters
@@ -64,6 +56,7 @@ class SortableLink
 
         return [$sortColumn, $parameters[0], $title, $queryParameters];
     }
+
 
     /**
      * Explodes parameter if possible and returns array [relation, column]
@@ -87,9 +80,11 @@ class SortableLink
 
             return $oneToOneSort;
         }
+
         //TODO: should return ['column', 'relation']
         return [];
     }
+
 
     /**
      * @param string $title
@@ -99,41 +94,11 @@ class SortableLink
     private static function applyFormatting($title)
     {
         $formatting_function = Config::get('columnsortable.formatting_function', null);
-        if (!is_null($formatting_function) && function_exists($formatting_function)) {
+        if ( ! is_null($formatting_function) && function_exists($formatting_function)) {
             $title = call_user_func($formatting_function, $title);
         }
+
         return $title;
-    }
-
-    /**
-     * @return string
-     */
-    private static function getAnchorClass()
-    {
-        $anchorClass = Config::get('columnsortable.anchor_class', null);
-        if ($anchorClass !== null) {
-            return ' class="' . $anchorClass . '"';
-        }
-        return '';
-    }
-
-
-    /**
-     * @param $sortColumn
-     *
-     * @return string
-     */
-    private static function selectIcon($sortColumn)
-    {
-        $icon = Config::get('columnsortable.default_icon_set');
-
-        foreach (Config::get('columnsortable.columns', []) as $value) {
-            if (in_array($sortColumn, $value['rows'])) {
-                $icon = $value['class'];
-            }
-        }
-
-        return $icon;
     }
 
 
@@ -163,6 +128,25 @@ class SortableLink
 
 
     /**
+     * @param $sortColumn
+     *
+     * @return string
+     */
+    private static function selectIcon($sortColumn)
+    {
+        $icon = Config::get('columnsortable.default_icon_set');
+
+        foreach (Config::get('columnsortable.columns', []) as $value) {
+            if (in_array($sortColumn, $value['rows'])) {
+                $icon = $value['class'];
+            }
+        }
+
+        return $icon;
+    }
+
+
+    /**
      * @param $icon
      *
      * @return string
@@ -180,5 +164,42 @@ class SortableLink
         }
 
         return $trailingTag;
+    }
+
+
+    /**
+     * @return string
+     */
+    private static function getAnchorClass()
+    {
+        $anchorClass = Config::get('columnsortable.anchor_class', null);
+        if ($anchorClass !== null) {
+            return ' class="'.$anchorClass.'"';
+        }
+
+        return '';
+    }
+
+
+    /**
+     * @param $queryParameters
+     * @param $sortParameter
+     * @param $direction
+     *
+     * @return string
+     */
+    private static function buildQueryString($queryParameters, $sortParameter, $direction)
+    {
+        $checkStrlenOrArray = function ($element) {
+            return is_array($element) ? $element : strlen($element);
+        };
+
+        $persistParameters = array_filter(Request::except('sort', 'order', 'page'), $checkStrlenOrArray);
+        $queryString = http_build_query(array_merge($queryParameters, $persistParameters, [
+            'sort'  => $sortParameter,
+            'order' => $direction,
+        ]));
+
+        return $queryString;
     }
 }
