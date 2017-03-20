@@ -171,7 +171,7 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
      * @expectedException  \Exception
      * @expectedExceptionCode 0
      */
-    public function testSortableQueryJoinBuilderThrowsExeption()
+    public function testSortableQueryJoinBuilderThrowsException()
     {
         $query = $this->user->hasMany(Profile::class)->newQuery();
         $relation = $query->getRelation('profile');
