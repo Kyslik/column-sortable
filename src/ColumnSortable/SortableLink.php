@@ -34,11 +34,7 @@ class SortableLink
 
         $anchorClass = self::getAnchorClass();
 
-        $queryString = http_build_query(array_merge($queryParameters,
-            array_filter(Request::except('sort', 'order', 'page'), 'strlen'), [
-                'sort'  => $sortParameter,
-                'order' => $direction,
-            ]));
+        $queryString = self::buildQueryString($queryParameters, $sortParameter, $direction);
 
         return '<a'.$anchorClass.' href="'.url(Request::path().'?'.$queryString).'"'.'>'.htmlentities($title).$trailingTag;
     }
@@ -182,5 +178,28 @@ class SortableLink
         }
 
         return '';
+    }
+
+
+    /**
+     * @param $queryParameters
+     * @param $sortParameter
+     * @param $direction
+     *
+     * @return string
+     */
+    private static function buildQueryString($queryParameters, $sortParameter, $direction)
+    {
+        $checkStrlenOrArray = function ($element) {
+            return is_array($element) ? $element : strlen($element);
+        };
+
+        $persistParameters = array_filter(Request::except('sort', 'order', 'page'), $checkStrlenOrArray);
+        $queryString = http_build_query(array_merge($queryParameters, $persistParameters, [
+            'sort'  => $sortParameter,
+            'order' => $direction,
+        ]));
+
+        return $queryString;
     }
 }
