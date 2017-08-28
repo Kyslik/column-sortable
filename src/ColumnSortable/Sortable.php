@@ -58,18 +58,14 @@ trait Sortable
             return $query;
         }
 
-        if (method_exists($this, camel_case($column).'Sortable')) {
-            return call_user_func_array([$this, camel_case($column).'Sortable'], [$query, $direction]);
-        }
-
         $explodeResult = SortableLink::explodeSortParameter($column);
         if ( ! empty($explodeResult)) {
             $relationName = $explodeResult[0];
-            $column = $explodeResult[1];
+            $column       = $explodeResult[1];
 
             try {
                 $relation = $query->getRelation($relationName);
-                $query = $this->queryJoinBuilder($query, $relation);
+                $query    = $this->queryJoinBuilder($query, $relation);
             } catch (BadMethodCallException $e) {
                 throw new ColumnSortableException($relationName, 1, $e);
             } catch (\Exception $e) {
@@ -79,11 +75,15 @@ trait Sortable
             $model = $relation->getRelated();
         }
 
+        if (method_exists($model, camel_case($column).'Sortable')) {
+            return call_user_func_array([$model, camel_case($column).'Sortable'], [$query, $direction]);
+        }
+
         if (isset($model->sortableAs) && in_array($column, $model->sortableAs)) {
             $query = $query->orderBy($column, $direction);
         } elseif ($this->columnExists($model, $column)) {
             $column = $model->getTable().'.'.$column;
-            $query = $query->orderBy($column, $direction);
+            $query  = $query->orderBy($column, $direction);
         }
 
         return $query;
@@ -122,16 +122,22 @@ trait Sortable
     private function queryJoinBuilder($query, $relation)
     {
         $relatedTable = $relation->getRelated()->getTable();
-        $parentTable = $relation->getParent()->getTable();
+        $parentTable  = $relation->getParent()->getTable();
+
+        if ($parentTable === $relatedTable) {
+            $query       = $query->from($parentTable.' as parent_'.$parentTable);
+            $parentTable = 'parent_'.$parentTable;
+            $relation->getParent()->setTable($parentTable);
+        }
 
         if ($relation instanceof HasOne) {
             $relatedPrimaryKey = $relation->getQualifiedForeignKeyName();
-            $parentPrimaryKey = $relation->getQualifiedParentKeyName();
+            $parentPrimaryKey  = $relation->getQualifiedParentKeyName();
 
             return $query->select($parentTable.'.*')->join($relatedTable, $parentPrimaryKey, '=', $relatedPrimaryKey);
         } elseif ($relation instanceof BelongsTo) {
             $relatedPrimaryKey = $relation->getQualifiedOwnerKeyName();
-            $parentPrimaryKey = $relation->getQualifiedForeignKey();
+            $parentPrimaryKey  = $relation->getQualifiedForeignKey();
 
             return $query->select($parentTable.'.*')->join($relatedTable, $parentPrimaryKey, '=', $relatedPrimaryKey);
         } else {
@@ -148,8 +154,8 @@ trait Sortable
      */
     private function columnExists($model, $column)
     {
-        return (isset($model->sortable)) ? in_array($column, $model->sortable) : Schema::hasColumn($model->getTable(),
-            $column);
+        return (isset($model->sortable)) ? in_array($column, $model->sortable) :
+            Schema::hasColumn($model->getTable(), $column);
     }
 
 
@@ -175,7 +181,7 @@ trait Sortable
 
         return ($each[0] === 0) ? ['sort' => $each[1], 'order' => $configDefaultOrder] : [
             'sort'  => $each[0],
-            'order' => $each[1]
+            'order' => $each[1],
         ];
     }
 }

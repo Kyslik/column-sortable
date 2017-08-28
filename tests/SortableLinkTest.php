@@ -12,12 +12,24 @@ class SortableLinkTest extends \Orchestra\Testbench\TestCase
 
     public function testQueryStringParameterWithBooleanStaysInLink()
     {
-        Request::replace(['key' => 0, 'another-key' => null, 'another-one' => 1]);
-        $link = SortableLink::render(['column']);
+        $parameters = ['key' => 0, 'another-key' => null, 'another-one' => 1];
+        Request::replace($parameters);
 
-        $this->assertTrue(str_contains($link, ['key=0']));
-        $this->assertTrue(str_contains($link, ['another-one=1']));
-        $this->assertFalse(str_contains($link, ['another-key=null']));
+        $link = SortableLink::render(['column']);
+        $expected = http_build_query($parameters);
+
+        $this->assertContains($expected, $link);
+    }
+
+    public function testQueryStringCanHoldArray()
+    {
+        $parameters = ['key' => ['part1', 'part2'], 'another-one' => 1];
+        Request::replace($parameters);
+
+        $link = SortableLink::render(['column']);
+        $expected = http_build_query($parameters);
+
+        $this->assertContains($expected, $link);
     }
 
 
