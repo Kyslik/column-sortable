@@ -21,6 +21,11 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
     /**
      * @var
      */
+    private $comment;
+
+    /**
+     * @var
+     */
     private $configDefaultDirection;
 
     /**
@@ -35,6 +40,7 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
 
         $this->user = new User();
         $this->profile = new Profile();
+        $this->comment = new Comment();
 
         $this->configDefaultDirection = 'asc';
     }
@@ -105,6 +111,13 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
         $resultQuery = $this->invokeMethod($this->user, 'queryJoinBuilder', [$query, $relation]);
         $expectedQuery = $this->profile->newQuery()->select('profiles.*')->join('users', 'profiles.user_id', '=',
             'users.id');
+        $this->assertEquals($expectedQuery->toSql(), $resultQuery->toSql());
+
+        $query         = $this->comment->newQuery()->with(['parent']);
+        $relation      = $query->getRelation('parent');
+        $resultQuery   = $this->invokeMethod($this->comment, 'queryJoinBuilder', [$query, $relation]);
+        $expectedQuery =
+            $this->comment->newQuery()->from('comments as parent_comments')->select('parent_comments.*')->join('comments', 'parent_comments.parent_id', '=', 'comments.id');
         $this->assertEquals($expectedQuery->toSql(), $resultQuery->toSql());
     }
 
@@ -327,3 +340,27 @@ class Profile extends Model
         return $query->orderBy('phone', $direction)->orderBy('address', $direction);
     }
 }
+
+/**
+ * Class Comment
+ */
+class Comment extends Model
+{
+    use \Kyslik\ColumnSortable\Sortable;
+    /**
+     * @var array
+     */
+    public $sortable = [
+        'body',
+        'created_at',
+        'updated_at'
+    ];
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function parent()
+    {
+        return $this->belongsTo(Comment::class, 'parent_id');
+    }
+}
+
