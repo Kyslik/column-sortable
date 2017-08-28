@@ -129,17 +129,7 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
             $this->comment->newQuery()->from('comments as parent_comments')->select('parent_comments.*')->join('comments', 'parent_comments.parent_id', '=', 'comments.id');
         $this->assertEquals($expectedQuery->toSql(), $resultQuery->toSql());
     }
-
-    //TODO: remove me, I am not needed
-    //public function testSelfReferencingModelUsesAlias()
-    //{
-    //    $query = $this->comment->scopeSortable($this->comment->newQuery(), ['parent.body' => 'desc']);
-    //
-    //    $this->assertEquals('comments as parent_comments', $query->getQuery()->from);
-    //    $this->assertEquals('parent_comments.*', $query->getQuery()->columns[0]);
-    //}
-
-
+    
     /**
      * Call protected/private method of a class.
      *
@@ -398,14 +388,5 @@ class Comment extends Model
     public function parent()
     {
         return $this->belongsTo(Comment::class, 'parent_id');
-    }
-
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function children()
-    {
-        return $this->hasMany(Comment::class, 'parent_id');
     }
 }
