@@ -224,6 +224,7 @@ public function detail()
 ```
 
 ### Define belongsTo relation
+>**Note**: in case we have self-referencing model (like comments, categories); parent table will be aliased with `parent_` string, for more information see [issue #60](https://github.com/Kyslik/column-sortable/issues/60).
 
 ```
 /**
