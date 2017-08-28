@@ -120,6 +120,12 @@ trait Sortable
         $relatedTable = $relation->getRelated()->getTable();
         $parentTable = $relation->getParent()->getTable();
 
+        if ($parentTable === $relatedTable) {
+            $query       = $query->from($parentTable.' as parent_'.$parentTable);
+            $parentTable = 'parent_'.$parentTable;
+            $relation->getParent()->setTable($parentTable);
+        }
+
         if ($relation instanceof HasOne) {
             $relatedPrimaryKey = $relation->getForeignKey();
             $parentPrimaryKey = $relation->getQualifiedParentKeyName();
