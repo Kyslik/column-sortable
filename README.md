@@ -59,7 +59,7 @@ Pull this package in through Composer (development/latest version `dev-master`)
 
 ### Laravel's 5.5 auto discovery
 
-Currently WIP.
+Simply install the package and let Laravel auto-discover the package.
 
 ### Manual installation
 
