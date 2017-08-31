@@ -134,12 +134,12 @@ trait Sortable
             $relatedPrimaryKey = $relation->getQualifiedForeignKeyName();
             $parentPrimaryKey  = $relation->getQualifiedParentKeyName();
 
-            return $query->select($parentTable.'.*')->join($relatedTable, $parentPrimaryKey, '=', $relatedPrimaryKey);
+            return $this->formJoin($query, $parentTable, $relatedTable, $parentPrimaryKey, $relatedPrimaryKey);
         } elseif ($relation instanceof BelongsTo) {
             $relatedPrimaryKey = $relation->getQualifiedOwnerKeyName();
             $parentPrimaryKey  = $relation->getQualifiedForeignKey();
 
-            return $query->select($parentTable.'.*')->join($relatedTable, $parentPrimaryKey, '=', $relatedPrimaryKey);
+            return $this->formJoin($query, $parentTable, $relatedTable, $parentPrimaryKey, $relatedPrimaryKey);
         } else {
             throw new \Exception();
         }
@@ -183,5 +183,22 @@ trait Sortable
             'sort'  => $each[0],
             'order' => $each[1],
         ];
+    }
+
+
+    /**
+     * @param $query
+     * @param $parentTable
+     * @param $relatedTable
+     * @param $parentPrimaryKey
+     * @param $relatedPrimaryKey
+     *
+     * @return mixed
+     */
+    private function formJoin($query, $parentTable, $relatedTable, $parentPrimaryKey, $relatedPrimaryKey)
+    {
+        $joinType = Config::get('columnsortable.join_type', 'leftJoin');
+
+        return $query->select($parentTable.'.*')->{$joinType}($relatedTable, $parentPrimaryKey, '=', $relatedPrimaryKey);
     }
 }

@@ -109,21 +109,21 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
         $relation      = $query->getRelation('profile');
         $resultQuery   = $this->invokeMethod($this->user, 'queryJoinBuilder', [$query, $relation]);
         $expectedQuery =
-            $this->user->newQuery()->select('users.*')->join('profiles', 'users.id', '=', 'profiles.user_id');
+            $this->user->newQuery()->select('users.*')->leftJoin('profiles', 'users.id', '=', 'profiles.user_id');
         $this->assertEquals($expectedQuery->toSql(), $resultQuery->toSql());
 
         $query         = $this->profile->newQuery()->with(['user']);
         $relation      = $query->getRelation('user');
         $resultQuery   = $this->invokeMethod($this->user, 'queryJoinBuilder', [$query, $relation]);
         $expectedQuery =
-            $this->profile->newQuery()->select('profiles.*')->join('users', 'profiles.user_id', '=', 'users.id');
+            $this->profile->newQuery()->select('profiles.*')->leftJoin('users', 'profiles.user_id', '=', 'users.id');
         $this->assertEquals($expectedQuery->toSql(), $resultQuery->toSql());
 
         $query         = $this->comment->newQuery()->with(['parent']);
         $relation      = $query->getRelation('parent');
         $resultQuery   = $this->invokeMethod($this->comment, 'queryJoinBuilder', [$query, $relation]);
         $expectedQuery = $this->comment->newQuery()->from('comments as parent_comments')->select('parent_comments.*')
-                                       ->join('comments', 'parent_comments.parent_id', '=', 'comments.id');
+                                       ->leftJoin('comments', 'parent_comments.parent_id', '=', 'comments.id');
         $this->assertEquals($expectedQuery->toSql(), $resultQuery->toSql());
     }
 
@@ -167,7 +167,7 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
         $resultQuery = $this->invokeMethod($this->user, 'queryOrderBuilder', [$query, $sortParameters]);
 
         $expectedQuery =
-            $this->user->newQuery()->join('profiles', 'users.id', '=', 'profiles.user_id')->orderBy('phone', 'desc')
+            $this->user->newQuery()->leftJoin('profiles', 'users.id', '=', 'profiles.user_id')->orderBy('phone', 'desc')
                        ->orderBy('address', 'desc')->select('users.*');
 
         $this->assertEquals($expectedQuery, $resultQuery);
