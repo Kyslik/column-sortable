@@ -1,9 +1,12 @@
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-- [Column sorting for Laravel 5.*](#column-sorting-for-laravel-5)
+
+- [Column sorting for Laravel 5.5](#column-sorting-for-laravel-55)
 - [Setup](#setup)
   - [Composer](#composer)
+    - [Laravel's 5.5 auto discovery](#laravels-55-auto-discovery)
+    - [Manual installation](#manual-installation)
   - [Publish configuration](#publish-configuration)
 - [Usage](#usage)
   - [Blade Extension](#blade-extension)
