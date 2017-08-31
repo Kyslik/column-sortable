@@ -55,9 +55,6 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
     }
 
 
-
-
-
     public function testSortableWithRequestParameters()
     {
         $usersTable = $this->user->getTable();
@@ -125,11 +122,12 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
         $query         = $this->comment->newQuery()->with(['parent']);
         $relation      = $query->getRelation('parent');
         $resultQuery   = $this->invokeMethod($this->comment, 'queryJoinBuilder', [$query, $relation]);
-        $expectedQuery =
-            $this->comment->newQuery()->from('comments as parent_comments')->select('parent_comments.*')->join('comments', 'parent_comments.parent_id', '=', 'comments.id');
+        $expectedQuery = $this->comment->newQuery()->from('comments as parent_comments')->select('parent_comments.*')
+                                       ->join('comments', 'parent_comments.parent_id', '=', 'comments.id');
         $this->assertEquals($expectedQuery->toSql(), $resultQuery->toSql());
     }
-    
+
+
     /**
      * Call protected/private method of a class.
      *
@@ -370,6 +368,7 @@ class Profile extends Model
  */
 class Comment extends Model
 {
+
     use \Kyslik\ColumnSortable\Sortable;
 
     /**
@@ -378,7 +377,7 @@ class Comment extends Model
     public $sortable = [
         'body',
         'created_at',
-        'updated_at'
+        'updated_at',
     ];
 
 

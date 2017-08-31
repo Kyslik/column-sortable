@@ -1,7 +1,6 @@
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-
 - [Column sorting for Laravel 5.*](#column-sorting-for-laravel-5)
 - [Setup](#setup)
   - [Composer](#composer)
@@ -25,13 +24,13 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# Column sorting for Laravel 5.*
+# Column sorting for Laravel 5.5
 [![Latest Version](https://img.shields.io/github/release/Kyslik/column-sortable.svg?style=flat-square)](https://github.com/Kyslik/column-sortable/releases)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
 [![Total Downloads](https://img.shields.io/packagist/dt/Kyslik/column-sortable.svg?style=flat-square)](https://packagist.org/packages/Kyslik/column-sortable)
-[![Build Status](https://travis-ci.org/Kyslik/column-sortable.svg?branch=master)](https://travis-ci.org/Kyslik/column-sortable)
+[![Build Status](https://travis-ci.org/Kyslik/column-sortable.svg?branch=L5.5)](https://travis-ci.org/Kyslik/column-sortable)
 
-Package for handling column sorting in Laravel 5.[1-4].
+Package for handling column sorting in Laravel 5.[1-5].
 
 Simply put: [this hack](http://hack.swic.name/laravel-column-sorting-made-easy/) in package with blade extension and Font Awesome icon support.
 
@@ -55,6 +54,12 @@ Pull this package in through Composer (development/latest version `dev-master`)
 
 >**Note**: Major and minor versions should match with Laravel, build versions are separate from Laravel versioning scheme. Example: If you are using Laravel 5.2, column-sortable version should be `5.2.*`.
 
+### Laravel's 5.5 auto discovery
+
+Currently WIP.
+
+### Manual installation
+
 Add the package to your application service providers in `config/app.php`
 
 ```
@@ -68,6 +73,7 @@ Add the package to your application service providers in `config/app.php`
     Kyslik\ColumnSortable\ColumnSortableServiceProvider::class,
 ],
 ```
+
 ## Publish configuration
 
 Publish the package configuration file to your application.
@@ -107,7 +113,7 @@ You're set to go.
 
 ## Blade Extension
 
-There is one blade extension for you to use **@sortablelink()**
+There is a blade extension for you to use **@sortablelink()**
 
 ```
 @sortablelink('column', 'Title', ['parameter' => 'smile'])
@@ -159,6 +165,8 @@ Rest of the [config file](https://github.com/Kyslik/column-sortable/blob/master/
 Install [Font-Awesome](https://github.com/FortAwesome/Font-Awesome) for visual [Joy](http://www.imdb.com/character/ch0411388/). Search "sort" in [cheatsheet](http://fortawesome.github.io/Font-Awesome/cheatsheet/) and see used icons (12) yourself.
 
 ## Full Example
+
+>**Note**: you may find useful [working example repository](https://github.com/Kyslik/column-sortable-example)
 
 ### Routes
 
