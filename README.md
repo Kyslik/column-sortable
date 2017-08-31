@@ -48,14 +48,14 @@ Pull this package in through Composer (development/latest version `dev-master`)
 ```
 {
     "require": {
-        "kyslik/column-sortable": "5.4.*"
+        "kyslik/column-sortable": "5.5.*"
     }
 }
 ```
 
     $ composer update
 
->**Note**: Major and minor versions should match with Laravel, build versions are separate from Laravel versioning scheme. Example: If you are using Laravel 5.2, column-sortable version should be `5.2.*`.
+>**Note**: Major and minor versions should match with Laravel's version, build versions are separate from Laravel versioning scheme. Example: If you are using Laravel 5.4, column-sortable version should be `5.4.*`.
 
 ### Laravel's 5.5 auto discovery
 
