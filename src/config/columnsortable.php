@@ -88,7 +88,7 @@ return [
     'default_direction_unsorted'    => 'asc',
 
     /*
-    join type: innerJoin vs leftJoin (default leftJoin)
+    join type: join vs leftJoin (default leftJoin)
     for more information see https://github.com/Kyslik/column-sortable/issues/59
     */
     'join_type'                          => 'leftJoin',
