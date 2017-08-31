@@ -169,7 +169,7 @@ trait Sortable
     private function formJoin($query, $parentTable, $relatedTable, $parentPrimaryKey, $relatedPrimaryKey)
     {
         $joinType = Config::get('columnsortable.join_type', 'join');
-        
+
         return $query->select($parentTable.'.*')->{$joinType}($relatedTable, $parentPrimaryKey, '=', $relatedPrimaryKey);
     }
 }
