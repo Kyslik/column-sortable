@@ -28,7 +28,7 @@ class ColumnSortableServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->publishes([
-            __DIR__.'/../config/columnsortable.php' => config_path('columnsortable.php')
+            __DIR__.'/../config/columnsortable.php' => config_path('columnsortable.php'),
         ], 'config');
 
         Blade::directive('sortablelink', function ($expression) {

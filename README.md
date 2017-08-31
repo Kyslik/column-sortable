@@ -168,8 +168,7 @@ Rest of the [config file](https://github.com/Kyslik/column-sortable/blob/master/
 Install [Font-Awesome](https://github.com/FortAwesome/Font-Awesome) for visual [Joy](http://www.imdb.com/character/ch0411388/). Search "sort" in [cheatsheet](http://fortawesome.github.io/Font-Awesome/cheatsheet/) and see used icons (12) yourself.
 
 ## Full Example
-
->**Note**: you may find useful [working example repository](https://github.com/Kyslik/column-sortable-example)
+You may be interested in [working example repository](https://github.com/Kyslik/column-sortable-example), where package usage is demonstrated.
 
 ### Routes
 
