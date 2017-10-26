@@ -57,6 +57,16 @@ return [
     'anchor_class'                  => null,
 
     /*
+    default active anchor class, if value is null none is added
+     */
+    'active_anchor_class'           => null,
+
+    /*
+    default sort order anchor class, if value is null none is added
+     */
+    'order_anchor_class_prefix'     => null,
+
+    /*
     relation - column separator ex: detail.phone_number means relation "detail" and column "phone_number"
      */
     'uri_relation_column_separator' => '.',

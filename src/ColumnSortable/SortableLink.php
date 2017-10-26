@@ -32,7 +32,7 @@ class SortableLink
 
         $trailingTag = self::formTrailingTag($icon);
 
-        $anchorClass = self::getAnchorClass();
+        $anchorClass = self::getAnchorClass($sortColumn, $direction);
 
         $queryString = self::buildQueryString($queryParameters, $sortParameter, $direction);
 
@@ -168,16 +168,47 @@ class SortableLink
 
 
     /**
+     * @param $sortColumn
+     * @param $direction
+     * 
      * @return string
      */
-    private static function getAnchorClass()
+    private static function getAnchorClass($sortColumn, $direction)
     {
+        $class = [];
+
         $anchorClass = Config::get('columnsortable.anchor_class', null);
         if ($anchorClass !== null) {
-            return ' class="'.$anchorClass.'"';
+            $class[] = $anchorClass;
         }
 
-        return '';
+        $activeClass = Config::get('columnsortable.active_anchor_class', null);
+        if ($activeClass !== null && self::shouldShowActive($sortColumn)) {
+            $class[] = $activeClass;
+        }
+
+        $orderClassPrefix = Config::get('columnsortable.order_anchor_class_prefix', null);
+        if ($orderClassPrefix !== null && self::shouldShowActive($sortColumn)) {
+            $class[] = $orderClassPrefix . (Request::get('order') === 'asc' ? Config::get('columnsortable.asc_suffix',
+                '-asc') : Config::get('columnsortable.desc_suffix', '-desc'));
+        }
+
+        return ' class="'.implode(' ', $class).'"';
+    }
+
+
+    /**
+     * @param $sortColumn
+     * 
+     * @return boolean
+     */
+    private static function shouldShowActive($sortColumn)
+    {
+        if (Request::has('sort')) {
+            return Request::get('sort') == $sortColumn;
+        }
+
+        return false;
     }
 
 
