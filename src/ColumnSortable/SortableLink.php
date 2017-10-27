@@ -156,7 +156,7 @@ class SortableLink
         if ( ! Config::get('columnsortable.enable_icons', true)) {
             return '</a>';
         }
-        
+
         $iconAndTextSeparator = Config::get('columnsortable.icon_text_separator', '');
 
         $clickableIcon = Config::get('columnsortable.clickable_icon', false);

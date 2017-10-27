@@ -19,7 +19,7 @@ return [
             'class' => 'fa fa-sort-numeric',
         ],
     ],
-    
+
     /*
     whether icons should be enabled
      */
