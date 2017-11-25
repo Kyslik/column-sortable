@@ -15,18 +15,19 @@ class SortableLinkTest extends \Orchestra\Testbench\TestCase
         $parameters = ['key' => 0, 'another-key' => null, 'another-one' => 1];
         Request::replace($parameters);
 
-        $link = SortableLink::render(['column']);
+        $link     = SortableLink::render(['column']);
         $expected = http_build_query($parameters);
 
         $this->assertContains($expected, $link);
     }
+
 
     public function testQueryStringCanHoldArray()
     {
         $parameters = ['key' => ['part1', 'part2'], 'another-one' => 1];
         Request::replace($parameters);
 
-        $link = SortableLink::render(['column']);
+        $link     = SortableLink::render(['column']);
         $expected = http_build_query($parameters);
 
         $this->assertContains($expected, $link);
@@ -54,34 +55,34 @@ class SortableLinkTest extends \Orchestra\Testbench\TestCase
 
     public function testParseParameters()
     {
-        $parameters = ['column'];
+        $parameters  = ['column'];
         $resultArray = SortableLink::parseParameters($parameters);
-        $expected = ['column', 'column', 'column', []];
+        $expected    = ['column', 'column', 'column', []];
         $this->assertEquals($expected, $resultArray);
 
-        $parameters = ['column', 'ColumnTitle'];
+        $parameters  = ['column', 'ColumnTitle'];
         $resultArray = SortableLink::parseParameters($parameters);
-        $expected = ['column', 'column', 'ColumnTitle', []];
+        $expected    = ['column', 'column', 'ColumnTitle', []];
         $this->assertEquals($expected, $resultArray);
 
-        $parameters = ['column', 'ColumnTitle', ['world' => 'matrix']];
+        $parameters  = ['column', 'ColumnTitle', ['world' => 'matrix']];
         $resultArray = SortableLink::parseParameters($parameters);
-        $expected = ['column', 'column', 'ColumnTitle', ['world' => 'matrix']];
+        $expected    = ['column', 'column', 'ColumnTitle', ['world' => 'matrix']];
         $this->assertEquals($expected, $resultArray);
 
-        $parameters = ['relation.column'];
+        $parameters  = ['relation.column'];
         $resultArray = SortableLink::parseParameters($parameters);
-        $expected = ['column', 'relation.column', 'column', []];
+        $expected    = ['column', 'relation.column', 'column', []];
         $this->assertEquals($expected, $resultArray);
 
-        $parameters = ['relation.column', 'ColumnTitle'];
+        $parameters  = ['relation.column', 'ColumnTitle'];
         $resultArray = SortableLink::parseParameters($parameters);
-        $expected = ['column', 'relation.column', 'ColumnTitle', []];
+        $expected    = ['column', 'relation.column', 'ColumnTitle', []];
         $this->assertEquals($expected, $resultArray);
 
-        $parameters = ['relation.column', 'ColumnTitle', ['world' => 'matrix']];
+        $parameters  = ['relation.column', 'ColumnTitle', ['world' => 'matrix']];
         $resultArray = SortableLink::parseParameters($parameters);
-        $expected = ['column', 'relation.column', 'ColumnTitle', ['world' => 'matrix']];
+        $expected    = ['column', 'relation.column', 'ColumnTitle', ['world' => 'matrix']];
         $this->assertEquals($expected, $resultArray);
     }
 
@@ -89,13 +90,13 @@ class SortableLinkTest extends \Orchestra\Testbench\TestCase
     public function testGetOneToOneSort()
     {
         $sortParameter = 'relation-name.column';
-        $resultArray = SortableLink::explodeSortParameter($sortParameter);
-        $expected = ['relation-name', 'column'];
+        $resultArray   = SortableLink::explodeSortParameter($sortParameter);
+        $expected      = ['relation-name', 'column'];
         $this->assertEquals($expected, $resultArray);
 
         $sortParameter = 'column';
-        $resultArray = SortableLink::explodeSortParameter($sortParameter);
-        $expected = [];
+        $resultArray   = SortableLink::explodeSortParameter($sortParameter);
+        $expected      = [];
         $this->assertEquals($expected, $resultArray);
     }
 

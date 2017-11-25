@@ -11,12 +11,14 @@ use Illuminate\Support\ServiceProvider;
  */
 class ColumnSortableServiceProvider extends ServiceProvider
 {
+
     /**
      * Indicates if loading of the provider is deferred.
      *
      * @var bool
      */
     protected $defer = false;
+
 
     /**
      * Bootstrap any application services.
@@ -26,14 +28,16 @@ class ColumnSortableServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->publishes([
-            __DIR__ . '/../config/columnsortable.php' => config_path('columnsortable.php')
+            __DIR__.'/../config/columnsortable.php' => config_path('columnsortable.php'),
         ], 'config');
 
         Blade::directive('sortablelink', function ($expression) {
             $expression = ($expression[0] === '(') ? substr($expression, 1, -1) : $expression;
+
             return "<?php echo \Kyslik\ColumnSortable\SortableLink::render(array ({$expression}));?>";
         });
     }
+
 
     /**
      * Register the service provider.
@@ -42,6 +46,6 @@ class ColumnSortableServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__ . '/../config/columnsortable.php', 'columnsortable');
+        $this->mergeConfigFrom(__DIR__.'/../config/columnsortable.php', 'columnsortable');
     }
 }
