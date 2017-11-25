@@ -88,16 +88,16 @@ use Kyslik\ColumnSortable\Sortable;
 
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract 
 {
-	use Authenticatable, CanResetPassword, Sortable;
-	...
+    use Authenticatable, CanResetPassword, Sortable;
+    ...
 
-	public $sortable = ['id',
-	                    'name',
-	                    'email',
-	                    'created_at',
-	                    'updated_at'];
-	                    
-	...
+    public $sortable = ['id',
+                        'name',
+                        'email',
+                        'created_at',
+                        'updated_at'];
+                        
+    ...
 }
 ```
 
