@@ -64,7 +64,7 @@ return [
     /*
     default active anchor class, if value is null none is added
      */
-    'active_anchor_class'           => null,
+    'active_anchor_class'           => 'active',
 
     /*
     default sort order anchor class, if value is null none is added
