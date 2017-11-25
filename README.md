@@ -285,7 +285,7 @@ In config file you can set your own separator in case `.` (dot) is not what you 
 
 # ColumnSortable overriding (advanced)
 
-It is possible to override ColumnSortable relation feature, basically you can write your own join(s) / queries and apply `orderBy()` manualy.
+It is possible to override ColumnSortable relation feature, basically you can write your own join(s) / queries and apply `orderBy()` manually.
 
 See example:
 
@@ -312,7 +312,7 @@ In view just use `@sortablelink('address')`
 
 >Huge thanks to @neutralrockets and his comments on [#8](https://github.com/Kyslik/column-sortable/issues/8). Another example on how to use overriding is issue [#41](https://github.com/Kyslik/column-sortable/issues/41#issuecomment-250895909).
 
-# `$sortableAs` (aliasing)
+# Aliasing
 
 It is possible to declare `$sortableAs` array and use it to alias (bypass column exists check), and ignore prefixing with table. 
 
@@ -323,7 +323,6 @@ In model
 $sortableAs = ['nick_name'];
 ...
 ```
-
 
 In controller
 
@@ -336,7 +335,11 @@ In view
 @sortablelink('nick_name', 'nick')
 ```
 
-Please see [#44](https://github.com/Kyslik/column-sortable/issues/44).
+See [#44](https://github.com/Kyslik/column-sortable/issues/44) for more information on aliasing.
+
+## Sort `withCount()`
+
+Aliasing is useful when you want to sort results with [`withCount()`](https://laravel.com/docs/5.5/eloquent-relationships#counting-related-models), see [issue #49](https://github.com/Kyslik/column-sortable/issues/49) for more information.
 
 # Exception to catch
 
