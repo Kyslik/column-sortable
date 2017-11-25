@@ -19,8 +19,9 @@
     - [Define belongsTo relation](#define-belongsto-relation)
   - [Define `$sortable` arrays](#define-sortable-arrays)
   - [Blade and relation sorting](#blade-and-relation-sorting)
-- [ColumnSortable overloading (advanced)](#columnsortable-overloading-advanced)
-- [`$sortableAs` (aliasing)](#sortableas-aliasing)
+- [ColumnSortable overriding (advanced)](#columnsortable-overriding-advanced)
+- [Aliasing](#aliasing)
+  - [Using `withCount()`](#using-withcount)
 - [Exception to catch](#exception-to-catch)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -332,14 +333,14 @@ In view
 
 See [#44](https://github.com/Kyslik/column-sortable/issues/44) for more information on aliasing.
 
-## Sort `withCount()`
+## Using `withCount()`
 
 Aliasing is useful when you want to sort results with [`withCount()`](https://laravel.com/docs/5.5/eloquent-relationships#counting-related-models), see [issue #49](https://github.com/Kyslik/column-sortable/issues/49) for more information.
 
 
 # Exception to catch
 
-#### Package throws custom exception `ColumnSortableException` with three codes (0, 1, 2).
+Package throws custom exception `ColumnSortableException` with three codes (0, 1, 2).
 
 Code **0** means that `explode()` fails to explode URI parameter "sort" in to two values.
 For example: `sort=detail..phone_number` - produces array with size of 3, which causes package to throw exception with code **0**.
