@@ -176,10 +176,27 @@ trait Sortable
             return ['sort' => $sort, 'order' => $configDefaultOrder];
         }
 
-        reset($sort);
-        $each = each($sort);
+        return (key($sort) === 0) ? ['sort' => $sort[0], 'order' => $configDefaultOrder] : [
+            'sort'  => key($sort),
+            'order' => reset($sort),
+        ];
+    }
 
-        return ($each[0] === 0) ? ['sort' => $each[1], 'order' => $configDefaultOrder] :
-            ['sort' => $each[0], 'order' => $each[1]];
+
+    /**
+     * @param $query
+     * @param $parentTable
+     * @param $relatedTable
+     * @param $parentPrimaryKey
+     * @param $relatedPrimaryKey
+     *
+     * @return mixed
+     */
+    private function formJoin($query, $parentTable, $relatedTable, $parentPrimaryKey, $relatedPrimaryKey)
+    {
+        $joinType = Config::get('columnsortable.join_type', 'leftJoin');
+
+        return $query->select($parentTable.'.*')
+                     ->{$joinType}($relatedTable, $parentPrimaryKey, '=', $relatedPrimaryKey);
     }
 }
