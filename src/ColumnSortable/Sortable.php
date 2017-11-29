@@ -134,12 +134,12 @@ trait Sortable
             $relatedPrimaryKey = $relation->getForeignKey();
             $parentPrimaryKey  = $relation->getQualifiedParentKeyName();
 
-            return $query->select($parentTable.'.*')->join($relatedTable, $parentPrimaryKey, '=', $relatedPrimaryKey);
+            return $this->formJoin($query, $parentTable, $relatedTable, $parentPrimaryKey, $relatedPrimaryKey);
         } elseif ($relation instanceof BelongsTo) {
             $relatedPrimaryKey = $relation->getQualifiedOtherKeyName();
             $parentPrimaryKey  = $relation->getQualifiedForeignKey();
 
-            return $query->select($parentTable.'.*')->join($relatedTable, $parentPrimaryKey, '=', $relatedPrimaryKey);
+            return $this->formJoin($query, $parentTable, $relatedTable, $parentPrimaryKey, $relatedPrimaryKey);
         } else {
             throw new \Exception();
         }
@@ -194,7 +194,7 @@ trait Sortable
      */
     private function formJoin($query, $parentTable, $relatedTable, $parentPrimaryKey, $relatedPrimaryKey)
     {
-        $joinType = Config::get('columnsortable.join_type', 'leftJoin');
+        $joinType = Config::get('columnsortable.join_type', 'join');
 
         return $query->select($parentTable.'.*')
                      ->{$joinType}($relatedTable, $parentPrimaryKey, '=', $relatedPrimaryKey);

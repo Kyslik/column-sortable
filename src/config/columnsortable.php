@@ -101,4 +101,10 @@ return [
     default order for non-sorted columns
      */
     'default_direction_unsorted'    => 'asc',
+
+    /*
+    join type: join vs leftJoin (default join)
+    for more information see https://github.com/Kyslik/column-sortable/issues/59
+    */
+    'join_type'                     => 'join',
 ];
