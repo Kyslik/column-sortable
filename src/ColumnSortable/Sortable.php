@@ -75,7 +75,7 @@ trait Sortable
             $model = $relation->getRelated();
         }
 
-        if (method_exists($model, camel_case($column).'Sortable')) {
+        if (is_callable([$model, camel_case($column).'Sortable'])) {
             return call_user_func_array([$model, camel_case($column).'Sortable'], [$query, $direction]);
         }
 
