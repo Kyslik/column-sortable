@@ -103,6 +103,11 @@ return [
     'default_direction_unsorted'    => 'asc',
 
     /*
+    use the first defined sortable column (Model::$sortable) as default
+     */
+    'default_first_column' => true,
+
+    /*
     join type: join vs leftJoin (default leftJoin)
     for more information see https://github.com/Kyslik/column-sortable/issues/59
     */
