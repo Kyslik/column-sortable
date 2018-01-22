@@ -26,7 +26,13 @@ trait Sortable
     {
         if (Request::filled('sort') && Request::filled('order')) {
             return $this->queryOrderBuilder($query, Request::only(['sort', 'order']));
-        } elseif ( ! is_null($defaultSortParameters)) {
+        }
+        
+        if (null === $defaultSortParameters) {
+            $defaultSortParameters = static::getDefaultSortable();
+        }
+        
+        if ( ! is_null($defaultSortParameters)) {
             $defaultSortArray = $this->formatToSortParameters($defaultSortParameters);
 
             if (Config::get('columnsortable.allow_request_modification', true) && ! empty($defaultSortArray)) {
@@ -199,4 +205,19 @@ trait Sortable
         return $query->select($parentTable.'.*')
                      ->{$joinType}($relatedTable, $parentPrimaryKey, '=', $relatedPrimaryKey);
     }
+    
+    /**
+     * returns the first element of defined sortable columns from the Model
+     * 
+     * @return string
+     */
+    static public function getDefaultSortable()
+    {
+        if (Config::get('columnsortable.default_first_column', true)) {
+            return array_first(with(new static())->sortable);
+        }
+        return null;
+    }
+    
+    
 }
