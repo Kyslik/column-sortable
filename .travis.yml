@@ -13,9 +13,9 @@ env:
   - version=L5-6
 
 matrix:
- exlude:
- - php: 7.0
-   env: version=L5-6
+  exclude:
+  - php: 7.0
+    env: version=L5-6
 
 sudo: false
 
