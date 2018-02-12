@@ -21,6 +21,11 @@ return [
     ],
 
     /*
+    whether icons should be enabled
+     */
+    'enable_icons'                  => true,
+
+    /*
     defines icon set to use when sorted data is none above (alpha nor amount nor numeric)
      */
     'default_icon_set'              => 'fa fa-sort',
@@ -55,6 +60,16 @@ return [
     default anchor class, if value is null none is added
      */
     'anchor_class'                  => null,
+
+    /*
+    default active anchor class, if value is null none is added
+     */
+    'active_anchor_class'           => null,
+
+    /*
+    default sort order anchor class, if value is null none is added
+     */
+    'order_anchor_class_prefix'     => null,
 
     /*
     relation - column separator ex: detail.phone_number means relation "detail" and column "phone_number"
