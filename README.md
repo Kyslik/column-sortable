@@ -2,10 +2,10 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
 
-- [Column sorting for Laravel 5.5](#column-sorting-for-laravel-55)
+- [Column sorting for Laravel 5.5-6](#column-sorting-for-laravel-55-6)
 - [Setup](#setup)
   - [Composer](#composer)
-    - [Laravel's 5.5 auto discovery](#laravels-55-auto-discovery)
+    - [Laravel's >=5.5 auto discovery](#laravels-55-auto-discovery)
     - [Manual installation](#manual-installation)
   - [Publish configuration](#publish-configuration)
 - [Usage](#usage)
@@ -28,13 +28,13 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# Column sorting for Laravel 5.5
+# Column sorting for Laravel 5.5-6
 [![Latest Version](https://img.shields.io/github/release/Kyslik/column-sortable.svg?style=flat-square)](https://github.com/Kyslik/column-sortable/releases)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
 [![Total Downloads](https://img.shields.io/packagist/dt/Kyslik/column-sortable.svg?style=flat-square)](https://packagist.org/packages/Kyslik/column-sortable)
-[![Build Status](https://travis-ci.org/Kyslik/column-sortable.svg?branch=L5.5)](https://travis-ci.org/Kyslik/column-sortable)
+[![Build Status](https://travis-ci.org/Kyslik/column-sortable.svg?branch=L5.5-6)](https://travis-ci.org/Kyslik/column-sortable)
 
-Package for handling column sorting in Laravel 5.[1-5].
+Package for handling column sorting in Laravel 5.[5-6]. For earlier versions of Laravel checkout branch [L5.1-3](https://github.com/Kyslik/column-sortable/tree/L5.1-3)
 
 Simply put: [this hack](http://hack.swic.name/laravel-column-sorting-made-easy/) in package with blade extension and Font Awesome icon support.
 
@@ -49,7 +49,7 @@ Pull this package in through Composer (development/latest version `dev-master`)
 ```json
 {
     "require": {
-        "kyslik/column-sortable": "5.5.*"
+        "kyslik/column-sortable": "5.6.*"
     }
 }
 ```
@@ -58,7 +58,7 @@ Pull this package in through Composer (development/latest version `dev-master`)
 
 >**Note**: Major and minor versions should match with Laravel's version, for example if you are using Laravel 5.4, column-sortable version should be `5.4.*`.
 
-### Laravel's 5.5 auto discovery
+### Laravel's >=5.5 auto discovery
 
 Simply install the package and let Laravel do its magic.
 
@@ -340,7 +340,7 @@ See [#44](https://github.com/Kyslik/column-sortable/issues/44) for more informat
 
 ## Using `withCount()`
 
-Aliasing is useful when you want to sort results with [`withCount()`](https://laravel.com/docs/5.5/eloquent-relationships#counting-related-models), see [issue #49](https://github.com/Kyslik/column-sortable/issues/49) for more information.
+Aliasing is useful when you want to sort results with [`withCount()`](https://laravel.com/docs/5.6/eloquent-relationships#counting-related-models), see [issue #49](https://github.com/Kyslik/column-sortable/issues/49) for more information.
 
 # Exception to catch
 
