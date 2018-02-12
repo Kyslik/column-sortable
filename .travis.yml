@@ -8,6 +8,15 @@ php:
 git:
   depth: 3
 
+env:
+  - version=L5-5
+  - version=L5-6
+
+matrix:
+ exlude:
+ - php: 7.0
+ - env: version=L5-6
+
 sudo: false
 
 cache:
@@ -20,6 +29,8 @@ before_install:
 
 install:
   - travis_retry composer install --no-interaction --prefer-dist --no-suggest;
+  - if [[ $version = 'L5-5' ]]; then travis_retry composer require --dev --update-with-dependencies --no-suggest --no-interaction orchestra/testbench:"3.5.*"; fi
+  - if [[ $version = 'L5-6' ]]; then travis_retry composer require --dev --update-with-dependencies --no-suggest --no-interaction orchestra/testbench:"3.6.*"; fi
 
 script: vendor/bin/phpunit
 
