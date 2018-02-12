@@ -15,7 +15,7 @@ env:
 matrix:
  exlude:
  - php: 7.0
- - env: version=L5-6
+   env: version=L5-6
 
 sudo: false
 
@@ -29,8 +29,8 @@ before_install:
 
 install:
   - travis_retry composer install --no-interaction --prefer-dist --no-suggest;
-  - if [[ $version = 'L5-5' ]]; then travis_retry composer require --dev --update-with-dependencies --no-suggest --no-interaction orchestra/testbench:"3.5.*"; fi
-  - if [[ $version = 'L5-6' ]]; then travis_retry composer require --dev --update-with-dependencies --no-suggest --no-interaction orchestra/testbench:"3.6.*"; fi
+  - if [[ $version = 'L5-5' ]]; then travis_retry composer require --dev --update-with-dependencies --no-suggest --no-interaction orchestra/testbench:"3.5.*" phpunit/phpunit:"^6.0"; fi
+  - if [[ $version = 'L5-6' ]]; then travis_retry composer require --dev --update-with-dependencies --no-suggest --no-interaction orchestra/testbench:"3.6.*" phpunit/phpunit:"^7.0"; fi
 
 script: vendor/bin/phpunit
 
