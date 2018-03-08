@@ -21,6 +21,7 @@ trait Sortable
      * @param array|null                         $defaultSortParameters
      *
      * @return \Illuminate\Database\Query\Builder
+     * @throws \Kyslik\ColumnSortable\Exceptions\ColumnSortableException
      */
     public function scopeSortable($query, $defaultSortParameters = null)
     {
@@ -134,7 +135,7 @@ trait Sortable
     private function columnExists($model, $column)
     {
         return (isset($model->sortable)) ? in_array($column, $model->sortable) :
-            Schema::hasColumn($model->getTable(), $column);
+            Schema::connection($model->getConnectionName())->hasColumn($model->getTable(), $column);
     }
     /**
      * @param array|string $sort

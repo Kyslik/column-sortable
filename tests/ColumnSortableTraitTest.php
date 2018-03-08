@@ -138,6 +138,7 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
      * @param array  $parameters Array of parameters to pass into method.
      *
      * @return mixed Method return.
+     * @throws \ReflectionException
      */
     protected function invokeMethod(&$object, $methodName, array $parameters = [])
     {
