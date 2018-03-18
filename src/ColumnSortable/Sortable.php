@@ -28,7 +28,7 @@ trait Sortable
             return $this->queryOrderBuilder($query, Request::only(['sort', 'order']));
         }
         
-        if (null === $defaultSortParameters) {
+        if (is_null($defaultSortParameters)) {
             $defaultSortParameters = static::getDefaultSortable();
         }
         
@@ -214,7 +214,16 @@ trait Sortable
     static public function getDefaultSortable()
     {
         if (Config::get('columnsortable.default_first_column', true)) {
-            return array_first(with(new static())->sortable);
+            $parameters = array_first(with(new static())->sortable);
+            $configDefaultOrder = Config::get('columnsortable.default_direction', 'asc');
+            
+            if (! is_array($parameters)) {
+                $parameters = ['sort' => $parameters];
+            }
+            if (! isset($parameters['order'])) {
+                $parameters['order'] = $configDefaultOrder;
+            }
+            return $parameters;
         }
         return null;
     }
