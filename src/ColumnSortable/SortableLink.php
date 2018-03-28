@@ -20,7 +20,7 @@ class SortableLink
      */
     public static function render(array $parameters)
     {
-        list($sortColumn, $sortParameter, $title, $queryParameters) = self::parseParameters($parameters);
+        list($sortColumn, $sortParameter, $title, $queryParameters, $anchorAttributes) = self::parseParameters($parameters);
 
         $title = self::applyFormatting($title);
 
@@ -32,11 +32,13 @@ class SortableLink
 
         $trailingTag = self::formTrailingTag($icon);
 
-        $anchorClass = self::getAnchorClass($sortParameter);
+        $anchorClass = self::getAnchorClass($sortParameter, $anchorAttributes);
 
+        $anchorAttributesString = self::buildAnchorAttriburesString($anchorAttributes);
+        
         $queryString = self::buildQueryString($queryParameters, $sortParameter, $direction);
 
-        return '<a'.$anchorClass.' href="'.url(Request::path().'?'.$queryString).'"'.'>'.htmlentities($title).$trailingTag;
+        return '<a'.$anchorClass.' href="'.url(Request::path().'?'.$queryString).'"'.$anchorAttributesString.'>'.htmlentities($title).$trailingTag;
     }
 
 
@@ -177,7 +179,7 @@ class SortableLink
      *
      * @return string
      */
-    private static function getAnchorClass($sortColumn)
+    private static function getAnchorClass($sortColumn, &$anchorAttributes = [])
     {
         $class = [];
 
@@ -196,6 +198,11 @@ class SortableLink
             $class[] =
                 $orderClassPrefix.(Request::get('order') === 'asc' ? Config::get('columnsortable.asc_suffix', '-asc') :
                     Config::get('columnsortable.desc_suffix', '-desc'));
+        }
+
+        if (isset($anchorAttributes['class'])) {
+            $class = array_merge($class, explode(' ', $anchorAttributes['class']));
+            unset($anchorAttributes['class']);
         }
 
         return (empty($class)) ? '' : ' class="'.implode(' ', $class).'"';
@@ -233,5 +240,14 @@ class SortableLink
         ]));
 
         return $queryString;
+    }
+    
+    private static function buildAnchorAttriburesString($anchorAttributes)
+    {
+        $attributes = [];
+        foreach ($anchorAttributes as $k => $v) {
+            $attributes[] = $k.('' != $v ? '="'.$v.'"' : '');
+        }
+        return ' '.implode(' ', $attributes);
     }
 }
