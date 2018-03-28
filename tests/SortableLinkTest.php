@@ -56,32 +56,42 @@ class SortableLinkTest extends \Orchestra\Testbench\TestCase
     {
         $parameters = ['column'];
         $resultArray = SortableLink::parseParameters($parameters);
-        $expected = ['column', 'column', 'column', []];
+        $expected = ['column', 'column', 'column', [], []];
         $this->assertEquals($expected, $resultArray);
 
         $parameters = ['column', 'ColumnTitle'];
         $resultArray = SortableLink::parseParameters($parameters);
-        $expected = ['column', 'column', 'ColumnTitle', []];
+        $expected = ['column', 'column', 'ColumnTitle', [], []];
         $this->assertEquals($expected, $resultArray);
 
         $parameters = ['column', 'ColumnTitle', ['world' => 'matrix']];
         $resultArray = SortableLink::parseParameters($parameters);
-        $expected = ['column', 'column', 'ColumnTitle', ['world' => 'matrix']];
+        $expected = ['column', 'column', 'ColumnTitle', ['world' => 'matrix'], []];
+        $this->assertEquals($expected, $resultArray);
+
+        $parameters = ['column', 'ColumnTitle', ['world' => 'matrix'], ['foo' => 'bar']];
+        $resultArray = SortableLink::parseParameters($parameters);
+        $expected = ['column', 'column', 'ColumnTitle', ['world' => 'matrix'], ['foo' => 'bar']];
         $this->assertEquals($expected, $resultArray);
 
         $parameters = ['relation.column'];
         $resultArray = SortableLink::parseParameters($parameters);
-        $expected = ['column', 'relation.column', 'column', []];
+        $expected = ['column', 'relation.column', 'column', [], []];
         $this->assertEquals($expected, $resultArray);
 
         $parameters = ['relation.column', 'ColumnTitle'];
         $resultArray = SortableLink::parseParameters($parameters);
-        $expected = ['column', 'relation.column', 'ColumnTitle', []];
+        $expected = ['column', 'relation.column', 'ColumnTitle', [], []];
         $this->assertEquals($expected, $resultArray);
 
         $parameters = ['relation.column', 'ColumnTitle', ['world' => 'matrix']];
         $resultArray = SortableLink::parseParameters($parameters);
-        $expected = ['column', 'relation.column', 'ColumnTitle', ['world' => 'matrix']];
+        $expected = ['column', 'relation.column', 'ColumnTitle', ['world' => 'matrix'], []];
+        $this->assertEquals($expected, $resultArray);
+
+        $parameters = ['relation.column', 'ColumnTitle', ['world' => 'matrix'], ['foo' => 'bar']];
+        $resultArray = SortableLink::parseParameters($parameters);
+        $expected = ['column', 'relation.column', 'ColumnTitle', ['world' => 'matrix'], ['foo' => 'bar']];
         $this->assertEquals($expected, $resultArray);
     }
 
