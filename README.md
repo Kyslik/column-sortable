@@ -120,12 +120,12 @@ You're set to go.
 There is a blade extension for you to use **@sortablelink()**
 
 ```blade
-@sortablelink('column', 'Title', ['parameter' => 'smile'])
+@sortablelink('column', 'Title', ['parameter' => 'smile'],  ['rel' => 'nofollow'])
 ```
 
-**Column** (1st) parameter is `order by`, **Title** (2nd) parameter is displayed inside anchor tags and `array()` parameter (3rd) is default (GET) query strings parameter.  
+**Column** (1st) parameter is `order by`, **Title** (2nd) parameter is displayed inside anchor tags, `array()` parameter (3rd) is default (GET) query strings parameter and `array()` parameter (4th) is for additional anchor-tag attributes.  
 
-You can omit 2nd and 3rd parameter.
+You can omit 2nd, 3rd and 4th parameter.
 
 Possible examples and usages of blade extension:
 
@@ -133,6 +133,7 @@ Possible examples and usages of blade extension:
 @sortablelink('name')
 @sortablelink('name', 'Username')
 @sortablelink('address', trans('fields.address'), ['filter' => 'active,visible'])
+@sortablelink('address', trans('fields.address'), ['filter' => 'active,visible'], ['class' => 'btn btn-block', 'rel' => 'nofollow'])
 ```
 
 If you do not fill **Title** (2nd parameter) column name is used instead.
