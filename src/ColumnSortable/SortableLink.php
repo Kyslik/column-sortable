@@ -17,10 +17,12 @@ class SortableLink
      * @param array $parameters
      *
      * @return string
+     * @throws \Kyslik\ColumnSortable\Exceptions\ColumnSortableException
      */
     public static function render(array $parameters)
     {
-        list($sortColumn, $sortParameter, $title, $queryParameters, $anchorAttributes) = self::parseParameters($parameters);
+        list($sortColumn, $sortParameter, $title, $queryParameters, $anchorAttributes) =
+            self::parseParameters($parameters);
 
         $title = self::applyFormatting($title);
 
@@ -35,7 +37,7 @@ class SortableLink
         $anchorClass = self::getAnchorClass($sortParameter, $anchorAttributes);
 
         $anchorAttributesString = self::buildAnchorAttriburesString($anchorAttributes);
-        
+
         $queryString = self::buildQueryString($queryParameters, $sortParameter, $direction);
 
         return '<a'.$anchorClass.' href="'.url(Request::path().'?'.$queryString).'"'.$anchorAttributesString.'>'.htmlentities($title).$trailingTag;
@@ -46,6 +48,7 @@ class SortableLink
      * @param array $parameters
      *
      * @return array
+     * @throws \Kyslik\ColumnSortable\Exceptions\ColumnSortableException
      */
     public static function parseParameters(array $parameters)
     {
@@ -84,7 +87,6 @@ class SortableLink
             return $oneToOneSort;
         }
 
-        //TODO: should return ['column', 'relation']
         return [];
     }
 
@@ -176,7 +178,11 @@ class SortableLink
 
 
     /**
-     * @param $sortColumn
+     * Take care of special case, when `class` is passed to the sortablelink.
+     *
+     * @param       $sortColumn
+     *
+     * @param array $anchorAttributes
      *
      * @return string
      */
@@ -242,13 +248,15 @@ class SortableLink
 
         return $queryString;
     }
-    
+
+
     private static function buildAnchorAttriburesString($anchorAttributes)
     {
         $attributes = [];
         foreach ($anchorAttributes as $k => $v) {
             $attributes[] = $k.('' != $v ? '="'.$v.'"' : '');
         }
+
         return ' '.implode(' ', $attributes);
     }
 }

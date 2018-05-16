@@ -104,12 +104,13 @@ return [
 
     /*
     use the first defined sortable column (Model::$sortable) as default
+    also applies if sorting parameters are invalid for example: 'sort' => 'name', 'order' => ''
      */
-    'default_first_column' => true,
+    'default_first_column'          => false,
 
     /*
     join type: join vs leftJoin (default leftJoin)
     for more information see https://github.com/Kyslik/column-sortable/issues/59
     */
-    'join_type'                          => 'leftJoin',
+    'join_type'                     => 'leftJoin',
 ];

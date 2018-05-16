@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpUnhandledExceptionInspection */
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Input;
@@ -10,19 +10,24 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
 {
 
     /**
-     * @var
+     * @var \User
      */
     private $user;
 
     /**
-     * @var
+     * @var \Profile
      */
     private $profile;
 
     /**
-     * @var
+     * @var \Comment
      */
     private $comment;
+
+    /**
+     * @var \Post
+     */
+    private $post;
 
     /**
      * @var
@@ -36,13 +41,15 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
     public function setUp()
     {
         parent::setUp();
+        app()->register(\Kyslik\ColumnSortable\ColumnSortableServiceProvider::class);
 
-        $this->app['config']->set('database.default', 'sqlite');
-        $this->app['config']->set('database.connections.sqlite.database', ':memory:');
+        config()->set('database.default', 'sqlite');
+        config()->set('database.connections.sqlite.database', ':memory:');
 
         $this->user    = new User();
         $this->profile = new Profile();
         $this->comment = new Comment();
+        $this->post    = new Post();
 
         $this->configDefaultDirection = 'asc';
     }
@@ -50,13 +57,30 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
 
     public function testSortableWithoutDefaultAndRequestParameters()
     {
+        config()->set('columnsortable.default_first_column', false);
         $query = $this->user->scopeSortable($this->user->newQuery());
+        $this->assertEmpty($query->getQuery()->orders);
+
+        config()->set('columnsortable.default_first_column', true);
+        $this->user->sortable = ['name', 'id'];
+
+        $query = $this->user->scopeSortable($this->user->newQuery());
+        $this->assertEquals([
+            [
+                'column'    => 'users.'.array_first($this->user->sortable),
+                'direction' => $this->configDefaultDirection,
+            ],
+        ], $query->getQuery()->orders);
+
+        $query = $this->post->scopeSortable($this->post->newQuery());
         $this->assertEmpty($query->getQuery()->orders);
     }
 
 
     public function testSortableWithRequestParameters()
     {
+        config()->set('columnsortable.default_first_column', false);
+
         $usersTable = $this->user->getTable();
         Input::replace(['sort' => 'name', 'order' => 'asc']);
         $resultArray = $this->user->scopeSortable($this->user->newQuery())->getQuery()->orders;
@@ -125,26 +149,6 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
         $expectedQuery = $this->comment->newQuery()->from('comments as parent_comments')->select('parent_comments.*')
                                        ->leftJoin('comments', 'parent_comments.parent_id', '=', 'comments.id');
         $this->assertEquals($expectedQuery->toSql(), $resultQuery->toSql());
-    }
-
-
-    /**
-     * Call protected/private method of a class.
-     *
-     * @param object &$object    Instantiated object that we will run method on.
-     * @param string $methodName Method name to call
-     * @param array  $parameters Array of parameters to pass into method.
-     *
-     * @return mixed Method return.
-     * @throws \ReflectionException
-     */
-    protected function invokeMethod(&$object, $methodName, array $parameters = [])
-    {
-        $reflection = new \ReflectionClass(get_class($object));
-        $method     = $reflection->getMethod($methodName);
-        $method->setAccessible(true);
-
-        return $method->invokeArgs($object, $parameters);
     }
 
 
@@ -293,6 +297,26 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
         $expected    = ['sort' => 'foo', 'order' => 'desc'];
         $this->assertEquals($expected, $resultArray);
     }
+
+
+    /**
+     * Call protected/private method of a class.
+     *
+     * @param object &$object    Instantiated object that we will run method on.
+     * @param string $methodName Method name to call
+     * @param array  $parameters Array of parameters to pass into method.
+     *
+     * @return mixed Method return.
+     * @throws \ReflectionException
+     */
+    protected function invokeMethod(&$object, $methodName, array $parameters = [])
+    {
+        $reflection = new \ReflectionClass(get_class($object));
+        $method     = $reflection->getMethod($methodName);
+        $method->setAccessible(true);
+
+        return $method->invokeArgs($object, $parameters);
+    }
 }
 
 /**
@@ -389,4 +413,13 @@ class Comment extends Model
     {
         return $this->belongsTo(Comment::class, 'parent_id');
     }
+}
+
+/**
+ * Class Post
+ */
+class Post extends Model
+{
+
+    use \Kyslik\ColumnSortable\Sortable;
 }
