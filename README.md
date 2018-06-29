@@ -12,6 +12,7 @@
   - [Blade Extension](#blade-extension)
   - [Configuration in few words](#configuration-in-few-words)
   - [Font Awesome (default font classes)](#font-awesome-default-font-classes)
+    - [FA 5 Compatibility](#fa-5-compatibility)
   - [Full Example](#full-example)
     - [Routes](#routes)
     - [Controller's `index()` method](#controllers-index-method)
@@ -168,6 +169,17 @@ Rest of the [config file](https://github.com/Kyslik/column-sortable/blob/master/
 ## Font Awesome (default font classes)
 
 Install [Font-Awesome](https://github.com/FortAwesome/Font-Awesome) for visual [Joy](http://www.imdb.com/character/ch0411388/). Search "sort" in [cheatsheet](http://fortawesome.github.io/Font-Awesome/cheatsheet/) and see used icons (12) yourself.
+
+#### FA 5 Compatibility
+Change the sufix class in the [config file](https://github.com/Kyslik/column-sortable/blob/master/src/config/columnsortable.php) file from -asc/-desc (FA 4) to -up/-down (FA 5) respectively. [Issue #93](https://github.com/Kyslik/column-sortable/issues/93).
+ ```php
+    /* this is FA 5 compatible. 
+    suffix class that is appended when ascending order is applied */
+    'asc_suffix'                    => '-up',
+
+    /* suffix class that is appended when descending order is applied */
+    'desc_suffix'                   => '-down',
+```
 
 ## Full Example
 You may be interested in [working example repository](https://github.com/Kyslik/column-sortable-example), where package usage is demonstrated.
