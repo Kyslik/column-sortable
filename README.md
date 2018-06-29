@@ -171,7 +171,7 @@ Rest of the [config file](https://github.com/Kyslik/column-sortable/blob/master/
 Install [Font-Awesome](https://github.com/FortAwesome/Font-Awesome) for visual [Joy](http://www.imdb.com/character/ch0411388/). Search "sort" in [cheatsheet](http://fortawesome.github.io/Font-Awesome/cheatsheet/) and see used icons (12) yourself.
 
 #### FA 5 Compatibility
-Change the sufix class in the [config file](https://github.com/Kyslik/column-sortable/blob/master/src/config/columnsortable.php) file from -asc/-desc (FA 4) to -up/-down (FA 5) respectively. [Issue #93](https://github.com/Kyslik/column-sortable/issues/93).
+Change the sufix class in the [config file](https://github.com/Kyslik/column-sortable/blob/master/src/config/columnsortable.php) file from -asc/-desc (FA 4) to -up/-down (FA 5) respectively. [#93](https://github.com/Kyslik/column-sortable/issues/93).
  ```php
     /* this is FA 5 compatible. 
     suffix class that is appended when ascending order is applied */
