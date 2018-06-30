@@ -170,7 +170,7 @@ Install [Font-Awesome](https://fontawesome.com/v4.7.0/) for visual [Joy](http://
 
 ### FA 5 Compatibility
 
-Change the sufix class in the [config file](https://github.com/Kyslik/column-sortable/blob/master/src/config/columnsortable.php) from `-asc`/`-desc` (FA 4) to `-up`/`-down` (FA 5) respectively.
+Change the suffix class in the [config file](https://github.com/Kyslik/column-sortable/blob/master/src/config/columnsortable.php) from `-asc`/`-desc` (FA 4) to `-up`/`-down` (FA 5) respectively.
 
  ```php
 /* this is FA 5 compatible.
