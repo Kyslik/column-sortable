@@ -18,8 +18,8 @@
     - [Controller's `index()` method](#controllers-index-method)
     - [View](#view)
 - [HasOne / BelongsTo Relation sorting](#hasone--belongsto-relation-sorting)
-    - [Define hasOne relation](#define-hasone-relation)
-    - [Define belongsTo relation](#define-belongsto-relation)
+  - [Define hasOne relation](#define-hasone-relation)
+  - [Define belongsTo relation](#define-belongsto-relation)
   - [Define `$sortable` arrays](#define-sortable-arrays)
   - [Blade and relation sorting](#blade-and-relation-sorting)
 - [ColumnSortable overriding (advanced)](#columnsortable-overriding-advanced)
@@ -93,7 +93,6 @@ Use **Sortable** trait inside your *Eloquent* model(s). Define `$sortable` array
 
 >**Note**: `Scheme::hasColumn()` is run only when `$sortable` is not defined - less DB hits per request.
 
-
 ```php
 use Kyslik\ColumnSortable\Sortable;
 
@@ -107,7 +106,6 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
                         'email',
                         'created_at',
                         'updated_at'];
-                        
     ...
 }
 ```
@@ -170,18 +168,23 @@ Rest of the [config file](https://github.com/Kyslik/column-sortable/blob/master/
 
 Install [Font-Awesome](https://github.com/FortAwesome/Font-Awesome) for visual [Joy](http://www.imdb.com/character/ch0411388/). Search "sort" in [cheatsheet](http://fortawesome.github.io/Font-Awesome/cheatsheet/) and see used icons (12) yourself.
 
-#### FA 5 Compatibility:
-Change the sufix class in the [config file](https://github.com/Kyslik/column-sortable/blob/master/src/config/columnsortable.php) from -asc/-desc (FA 4) to -up/-down (FA 5) respectively. [#93](https://github.com/Kyslik/column-sortable/issues/93).
- ```php
-    /* this is FA 5 compatible. 
-    suffix class that is appended when ascending order is applied */
-    'asc_suffix'                    => '-up',
+### FA 5 Compatibility
 
-    /* suffix class that is appended when descending order is applied */
-    'desc_suffix'                   => '-down',
+Change the sufix class in the [config file](https://github.com/Kyslik/column-sortable/blob/master/src/config/columnsortable.php) from `-asc`/`-desc` (FA 4) to `-up`/`-down` (FA 5) respectively.
+
+ ```php
+/* this is FA 5 compatible.
+suffix class that is appended when ascending order is applied */
+'asc_suffix'                    => '-up',
+
+/* suffix class that is appended when descending order is applied */
+'desc_suffix'                   => '-down',
 ```
 
+> **Note**: If you haven't published the config yet, follow the [instructions above](#publish-configuration).
+
 ## Full Example
+
 You may be interested in [working example repository](https://github.com/Kyslik/column-sortable-example), where package usage is demonstrated.
 
 ### Routes
@@ -196,7 +199,7 @@ Route::get('users', ['as' => 'users.index', 'uses' => 'HomeController@index']);
 public function index(User $user)
 {
     $users = $user->sortable()->paginate(10);
-    
+
     return view('user.index')->withUsers($users);
 }
 ```
@@ -234,7 +237,7 @@ _pagination included_
 
 # HasOne / BelongsTo Relation sorting
 
-### Define hasOne relation
+## Define hasOne relation
 
 In order to make relation sorting work, you have to define **hasOne()** relation in your model.
 
@@ -248,7 +251,8 @@ public function detail()
 }
 ```
 
-### Define belongsTo relation
+## Define belongsTo relation
+
 >**Note**: in case there is a self-referencing model (like comments, categories etc.); parent table will be aliased with `parent_` string, for more information see [issue #60](https://github.com/Kyslik/column-sortable/issues/60).
 
 ```php
@@ -287,6 +291,7 @@ In order to tell package to sort using relation:
 @sortablelink('detail.phone_number', 'phone')
 @sortablelink('user.name', 'name')
 ```
+
 >**Note**: package works with relation "name" (method) that you define in model instead of table name.
 
 >**WARNING**: do not use combination of two different relations at the same time, you are going to get errors that relation is not defined
@@ -307,10 +312,10 @@ See example:
 class User extends Model
 {
     use Sortable;
-    
+
     public $sortable = ['name'];
     ...
-    
+
     public function addressSortable($query, $direction)
     {
         return $query->join('user_details', 'users.id', '=', 'user_details.user_id')
@@ -331,7 +336,7 @@ In view just use `@sortablelink('address')`
 It is possible to declare `$sortableAs` array and use it to alias (bypass column exists check), and ignore prefixing with table. 
 
 In model
- 
+
 ```php
 ...
 $sortableAs = ['nick_name'];
@@ -345,6 +350,7 @@ $users = $user->select(['name as nick_name'])->sortable(['nick_name'])->paginate
 ```
 
 In view
+
 ```blade
 @sortablelink('nick_name', 'nick')
 ```
