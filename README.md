@@ -166,7 +166,7 @@ Rest of the [config file](https://github.com/Kyslik/column-sortable/blob/master/
 
 ## Font Awesome (default font classes)
 
-Install [Font-Awesome](https://github.com/FortAwesome/Font-Awesome) for visual [Joy](http://www.imdb.com/character/ch0411388/). Search "sort" in [cheatsheet](http://fortawesome.github.io/Font-Awesome/cheatsheet/) and see used icons (12) yourself.
+Install [Font-Awesome](https://fontawesome.com/v4.7.0/) for visual [Joy](http://pixar.wikia.com/wiki/Joy). Search "sort" in [cheatsheet](http://fortawesome.github.io/Font-Awesome/cheatsheet/) and see used icons (12) yourself.
 
 ### FA 5 Compatibility
 
