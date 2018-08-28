@@ -127,7 +127,7 @@ trait Sortable
         }
 
         $direction = array_get($sortParameters, 'order', []);
-        if ( ! in_array($direction, ['asc', 'desc'])) {
+        if ( ! in_array(strtolower($direction), ['asc', 'desc'])) {
             $direction = Config::get('columnsortable.default_direction', 'asc');
         }
 
