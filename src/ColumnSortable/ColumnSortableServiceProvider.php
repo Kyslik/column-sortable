@@ -3,7 +3,6 @@
 namespace Kyslik\ColumnSortable;
 
 use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\Facades\Request;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -38,7 +37,7 @@ class ColumnSortableServiceProvider extends ServiceProvider
             return "<?php echo \Kyslik\ColumnSortable\SortableLink::render(array ({$expression}));?>";
         });
 
-        Request::macro('allFilled', function (array $keys) {
+        request()->macro('allFilled', function (array $keys) {
             foreach ($keys as $key) {
                 if ( ! $this->filled($key)) {
                     return false;

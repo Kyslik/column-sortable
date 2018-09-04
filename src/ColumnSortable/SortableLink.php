@@ -2,8 +2,6 @@
 
 namespace Kyslik\ColumnSortable;
 
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Request;
 use Kyslik\ColumnSortable\Exceptions\ColumnSortableException;
 
 /**
@@ -21,13 +19,12 @@ class SortableLink
      */
     public static function render(array $parameters)
     {
-        list($sortColumn, $sortParameter, $title, $queryParameters, $anchorAttributes) =
-            self::parseParameters($parameters);
+        list($sortColumn, $sortParameter, $title, $queryParameters, $anchorAttributes) = self::parseParameters($parameters);
 
         $title = self::applyFormatting($title);
 
-        if ($mergeTitleAs = Config::get('columnsortable.inject_title_as', null)) {
-            Request::merge([$mergeTitleAs => $title]);
+        if ($mergeTitleAs = config('columnsortable.inject_title_as', null)) {
+            request()->merge([$mergeTitleAs => $title]);
         }
 
         list($icon, $direction) = self::determineDirection($sortColumn, $sortParameter);
@@ -40,7 +37,7 @@ class SortableLink
 
         $queryString = self::buildQueryString($queryParameters, $sortParameter, $direction);
 
-        return '<a'.$anchorClass.' href="'.url(Request::path().'?'.$queryString).'"'.$anchorAttributesString.'>'.htmlentities($title).$trailingTag;
+        return '<a'.$anchorClass.' href="'.url(request()->path().'?'.$queryString).'"'.$anchorAttributesString.'>'.htmlentities($title).$trailingTag;
     }
 
 
@@ -76,7 +73,7 @@ class SortableLink
      */
     public static function explodeSortParameter($parameter)
     {
-        $separator = Config::get('columnsortable.uri_relation_column_separator', '.');
+        $separator = config('columnsortable.uri_relation_column_separator', '.');
 
         if (str_contains($parameter, $separator)) {
             $oneToOneSort = explode($separator, $parameter);
@@ -98,7 +95,7 @@ class SortableLink
      */
     private static function applyFormatting($title)
     {
-        $formatting_function = Config::get('columnsortable.formatting_function', null);
+        $formatting_function = config('columnsortable.formatting_function', null);
         if ( ! is_null($formatting_function) && function_exists($formatting_function)) {
             $title = call_user_func($formatting_function, $title);
         }
@@ -117,15 +114,15 @@ class SortableLink
     {
         $icon = self::selectIcon($sortColumn);
 
-        if (Request::get('sort') == $sortParameter && in_array(Request::get('order'), ['asc', 'desc'])) {
-            $icon      .= (Request::get('order') === 'asc' ? Config::get('columnsortable.asc_suffix', '-asc') :
-                Config::get('columnsortable.desc_suffix', '-desc'));
-            $direction = Request::get('order') === 'desc' ? 'asc' : 'desc';
+        if (request()->get('sort') == $sortParameter && in_array(request()->get('direction'), ['asc', 'desc'])) {
+            $icon      .= (request()->get('direction') === 'asc' ? config('columnsortable.asc_suffix', '-asc') :
+                config('columnsortable.desc_suffix', '-desc'));
+            $direction = request()->get('direction') === 'desc' ? 'asc' : 'desc';
 
             return [$icon, $direction];
         } else {
-            $icon      = Config::get('columnsortable.sortable_icon');
-            $direction = Config::get('columnsortable.default_direction_unsorted', 'asc');
+            $icon      = config('columnsortable.sortable_icon');
+            $direction = config('columnsortable.default_direction_unsorted', 'asc');
 
             return [$icon, $direction];
         }
@@ -139,9 +136,9 @@ class SortableLink
      */
     private static function selectIcon($sortColumn)
     {
-        $icon = Config::get('columnsortable.default_icon_set');
+        $icon = config('columnsortable.default_icon_set');
 
-        foreach (Config::get('columnsortable.columns', []) as $value) {
+        foreach (config('columnsortable.columns', []) as $value) {
             if (in_array($sortColumn, $value['rows'])) {
                 $icon = $value['class'];
             }
@@ -158,13 +155,13 @@ class SortableLink
      */
     private static function formTrailingTag($icon)
     {
-        if ( ! Config::get('columnsortable.enable_icons', true)) {
+        if ( ! config('columnsortable.enable_icons', true)) {
             return '</a>';
         }
 
-        $iconAndTextSeparator = Config::get('columnsortable.icon_text_separator', '');
+        $iconAndTextSeparator = config('columnsortable.icon_text_separator', '');
 
-        $clickableIcon = Config::get('columnsortable.clickable_icon', false);
+        $clickableIcon = config('columnsortable.clickable_icon', false);
         $trailingTag   = $iconAndTextSeparator.'<i class="'.$icon.'"></i>'.'</a>';
 
         if ($clickableIcon === false) {
@@ -190,21 +187,20 @@ class SortableLink
     {
         $class = [];
 
-        $anchorClass = Config::get('columnsortable.anchor_class', null);
+        $anchorClass = config('columnsortable.anchor_class', null);
         if ($anchorClass !== null) {
             $class[] = $anchorClass;
         }
 
-        $activeClass = Config::get('columnsortable.active_anchor_class', null);
+        $activeClass = config('columnsortable.active_anchor_class', null);
         if ($activeClass !== null && self::shouldShowActive($sortColumn)) {
             $class[] = $activeClass;
         }
 
-        $orderClassPrefix = Config::get('columnsortable.order_anchor_class_prefix', null);
-        if ($orderClassPrefix !== null && self::shouldShowActive($sortColumn)) {
-            $class[] =
-                $orderClassPrefix.(Request::get('order') === 'asc' ? Config::get('columnsortable.asc_suffix', '-asc') :
-                    Config::get('columnsortable.desc_suffix', '-desc'));
+        $directionClassPrefix = config('columnsortable.direction_anchor_class_prefix', null);
+        if ($directionClassPrefix !== null && self::shouldShowActive($sortColumn)) {
+            $class[] = $directionClassPrefix.(request()->get('direction') === 'asc' ? config('columnsortable.asc_suffix', '-asc') :
+                    config('columnsortable.desc_suffix', '-desc'));
         }
 
         if (isset($anchorAttributes['class'])) {
@@ -223,7 +219,7 @@ class SortableLink
      */
     private static function shouldShowActive($sortColumn)
     {
-        return Request::has('sort') && Request::get('sort') == $sortColumn;
+        return request()->has('sort') && request()->get('sort') == $sortColumn;
     }
 
 
@@ -240,10 +236,10 @@ class SortableLink
             return is_array($element) ? $element : strlen($element);
         };
 
-        $persistParameters = array_filter(Request::except('sort', 'order', 'page'), $checkStrlenOrArray);
+        $persistParameters = array_filter(request()->except('sort', 'direction', 'page'), $checkStrlenOrArray);
         $queryString       = http_build_query(array_merge($queryParameters, $persistParameters, [
-            'sort'  => $sortParameter,
-            'order' => $direction,
+            'sort'      => $sortParameter,
+            'direction' => $direction,
         ]));
 
         return $queryString;

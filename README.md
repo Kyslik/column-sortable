@@ -118,7 +118,7 @@ There is a blade extension for you to use **@sortablelink()**
 @sortablelink('column', 'Title', ['parameter' => 'smile'],  ['rel' => 'nofollow'])
 ```
 
-**Column** (1st) parameter is `order by`, **Title** (2nd) parameter is displayed inside anchor tags, `array()` parameter (3rd) is default (GET) query strings parameter and `array()` parameter (4th) is for additional anchor-tag attributes.  
+**Column** (1st) parameter is column in database, **Title** (2nd) parameter is displayed inside anchor tags, `array()` parameter (3rd) is default (GET) query strings parameter and `array()` parameter (4th) is for additional anchor-tag attributes.  
 
 You can omit 2nd, 3rd and 4th parameter.
 
@@ -170,10 +170,10 @@ Change the suffix class in the [config file](https://github.com/Kyslik/column-so
 
  ```php
 /* this is FA 5 compatible.
-suffix class that is appended when ascending order is applied */
+suffix class that is appended when ascending direction is applied */
 'asc_suffix'                    => '-up',
 
-/* suffix class that is appended when descending order is applied */
+/* suffix class that is appended when descending direction is applied */
 'desc_suffix'                   => '-down',
 ```
 

@@ -47,12 +47,12 @@ return [
     'icon_text_separator'           => ' ',
 
     /*
-    suffix class that is appended when ascending order is applied
+    suffix class that is appended when ascending direction is applied
      */
     'asc_suffix'                    => '-asc',
 
     /*
-    suffix class that is appended when descending order is applied
+    suffix class that is appended when descending direction is applied
      */
     'desc_suffix'                   => '-desc',
 
@@ -67,9 +67,9 @@ return [
     'active_anchor_class'           => null,
 
     /*
-    default sort order anchor class, if value is null none is added
+    default sort direction anchor class, if value is null none is added
      */
-    'order_anchor_class_prefix'     => null,
+    'direction_anchor_class_prefix' => null,
 
     /*
     relation - column separator ex: detail.phone_number means relation "detail" and column "phone_number"
@@ -93,18 +93,18 @@ return [
     'allow_request_modification'    => true,
 
     /*
-    default order for: $user->sortable('id') usage
+    default direction for: $user->sortable('id') usage
      */
     'default_direction'             => 'asc',
 
     /*
-    default order for non-sorted columns
+    default direction for non-sorted columns
      */
     'default_direction_unsorted'    => 'asc',
 
     /*
     use the first defined sortable column (Model::$sortable) as default
-    also applies if sorting parameters are invalid for example: 'sort' => 'name', 'order' => ''
+    also applies if sorting parameters are invalid for example: 'sort' => 'name', 'direction' => ''
      */
     'default_first_column'          => false,
 
