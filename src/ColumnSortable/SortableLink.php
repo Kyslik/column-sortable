@@ -36,7 +36,7 @@ class SortableLink
 
         $anchorClass = self::getAnchorClass($sortParameter, $anchorAttributes);
 
-        $anchorAttributesString = self::buildAnchorAttriburesString($anchorAttributes);
+        $anchorAttributesString = self::buildAnchorAttributesString($anchorAttributes);
 
         $queryString = self::buildQueryString($queryParameters, $sortParameter, $direction);
 
@@ -250,7 +250,7 @@ class SortableLink
     }
 
 
-    private static function buildAnchorAttriburesString($anchorAttributes)
+    private static function buildAnchorAttributesString($anchorAttributes)
     {
         $attributes = [];
         foreach ($anchorAttributes as $k => $v) {
