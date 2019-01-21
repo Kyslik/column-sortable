@@ -135,6 +135,14 @@ If you do not fill **Title** (2nd parameter) column name is used instead.
 
 >**Note**: you can set default formatting function that is applied on **Title** (2nd parameter), by default this is set to [`ucfirst`](http://php.net/manual/en/function.ucfirst.php).
 
+Also there is a blade extension for you to use **@sortableurl()** for get only url-path.
+
+```blade
+@sortableurl('column')
+```
+
+`@sortableurl` has similar arguments like `@sortablelink`, but not using (2nd) and (4th) parameters!
+
 ## Configuration in few words
 
 **Sortablelink** blade extension distinguishes between *types* (**numeric**, **amount** and **alpha**) and applies different class for each of them.  
