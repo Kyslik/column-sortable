@@ -40,6 +40,31 @@ class SortableLink
         return '<a'.$anchorClass.' href="'.url(request()->path().'?'.$queryString).'"'.$anchorAttributesString.'>'.htmlentities($title).$trailingTag;
     }
 
+    /**
+     * @param array $parameters
+     * @param bool $absolute
+     *
+     * @return \Illuminate\Contracts\Routing\UrlGenerator|string
+     * @throws \Kyslik\ColumnSortable\Exceptions\ColumnSortableException
+     */
+    public static function url(array $parameters, $absolute = true)
+    {
+        list($sortColumn, $sortParameter, $title, $queryParameters, $anchorAttributes) = self::parseParameters($parameters);
+        $explodeResult    = self::explodeSortParameter($parameters[0]);
+
+        $sortColumn       = (empty($explodeResult)) ? $parameters[0] : $explodeResult[1];
+        $queryParameters  = (isset($parameters[2]) && is_array($parameters[2])) ? $parameters[2] : [];
+        $anchorAttributes = (isset($parameters[3]) && is_array($parameters[3])) ? $parameters[3] : [];
+
+        list($icon, $direction) = self::determineDirection($sortColumn, $sortParameter);
+
+        $queryString = self::buildQueryString($queryParameters, $sortParameter, $direction);
+
+        $urlPath = request()->path().'?'.$queryString;
+        
+        return $absolute ? url($urlPath) : $urlPath;
+    }
+
 
     /**
      * @param array $parameters

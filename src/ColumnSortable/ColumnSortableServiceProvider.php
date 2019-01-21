@@ -37,6 +37,12 @@ class ColumnSortableServiceProvider extends ServiceProvider
             return "<?php echo \Kyslik\ColumnSortable\SortableLink::render(array ({$expression}));?>";
         });
 
+        Blade::directive('sortableurl', function ($expression) {
+            $expression = ($expression[0] === '(') ? substr($expression, 1, -1) : $expression;
+
+            return "<?php echo \Kyslik\ColumnSortable\SortableLink::url(array ({$expression}));?>";
+        });
+
         request()->macro('allFilled', function (array $keys) {
             foreach ($keys as $key) {
                 if ( ! $this->filled($key)) {
