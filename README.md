@@ -20,9 +20,9 @@
 [![Latest Version](https://img.shields.io/github/release/Kyslik/column-sortable.svg?style=flat-square)](https://github.com/Kyslik/column-sortable/releases)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
 [![Total Downloads](https://img.shields.io/packagist/dt/Kyslik/column-sortable.svg?style=flat-square)](https://packagist.org/packages/Kyslik/column-sortable)
-[![Build Status](https://travis-ci.org/Kyslik/column-sortable.svg?branch=L5.5-7)](https://travis-ci.org/Kyslik/column-sortable)
+[![Build Status](https://travis-ci.org/Kyslik/column-sortable.svg?branch=L5.8)](https://travis-ci.org/Kyslik/column-sortable)
 
-Package for handling column sorting in Laravel 5.[5-7]. For earlier versions of Laravel checkout branch [L5.1-3](https://github.com/Kyslik/column-sortable/tree/L5.1-3)
+Package for handling column sorting in Laravel 5.[5-8]. For earlier versions of Laravel checkout branch [L5.1-3](https://github.com/Kyslik/column-sortable/tree/L5.1-3)
 
 # Setup
 
@@ -340,7 +340,7 @@ See [#44](https://github.com/Kyslik/column-sortable/issues/44) for more informat
 
 ## Using `withCount()`
 
-Aliasing is useful when you want to sort results with [`withCount()`](https://laravel.com/docs/5.6/eloquent-relationships#counting-related-models), see [issue #49](https://github.com/Kyslik/column-sortable/issues/49) for more information.
+Aliasing is useful when you want to sort results with [`withCount()`](https://laravel.com/docs/5.8/eloquent-relationships#counting-related-models), see [issue #49](https://github.com/Kyslik/column-sortable/issues/49) for more information.
 
 # Exception to catch
 
