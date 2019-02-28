@@ -135,7 +135,7 @@ trait Sortable
 
     /**
      * @param \Illuminate\Database\Query\Builder $query
-     * @param                                    $relation
+     * @param \Illuminate\Database\Eloquent\Relations\BelongsTo|\Illuminate\Database\Eloquent\Relations\HasOne $relation
      *
      * @return \Illuminate\Database\Query\Builder
      *
@@ -157,7 +157,7 @@ trait Sortable
             $parentPrimaryKey  = $relation->getQualifiedParentKeyName();
         } elseif ($relation instanceof BelongsTo) {
             $relatedPrimaryKey = $relation->getQualifiedOwnerKeyName();
-            $parentPrimaryKey  = $relation->getQualifiedForeignKey();
+            $parentPrimaryKey  = $relation->getQualifiedForeignKeyName();
         } else {
             throw new \Exception();
         }

@@ -38,7 +38,7 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
     /**
      * Method setUp() runs before each test.
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         app()->register(\Kyslik\ColumnSortable\ColumnSortableServiceProvider::class);
