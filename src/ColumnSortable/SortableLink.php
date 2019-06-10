@@ -2,6 +2,7 @@
 
 namespace Kyslik\ColumnSortable;
 
+use Illuminate\Support\Str;
 use Kyslik\ColumnSortable\Exceptions\ColumnSortableException;
 
 /**
@@ -75,7 +76,7 @@ class SortableLink
     {
         $separator = config('columnsortable.uri_relation_column_separator', '.');
 
-        if (str_contains($parameter, $separator)) {
+        if (Str::contains($parameter, $separator)) {
             $oneToOneSort = explode($separator, $parameter);
             if (count($oneToOneSort) !== 2) {
                 throw new ColumnSortableException();
