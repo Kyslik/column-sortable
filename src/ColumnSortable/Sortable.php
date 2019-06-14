@@ -23,7 +23,7 @@ trait Sortable {
      * @throws \Kyslik\ColumnSortable\Exceptions\ColumnSortableException
      */
     public function scopeSortable($query, $defaultParameters = null) {
-        if (request()->has(['sort', 'direction'])) {
+        if (request()->allFilled(['sort', 'direction'])) {
             return $this->queryOrderBuilder($query, request()->only(['sort', 'direction']));
         }
 

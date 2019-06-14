@@ -36,6 +36,16 @@ class ColumnSortableServiceProvider extends ServiceProvider
 
             return "<?php echo \Kyslik\ColumnSortable\SortableLink::render(array ({$expression}));?>";
         });
+
+        request()->macro('allFilled', function (array $keys) {
+            foreach ($keys as $key) {
+                if ( ! $this->filled($key)) {
+                    return false;
+                }
+            }
+
+            return true;
+        });
     }
 
 

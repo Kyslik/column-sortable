@@ -92,6 +92,11 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
         $expected    = ['column' => $usersTable.'.name', 'direction' => 'desc'];
         $this->assertEquals($expected, head($resultArray));
 
+        Input::replace(['sort' => 'id,name', 'direction' => 'asc,desc']);
+        $resultArray = $this->user->scopeSortable($this->user->newQuery())->getQuery()->orders;
+        $expected    = [['column' => $usersTable.'.id', 'direction' => 'asc'], ['column' => $usersTable.'.name', 'direction' => 'desc']];
+        $this->assertEquals($expected, $resultArray);
+
         Input::replace(['sort' => 'name', 'direction' => '']);
         $result = $this->user->scopeSortable($this->user->newQuery())->getQuery()->orders;
         $this->assertNull($result);
