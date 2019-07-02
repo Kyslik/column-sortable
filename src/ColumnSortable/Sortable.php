@@ -157,7 +157,7 @@ trait Sortable
             $parentPrimaryKey  = $relation->getQualifiedParentKeyName();
         } elseif ($relation instanceof BelongsTo) {
             $relatedPrimaryKey = $relation->getQualifiedOwnerKeyName();
-            $parentPrimaryKey  = $relation->getQualifiedForeignKeyName();
+            $parentPrimaryKey  = $relation->getQualifiedForeignKey();
         } else {
             throw new \Exception();
         }
