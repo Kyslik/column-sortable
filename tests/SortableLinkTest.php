@@ -18,7 +18,7 @@ class SortableLinkTest extends \Orchestra\Testbench\TestCase
         $link     = SortableLink::render(['column']);
         $expected = http_build_query($parameters);
 
-        $this->assertContains($expected, $link);
+        $this->assertStringContainsString($expected, $link);
     }
 
 
@@ -30,7 +30,7 @@ class SortableLinkTest extends \Orchestra\Testbench\TestCase
         $link     = SortableLink::render(['column']);
         $expected = http_build_query($parameters);
 
-        $this->assertContains($expected, $link);
+        $this->assertStringContainsString($expected, $link);
     }
 
 
@@ -111,12 +111,10 @@ class SortableLinkTest extends \Orchestra\Testbench\TestCase
     }
 
 
-    /**
-     * @expectedException  Kyslik\ColumnSortable\Exceptions\ColumnSortableException
-     * @expectedExceptionCode 0
-     */
     public function testGetOneToOneSortThrowsException()
     {
+        $this->expectException('\Exception');
+        $this->expectExceptionCode(0);
         $sortParameter = 'relation-name..column';
         SortableLink::explodeSortParameter($sortParameter);
     }

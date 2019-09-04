@@ -1,7 +1,8 @@
 <?php /** @noinspection PhpUnhandledExceptionInspection */
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Request;
 
 /**
  * Class ColumnSortableTraitTest
@@ -67,7 +68,7 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
         $query = $this->user->scopeSortable($this->user->newQuery());
         $this->assertEquals([
             [
-                'column'    => 'users.'.array_first($this->user->sortable),
+                'column'    => 'users.'.Arr::first($this->user->sortable),
                 'direction' => $this->configDefaultDirection,
             ],
         ], $query->getQuery()->orders);
@@ -82,33 +83,33 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
         config()->set('columnsortable.default_first_column', false);
 
         $usersTable = $this->user->getTable();
-        Input::replace(['sort' => 'name', 'direction' => 'asc']);
+        Request::replace(['sort' => 'name', 'direction' => 'asc']);
         $resultArray = $this->user->scopeSortable($this->user->newQuery())->getQuery()->orders;
         $expected    = ['column' => $usersTable.'.name', 'direction' => 'asc'];
         $this->assertEquals($expected, head($resultArray));
 
-        Input::replace(['sort' => 'name', 'direction' => 'desc']);
+        Request::replace(['sort' => 'name', 'direction' => 'desc']);
         $resultArray = $this->user->scopeSortable($this->user->newQuery())->getQuery()->orders;
         $expected    = ['column' => $usersTable.'.name', 'direction' => 'desc'];
         $this->assertEquals($expected, head($resultArray));
 
-        Input::replace(['sort' => 'name', 'direction' => '']);
+        Request::replace(['sort' => 'name', 'direction' => '']);
         $result = $this->user->scopeSortable($this->user->newQuery())->getQuery()->orders;
         $this->assertNull($result);
 
-        Input::replace(['sort' => '', 'direction' => 'asc']);
+        Request::replace(['sort' => '', 'direction' => 'asc']);
         $result = $this->user->scopeSortable($this->user->newQuery())->getQuery()->orders;
         $this->assertNull($result);
 
-        Input::replace(['sort' => '', 'direction' => '']);
+        Request::replace(['sort' => '', 'direction' => '']);
         $result = $this->user->scopeSortable($this->user->newQuery())->getQuery()->orders;
         $this->assertNull($result);
 
-        Input::replace(['sort' => 'name']);
+        Request::replace(['sort' => 'name']);
         $result = $this->user->scopeSortable($this->user->newQuery())->getQuery()->orders;
         $this->assertNull($result);
 
-        Input::replace(['sort' => '']);
+        Request::replace(['sort' => '']);
         $result = $this->user->scopeSortable($this->user->newQuery())->getQuery()->orders;
         $this->assertNull($result);
     }
@@ -186,12 +187,10 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
     }
 
 
-    /**
-     * @expectedException  \Exception
-     * @expectedExceptionCode 0
-     */
     public function testSortableQueryJoinBuilderThrowsException()
     {
+        $this->expectException('\Exception');
+        $this->expectExceptionCode(0);
         $query    = $this->user->hasMany(Profile::class)->newQuery();
         $relation = $query->getRelation('profile');
         $this->invokeMethod($this->user, 'queryJoinBuilder', [$query, $relation]);

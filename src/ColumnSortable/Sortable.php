@@ -5,6 +5,8 @@ namespace Kyslik\ColumnSortable;
 use BadMethodCallException;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Schema;
 use Kyslik\ColumnSortable\Exceptions\ColumnSortableException;
 
@@ -52,7 +54,7 @@ trait Sortable
     private function getDefaultSortable()
     {
         if (config('columnsortable.default_first_column', false)) {
-            $sortBy = array_first($this->sortable);
+            $sortBy = Arr::first($this->sortable);
             if ( ! is_null($sortBy)) {
                 return [$sortBy => config('columnsortable.default_direction', 'asc')];
             }
@@ -97,8 +99,8 @@ trait Sortable
             $model = $relation->getRelated();
         }
 
-        if (method_exists($model, camel_case($column).'Sortable')) {
-            return call_user_func_array([$model, camel_case($column).'Sortable'], [$query, $direction]);
+        if (method_exists($model, Str::camel($column).'Sortable')) {
+            return call_user_func_array([$model, Str::camel($column).'Sortable'], [$query, $direction]);
         }
 
         if (isset($model->sortableAs) && in_array($column, $model->sortableAs)) {
@@ -119,12 +121,12 @@ trait Sortable
      */
     private function parseParameters(array $parameters)
     {
-        $column = array_get($parameters, 'sort');
+        $column = Arr::get($parameters, 'sort');
         if (empty($column)) {
             return [null, null];
         }
 
-        $direction = array_get($parameters, 'direction', []);
+        $direction = Arr::get($parameters, 'direction', []);
         if ( ! in_array(strtolower($direction), ['asc', 'desc'])) {
             $direction = config('columnsortable.default_direction', 'asc');
         }
