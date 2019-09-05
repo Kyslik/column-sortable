@@ -2,7 +2,7 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
 
-- [Column sorting for Laravel 5.5-8](#column-sorting-for-laravel-55-8)
+- [Column sorting for Laravel 5.5-6.0](#column-sorting-for-laravel-55-60)
 - [Setup](#setup)
   - [Composer](#composer)
     - [Laravel's >=5.5 auto discovery](#laravels-55-auto-discovery)
@@ -16,11 +16,11 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# Column sorting for Laravel 5.5-8
+# Column sorting for Laravel 5.5-6.0
 [![Latest Version](https://img.shields.io/github/release/Kyslik/column-sortable.svg?style=flat-square)](https://github.com/Kyslik/column-sortable/releases)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
 [![Total Downloads](https://img.shields.io/packagist/dt/Kyslik/column-sortable.svg?style=flat-square)](https://packagist.org/packages/Kyslik/column-sortable)
-[![Build Status](https://travis-ci.org/Kyslik/column-sortable.svg?branch=L5.8)](https://travis-ci.org/Kyslik/column-sortable)
+[![Build Status](https://travis-ci.org/Kyslik/column-sortable.svg?branch=L6.0)](https://travis-ci.org/Kyslik/column-sortable)
 
 Package for handling column sorting in Laravel 5.[5-8]. For earlier versions of Laravel checkout branch [L5.1-3](https://github.com/Kyslik/column-sortable/tree/L5.1-3)
 
@@ -33,12 +33,14 @@ Pull this package in through Composer (development/latest version `dev-master`)
 ```json
 {
     "require": {
-        "kyslik/column-sortable": "5.8.*"
+        "kyslik/column-sortable": "6.0.*"
     }
 }
 ```
 
+```sh
     composer update
+```
 
 >**Note**: Major and minor versions should match with Laravel's version, for example if you are using Laravel 5.4, column-sortable version should be `5.4.*`.
 
@@ -66,7 +68,9 @@ Add the service provider to array of providers in `config/app.php`
 
 Publish the package configuration file to your application.
 
+```sh
     php artisan vendor:publish --provider="Kyslik\ColumnSortable\ColumnSortableServiceProvider" --tag="config"
+```
 
 See configuration file [(`config/columnsortable.php`)](https://github.com/Kyslik/column-sortable/blob/master/src/config/columnsortable.php) yourself and make adjustments as you wish.
 
