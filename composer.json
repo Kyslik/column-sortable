@@ -1,6 +1,6 @@
 {
   "name": "kyslik/column-sortable",
-  "description": "Package for handling column sorting in Laravel 5.x",
+  "description": "Package for handling column sorting in Laravel 6.x",
   "keywords": [
     "sortable",
     "sorting",
@@ -19,12 +19,12 @@
   ],
   "require": {
     "php": ">=7.2",
-    "illuminate/support": "5.8.*|6.0.*",
-    "illuminate/database": "5.8.*|6.0.*"
+    "illuminate/support": "5.8.*|6.0.*|6.1.*",
+    "illuminate/database": "5.8.*|6.0.*|6.1.*"
   },
   "require-dev": {
     "phpunit/phpunit": "^7.0|^8.0",
-    "orchestra/testbench": "3.8.*|4.0.*"
+    "orchestra/testbench": "3.8.*|4.*"
   },
   "autoload": {
     "psr-4": {

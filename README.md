@@ -33,7 +33,7 @@ Pull this package in through Composer (development/latest version `dev-master`)
 ```json
 {
     "require": {
-        "kyslik/column-sortable": "6.0.*"
+        "kyslik/column-sortable": "6.1.*"
     }
 }
 ```
