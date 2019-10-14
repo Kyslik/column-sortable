@@ -39,7 +39,7 @@ Pull this package in through Composer (development/latest version `dev-master`)
 ```
 
 ```sh
-    composer update
+composer update
 ```
 
 ### Laravel's >=5.5 auto discovery
@@ -69,7 +69,7 @@ Add the service provider to array of providers in `config/app.php`
 Publish the package configuration file to your application.
 
 ```sh
-    php artisan vendor:publish --provider="Kyslik\ColumnSortable\ColumnSortableServiceProvider" --tag="config"
+php artisan vendor:publish --provider="Kyslik\ColumnSortable\ColumnSortableServiceProvider" --tag="config"
 ```
 
 See configuration file [(`config/columnsortable.php`)](https://github.com/Kyslik/column-sortable/blob/master/src/config/columnsortable.php) yourself and make adjustments as you wish.
