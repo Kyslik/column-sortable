@@ -42,11 +42,11 @@ Pull this package in through Composer (development/latest version `dev-master`)
     composer update
 ```
 
->**Note**: Major and minor versions should match with Laravel's version, for example if you are using Laravel 5.4, column-sortable version should be `5.4.*`.
-
 ### Laravel's >=5.5 auto discovery
 
 Simply install the package and let Laravel do its magic.
+
+>**Note (pre Laravel 6.0)**: : major and minor versions should match with Laravel's version, for example if you are using Laravel 5.4, column-sortable version should be `5.4.*`.
 
 ### Manual installation (pre 5.5)
 
