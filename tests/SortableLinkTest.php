@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Request;
+use Illuminate\Support\HtmlString;
 use Kyslik\ColumnSortable\SortableLink;
 
 /**
@@ -53,11 +54,51 @@ class SortableLinkTest extends \Orchestra\Testbench\TestCase
     }
 
 
+    public function testGeneratingTitle()
+    {
+        Config::set('columnsortable.formatting_function', 'ucfirst');
+        Config::set('columnsortable.format_custom_titles', true);
+        $link = SortableLink::render(['column']);
+
+        $this->assertSame('<a href="http://localhost?sort=column&direction=asc" >Column</a><i class=""></i>', $link);
+    }
+
+
+    public function testCustomTitle()
+    {
+        Config::set('columnsortable.formatting_function', 'ucfirst');
+        Config::set('columnsortable.format_custom_titles', true);
+        $link = SortableLink::render(['column', 'columnTitle']);
+
+        $this->assertSame('<a href="http://localhost?sort=column&direction=asc" >ColumnTitle</a><i class=""></i>', $link);
+    }
+
+
+    public function testCustomTitleWithoutFormatting()
+    {
+        Config::set('columnsortable.formatting_function', 'ucfirst');
+        Config::set('columnsortable.format_custom_titles', false);
+        $link = SortableLink::render(['column', 'columnTitle']);
+
+        $this->assertSame('<a href="http://localhost?sort=column&direction=asc" >columnTitle</a><i class=""></i>', $link);
+    }
+
+
+    public function testCustomTitleWithHTML()
+    {
+        Config::set('columnsortable.formatting_function', 'ucfirst');
+        Config::set('columnsortable.format_custom_titles', true);
+        $link = SortableLink::render(['column', new HtmlString('<em>columnTitle</em>')]);
+
+        $this->assertSame('<a href="http://localhost?sort=column&direction=asc" ><em>columnTitle</em></a><i class=""></i>', $link);
+    }
+
+
     public function testParseParameters()
     {
         $parameters  = ['column'];
         $resultArray = SortableLink::parseParameters($parameters);
-        $expected    = ['column', 'column', 'column', [], []];
+        $expected    = ['column', 'column', null, [], []];
         $this->assertEquals($expected, $resultArray);
 
         $parameters  = ['column', 'ColumnTitle'];
@@ -77,7 +118,7 @@ class SortableLinkTest extends \Orchestra\Testbench\TestCase
 
         $parameters  = ['relation.column'];
         $resultArray = SortableLink::parseParameters($parameters);
-        $expected    = ['column', 'relation.column', 'column', [], []];
+        $expected    = ['column', 'relation.column', null, [], []];
         $this->assertEquals($expected, $resultArray);
 
         $parameters  = ['relation.column', 'ColumnTitle'];
