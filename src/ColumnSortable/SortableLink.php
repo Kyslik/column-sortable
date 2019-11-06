@@ -3,6 +3,7 @@
 namespace Kyslik\ColumnSortable;
 
 use Kyslik\ColumnSortable\Exceptions\ColumnSortableException;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Str;
 
 /**
@@ -38,7 +39,7 @@ class SortableLink
 
         $queryString = self::buildQueryString($queryParameters, $sortParameter, $direction);
 
-        return '<a'.$anchorClass.' href="'.url(request()->path().'?'.$queryString).'"'.$anchorAttributesString.'>'.htmlentities($title).$trailingTag;
+        return '<a'.$anchorClass.' href="'.url(request()->path().'?'.$queryString).'"'.$anchorAttributesString.'>'.e($title).$trailingTag;
     }
 
 
@@ -90,12 +91,16 @@ class SortableLink
 
 
     /**
-     * @param string $title
+     * @param string|\Illuminate\Contracts\Support\Htmlable $title
      *
      * @return string
      */
     private static function applyFormatting($title)
     {
+        if ($title instanceof Htmlable) {
+            return $title;
+        }
+
         $formatting_function = config('columnsortable.formatting_function', null);
         if ( ! is_null($formatting_function) && function_exists($formatting_function)) {
             $title = call_user_func($formatting_function, $title);
