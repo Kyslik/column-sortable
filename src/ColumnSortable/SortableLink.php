@@ -23,7 +23,7 @@ class SortableLink
     {
         list($sortColumn, $sortParameter, $title, $queryParameters, $anchorAttributes) = self::parseParameters($parameters);
 
-        $title = self::applyFormatting($title);
+        $title = self::applyFormatting($title, $sortColumn);
 
         if ($mergeTitleAs = config('columnsortable.inject_title_as', null)) {
             request()->merge([$mergeTitleAs => $title]);
@@ -55,7 +55,7 @@ class SortableLink
         //TODO: needs some checks before determining $title
         $explodeResult    = self::explodeSortParameter($parameters[0]);
         $sortColumn       = (empty($explodeResult)) ? $parameters[0] : $explodeResult[1];
-        $title            = (count($parameters) === 1) ? $sortColumn : $parameters[1];
+        $title            = (count($parameters) === 1) ? null : $parameters[1];
         $queryParameters  = (isset($parameters[2]) && is_array($parameters[2])) ? $parameters[2] : [];
         $anchorAttributes = (isset($parameters[3]) && is_array($parameters[3])) ? $parameters[3] : [];
 
@@ -91,13 +91,20 @@ class SortableLink
 
 
     /**
-     * @param string|\Illuminate\Contracts\Support\Htmlable $title
+     * @param string|\Illuminate\Contracts\Support\Htmlable|null $title
+     * @param string $sortColumn
      *
      * @return string
      */
-    private static function applyFormatting($title)
+    private static function applyFormatting($title, $sortColumn)
     {
         if ($title instanceof Htmlable) {
+            return $title;
+        }
+
+        if ($title === null) {
+            $title = $sortColumn;
+        } elseif ( ! config('columnsortable.format_custom_titles', true)){
             return $title;
         }
 
