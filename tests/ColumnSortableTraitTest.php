@@ -31,6 +31,11 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
     private $post;
 
     /**
+     * @var \Image
+     */
+    private $image;
+
+    /**
      * @var
      */
     private $configDefaultDirection;
@@ -51,6 +56,7 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
         $this->profile = new Profile();
         $this->comment = new Comment();
         $this->post    = new Post();
+        $this->image   = new Image();
 
         $this->configDefaultDirection = 'asc';
     }
@@ -147,6 +153,16 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
         $resultQuery   = $this->invokeMethod($this->comment, 'queryJoinBuilder', [$query, $relation]);
         $expectedQuery = $this->comment->newQuery()->from('comments as parent_comments')->select('parent_comments.*')
                                        ->leftJoin('comments', 'parent_comments.parent_id', '=', 'comments.id');
+        $this->assertEquals($expectedQuery->toSql(), $resultQuery->toSql());
+
+        $query         = $this->user->newQuery()->with(['image']);
+        $relation      = $query->getRelation('image');
+        $resultQuery   = $this->invokeMethod($this->user, 'queryJoinBuilder', [$query, $relation]);
+        $expectedQuery = $this->user->newQuery()->select('users.*')->leftJoin('images', function ($join) {
+            $join
+                ->on('users.id', '=', 'images.imageable_id')
+                ->where('images.imageable_type', '=', Image::class);
+        });
         $this->assertEquals($expectedQuery->toSql(), $resultQuery->toSql());
     }
 
@@ -350,6 +366,11 @@ class User extends Model
     {
         return $query->join('profiles', 'users.id', '=', 'profiles.user_id')->orderBy('address', $direction)->select('users.*');
     }
+
+    public function image()
+    {
+        return $this->morphOne(Image::class, 'imageable');
+    }
 }
 
 /**
@@ -417,4 +438,32 @@ class Post extends Model
 {
 
     use \Kyslik\ColumnSortable\Sortable;
+
+    public function image()
+    {
+        return $this->morphOne(Image::class, 'imageable');
+    }
+}
+
+class Image extends Model
+{
+
+    use \Kyslik\ColumnSortable\Sortable;
+
+    public $sortable = [
+        'id',
+        'name',
+        'src',
+        'altText',
+        'created_at',
+        'updated_at'
+    ];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\MorphTo
+     */
+    public function imageable()
+    {
+        return $this->morphTo();
+    }
 }

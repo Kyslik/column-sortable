@@ -5,6 +5,8 @@ namespace Kyslik\ColumnSortable;
 use BadMethodCallException;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Schema;
@@ -145,8 +147,13 @@ trait Sortable
      */
     private function queryJoinBuilder($query, $relation)
     {
+        if ($relation instanceof MorphTo) {
+            throw new \Exception();
+        }
         $relatedTable = $relation->getRelated()->getTable();
         $parentTable  = $relation->getParent()->getTable();
+        $morphClass   = $relation->getParent()->getMorphClass();
+        $morphType    = null;
 
         if ($parentTable === $relatedTable) {
             $query       = $query->from($parentTable.' as parent_'.$parentTable);
@@ -159,12 +166,16 @@ trait Sortable
             $parentPrimaryKey  = $relation->getQualifiedParentKeyName();
         } elseif ($relation instanceof BelongsTo) {
             $relatedPrimaryKey = $relation->getQualifiedOwnerKeyName();
-            $parentPrimaryKey  = $relation->getQualifiedForeignKeyName();
+            $parentPrimaryKey = $relation->getQualifiedForeignKeyName();
+        } elseif ($relation instanceof MorphOne) {
+            $relatedPrimaryKey = $relation->getQualifiedForeignKeyName();
+            $parentPrimaryKey = $relation->getQualifiedParentKeyName();
+            $morphType = $relation->getQualifiedMorphType();
         } else {
             throw new \Exception();
         }
 
-        return $this->formJoin($query, $parentTable, $relatedTable, $parentPrimaryKey, $relatedPrimaryKey);
+        return $this->formJoin($query, $parentTable, $relatedTable, $parentPrimaryKey, $relatedPrimaryKey, $morphType, $morphClass);
     }
 
 
@@ -211,13 +222,24 @@ trait Sortable
      * @param $relatedTable
      * @param $parentPrimaryKey
      * @param $relatedPrimaryKey
+     * @param $morphType
+     * @param $morphClass
      *
      * @return mixed
      */
-    private function formJoin($query, $parentTable, $relatedTable, $parentPrimaryKey, $relatedPrimaryKey)
+    private function formJoin($query, $parentTable, $relatedTable, $parentPrimaryKey, $relatedPrimaryKey, $morphType = null, $morphClass = null)
     {
         $joinType = config('columnsortable.join_type', 'leftJoin');
 
-        return $query->select($parentTable.'.*')->{$joinType}($relatedTable, $parentPrimaryKey, '=', $relatedPrimaryKey);
+        $query
+            ->select($parentTable.'.*')
+            ->{$joinType}($relatedTable, function ($join) use ($parentPrimaryKey, $relatedPrimaryKey, $morphType, $morphClass) {
+                $join->on($parentPrimaryKey, '=', $relatedPrimaryKey);
+                if (! is_null($morphType) && ! is_null($morphClass)) {
+                    $join->where($morphType, '=', $morphClass);
+                }
+            });
+
+        return $query;
     }
 }
