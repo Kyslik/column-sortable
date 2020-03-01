@@ -3,6 +3,7 @@
 namespace Kyslik\ColumnSortable;
 
 use Kyslik\ColumnSortable\Exceptions\ColumnSortableException;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Str;
 
 /**
@@ -22,7 +23,7 @@ class SortableLink
     {
         list($sortColumn, $sortParameter, $title, $queryParameters, $anchorAttributes) = self::parseParameters($parameters);
 
-        $title = self::applyFormatting($title);
+        $title = self::applyFormatting($title, $sortColumn);
 
         if ($mergeTitleAs = config('columnsortable.inject_title_as', null)) {
             request()->merge([$mergeTitleAs => $title]);
@@ -38,7 +39,7 @@ class SortableLink
 
         $queryString = self::buildQueryString($queryParameters, $sortParameter, $direction);
 
-        return '<a'.$anchorClass.' href="'.url(request()->path().'?'.$queryString).'"'.$anchorAttributesString.'>'.htmlentities($title).$trailingTag;
+        return '<a'.$anchorClass.' href="'.url(request()->path().'?'.$queryString).'"'.$anchorAttributesString.'>'.e($title).$trailingTag;
     }
 
 
@@ -54,7 +55,7 @@ class SortableLink
         //TODO: needs some checks before determining $title
         $explodeResult    = self::explodeSortParameter($parameters[0]);
         $sortColumn       = (empty($explodeResult)) ? $parameters[0] : $explodeResult[1];
-        $title            = (count($parameters) === 1) ? $sortColumn : $parameters[1];
+        $title            = (count($parameters) === 1) ? null : $parameters[1];
         $queryParameters  = (isset($parameters[2]) && is_array($parameters[2])) ? $parameters[2] : [];
         $anchorAttributes = (isset($parameters[3]) && is_array($parameters[3])) ? $parameters[3] : [];
 
@@ -90,12 +91,23 @@ class SortableLink
 
 
     /**
-     * @param string $title
+     * @param string|\Illuminate\Contracts\Support\Htmlable|null $title
+     * @param string $sortColumn
      *
      * @return string
      */
-    private static function applyFormatting($title)
+    private static function applyFormatting($title, $sortColumn)
     {
+        if ($title instanceof Htmlable) {
+            return $title;
+        }
+
+        if ($title === null) {
+            $title = $sortColumn;
+        } elseif ( ! config('columnsortable.format_custom_titles', true)){
+            return $title;
+        }
+
         $formatting_function = config('columnsortable.formatting_function', null);
         if ( ! is_null($formatting_function) && function_exists($formatting_function)) {
             $title = call_user_func($formatting_function, $title);
