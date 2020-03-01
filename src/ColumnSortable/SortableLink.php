@@ -261,6 +261,10 @@ class SortableLink
 
     private static function buildAnchorAttributesString($anchorAttributes)
     {
+        if (empty($anchorAttributes)) {
+            return '';
+        }
+
         $attributes = [];
         foreach ($anchorAttributes as $k => $v) {
             $attributes[] = $k.('' != $v ? '="'.$v.'"' : '');
