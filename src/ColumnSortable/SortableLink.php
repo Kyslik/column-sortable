@@ -250,7 +250,7 @@ class SortableLink
         };
 
         $persistParameters = array_filter(request()->except('sort', 'direction', 'page'), $checkStrlenOrArray);
-        $queryString       = http_build_query(array_merge($queryParameters, $persistParameters, [
+        $queryString       = http_build_query(array_merge($persistParameters, $queryParameters, [
             'sort'      => $sortParameter,
             'direction' => $direction,
         ]));
