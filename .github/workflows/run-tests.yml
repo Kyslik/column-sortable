@@ -1,6 +1,12 @@
 name: run-tests
 
-on: [push]
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+    branches:
+    - master
 
 jobs:
     tests:
@@ -10,13 +16,18 @@ jobs:
             fail-fast: true
             matrix:
                 php: [7.2, 7.3, 7.4]
-                laravel: [6.*, 7.*]
+                laravel: [6.*, 7.*, 8.*]
                 dependency-version: [prefer-lowest, prefer-stable]
                 include:
+                    -   laravel: 8.*
+                        testbench: 6.*
                     -   laravel: 7.*
                         testbench: 5.*
                     -   laravel: 6.*
                         testbench: 4.*
+                exclude:
+                    - php: 7.2
+                      laravel: 8.*
 
         name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.dependency-version }}
 
