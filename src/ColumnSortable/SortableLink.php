@@ -21,7 +21,7 @@ class SortableLink
      */
     public static function render(array $parameters)
     {
-        list($sortColumn, $sortParameter, $title, $queryParameters, $anchorAttributes, $pathParameter) = self::parseParameters($parameters);
+        list($sortColumn, $sortParameter, $title, $queryParameters, $anchorAttributes) = self::parseParameters($parameters);
 
         $title = self::applyFormatting($title, $sortColumn);
 
@@ -39,7 +39,7 @@ class SortableLink
 
         $queryString = self::buildQueryString($queryParameters, $sortParameter, $direction);
 
-        $url = self::buildUrl($pathParameter, $queryString);
+        $url = self::buildUrl($queryString, $anchorAttributes);
 
         return '<a'.$anchorClass.' href="'.$url.'"'.$anchorAttributesString.'>'.e($title).$trailingTag;
     }
@@ -60,9 +60,8 @@ class SortableLink
         $title            = (count($parameters) === 1) ? null : $parameters[1];
         $queryParameters  = (isset($parameters[2]) && is_array($parameters[2])) ? $parameters[2] : [];
         $anchorAttributes = (isset($parameters[3]) && is_array($parameters[3])) ? $parameters[3] : [];
-        $pathParameter    = (isset($parameters[4])) ? $parameters[4] : null;
 
-        return [$sortColumn, $parameters[0], $title, $queryParameters, $anchorAttributes, $pathParameter];
+        return [$sortColumn, $parameters[0], $title, $queryParameters, $anchorAttributes];
     }
 
 
@@ -276,15 +275,15 @@ class SortableLink
         return ' '.implode(' ', $attributes);
     }
 
-    private static function buildUrl($pathParameter, $queryString)
+    private static function buildUrl($queryString, $anchorAttributes)
     {
-        if(empty($pathParameter))
+        if(!isset($anchorAttributes['href']))
         {
             return url(request()->path() . "?" . $queryString);
         }
         else
         {
-            return url($pathParameter. "?" . $queryString);
+            return url($anchorAttributes['href'] . "?" . $queryString);
         }
     }
 
