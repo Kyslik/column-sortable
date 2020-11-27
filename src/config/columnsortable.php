@@ -72,6 +72,12 @@ return [
     'direction_anchor_class_prefix' => null,
 
     /*
+    additional class to add to the icon class
+    Added to icons only, for title and icon together, use the anchor classes above)
+    */
+    'icon_class'                    => null,
+
+    /*
     relation - column separator ex: detail.phone_number means relation "detail" and column "phone_number"
      */
     'uri_relation_column_separator' => '.',
