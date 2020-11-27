@@ -57,7 +57,7 @@ class SortableLinkTest extends \Orchestra\Testbench\TestCase
     {
         $link = SortableLink::render(['column', 'ColumnTitle', ['a' => 'b'], ['c' => 'd']]);
 
-        $this->assertSame('<a href="http://localhost?a=b&sort=column&direction=asc" c="d">ColumnTitle</a><span class=""></span>', $link);
+        $this->assertSame('<a href="http://localhost?a=b&sort=column&direction=asc" c="d">ColumnTitle</a><span class=" "></span>', $link);
     }
 
     public function testGeneratingTitleWithoutFormattingFunction()
@@ -65,7 +65,7 @@ class SortableLinkTest extends \Orchestra\Testbench\TestCase
         Config::set('columnsortable.formatting_function', null);
         $link = SortableLink::render(['column']);
 
-        $this->assertSame('<a href="http://localhost?sort=column&direction=asc">column</a><span class=""></span>', $link);
+        $this->assertSame('<a href="http://localhost?sort=column&direction=asc">column</a><span class=" "></span>', $link);
     }
 
     public function testGeneratingTitle()
@@ -74,7 +74,7 @@ class SortableLinkTest extends \Orchestra\Testbench\TestCase
         Config::set('columnsortable.format_custom_titles', true);
         $link = SortableLink::render(['column']);
 
-        $this->assertSame('<a href="http://localhost?sort=column&direction=asc">Column</a><span class=""></span>', $link);
+        $this->assertSame('<a href="http://localhost?sort=column&direction=asc">Column</a><span class=" "></span>', $link);
     }
 
 
@@ -84,7 +84,7 @@ class SortableLinkTest extends \Orchestra\Testbench\TestCase
         Config::set('columnsortable.format_custom_titles', true);
         $link = SortableLink::render(['column', 'columnTitle']);
 
-        $this->assertSame('<a href="http://localhost?sort=column&direction=asc">ColumnTitle</a><span class=""></span>', $link);
+        $this->assertSame('<a href="http://localhost?sort=column&direction=asc">ColumnTitle</a><span class=" "></span>', $link);
     }
 
 
@@ -94,7 +94,7 @@ class SortableLinkTest extends \Orchestra\Testbench\TestCase
         Config::set('columnsortable.format_custom_titles', false);
         $link = SortableLink::render(['column', 'columnTitle']);
 
-        $this->assertSame('<a href="http://localhost?sort=column&direction=asc">columnTitle</a><span class=""></span>', $link);
+        $this->assertSame('<a href="http://localhost?sort=column&direction=asc">columnTitle</a><span class=" "></span>', $link);
     }
 
 
@@ -104,7 +104,7 @@ class SortableLinkTest extends \Orchestra\Testbench\TestCase
         Config::set('columnsortable.format_custom_titles', true);
         $link = SortableLink::render(['column', new HtmlString('<em>columnTitle</em>')]);
 
-        $this->assertSame('<a href="http://localhost?sort=column&direction=asc"><em>columnTitle</em></a><span class=""></span>', $link);
+        $this->assertSame('<a href="http://localhost?sort=column&direction=asc"><em>columnTitle</em></a><span class=" "></span>', $link);
     }
 
 
