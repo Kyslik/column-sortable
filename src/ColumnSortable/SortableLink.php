@@ -174,12 +174,13 @@ class SortableLink
 
         $iconAndTextSeparator = config('columnsortable.icon_text_separator', '');
 
+        $iconClass = config('columnsortable.icon_class', '');
+
         $clickableIcon = config('columnsortable.clickable_icon', false);
-        $trailingTag   = $iconAndTextSeparator.'<i class="'.$icon.'"></i>'.'</a>';
+        $trailingTag   = $iconAndTextSeparator.'<span class="'.$icon.' '.$iconClass.'"></span>'.'</a>';
 
         if ($clickableIcon === false) {
-            $trailingTag = '</a>'.$iconAndTextSeparator.'<i class="'.$icon.'"></i>';
-
+            $trailingTag = '</a>'.$iconAndTextSeparator.'<span class="'.$icon.' '.$iconClass.'"></span>';
             return $trailingTag;
         }
 
