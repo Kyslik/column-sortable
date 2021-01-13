@@ -207,7 +207,7 @@ public function index(User $user)
 
 You can set default sorting parameters which will be applied when URL is empty.
 
->**For example**: page is loaded for first time, default direction is [configurable](https://github.com/Kyslik/column-sortable/blob/master/src/config/columnsortable.php#L77) (asc)
+>**For example**: page is loaded for first time, default direction is [configurable](https://github.com/Kyslik/column-sortable/blob/master/src/config/columnsortable.php#L103) (asc)
 
 ```php
 $users = $user->sortable('name')->paginate(10);
