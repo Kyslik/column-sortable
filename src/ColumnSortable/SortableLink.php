@@ -267,6 +267,8 @@ class SortableLink
             return '';
         }
 
+        unset($anchorAttributes['href']);
+        
         $attributes = [];
         foreach ($anchorAttributes as $k => $v) {
             $attributes[] = $k.('' != $v ? '="'.$v.'"' : '');
