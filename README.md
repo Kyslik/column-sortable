@@ -123,7 +123,7 @@ There is a blade extension for you to use **@sortablelink()**
 @sortablelink('column', 'Title', ['parameter' => 'smile'],  ['rel' => 'nofollow'])
 ```
 
-**Column** (1st) parameter is column in database, **Title** (2nd) parameter is displayed inside anchor tags, `array()` parameter (3rd) is default (GET) query strings parameter and `array()` parameter (4th) is for additional anchor-tag attributes.  
+**Column** (1st) parameter is column in database, **Title** (2nd) parameter is displayed inside anchor tags, `array()` parameter (3rd) is default (GET) query strings parameter and `array()` parameter (4th) is for additional anchor-tag attributes. You can use a custom URL as 'href' attribute in the 4th parameter, and the query string will be appended to it.
 
 You can omit 2nd, 3rd and 4th parameter.
 
@@ -133,7 +133,7 @@ Possible examples and usages of blade extension:
 @sortablelink('name')
 @sortablelink('name', 'Username')
 @sortablelink('address', trans('fields.address'), ['filter' => 'active, visible'])
-@sortablelink('address', trans('fields.address'), ['filter' => 'active, visible'], ['class' => 'btn btn-block', 'rel' => 'nofollow'])
+@sortablelink('address', trans('fields.address'), ['filter' => 'active, visible'], ['class' => 'btn btn-block', 'rel' => 'nofollow', 'href' => route('my.custom.route')])
 ```
 
 If you do not fill **Title** (2nd parameter) column name is used instead.

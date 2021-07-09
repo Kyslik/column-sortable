@@ -39,7 +39,9 @@ class SortableLink
 
         $queryString = self::buildQueryString($queryParameters, $sortParameter, $direction);
 
-        return '<a'.$anchorClass.' href="'.url(request()->path().'?'.$queryString).'"'.$anchorAttributesString.'>'.e($title).$trailingTag;
+        $url = self::buildUrl($queryString, $anchorAttributes);
+
+        return '<a'.$anchorClass.' href="'.$url.'"'.$anchorAttributesString.'>'.e($title).$trailingTag;
     }
 
 
@@ -272,4 +274,17 @@ class SortableLink
 
         return ' '.implode(' ', $attributes);
     }
+
+    private static function buildUrl($queryString, $anchorAttributes)
+    {
+        if(!isset($anchorAttributes['href']))
+        {
+            return url(request()->path() . "?" . $queryString);
+        }
+        else
+        {
+            return url($anchorAttributes['href'] . "?" . $queryString);
+        }
+    }
+
 }
