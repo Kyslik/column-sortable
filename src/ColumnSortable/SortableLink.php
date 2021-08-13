@@ -252,7 +252,9 @@ class SortableLink
         };
 
         $columnExceptions = ['sort', 'direction'];
-        if (config('columnsortable.keep_page', false)) {
+        $keepPage = config('columnsortable.keep_page', false);
+
+        if ($keepPage === false) {
             $columnExceptions[] = 'page';
         }
 
