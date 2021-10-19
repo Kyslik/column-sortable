@@ -41,7 +41,7 @@ class SortableLink
 
         $url = self::buildUrl($queryString, $anchorAttributes);
 
-        return '<a'.$anchorClass.' href="'.$url.'"'.$anchorAttributesString.'>'.e($title).$trailingTag;
+        return '<a'.$anchorClass.'class="sort-link" href="'.$url.'"'.$anchorAttributesString.'>'.e($title).$trailingTag;
     }
 
 
