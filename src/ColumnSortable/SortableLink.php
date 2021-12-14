@@ -81,7 +81,7 @@ class SortableLink
 
         if (Str::contains($parameter, $separator)) {
             $oneToOneSort = explode($separator, $parameter);
-            if (count($oneToOneSort) !== 2) {
+            if (count($oneToOneSort) > 3) {
                 throw new ColumnSortableException();
             }
 
@@ -268,7 +268,7 @@ class SortableLink
         }
 
         unset($anchorAttributes['href']);
-        
+
         $attributes = [];
         foreach ($anchorAttributes as $k => $v) {
             $attributes[] = $k.('' != $v ? '="'.$v.'"' : '');
