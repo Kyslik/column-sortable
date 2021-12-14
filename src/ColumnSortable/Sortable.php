@@ -84,14 +84,53 @@ trait Sortable
         }
 
         $explodeResult = SortableLink::explodeSortParameter($column);
-        if (!empty($explodeResult)) {
-            if (count($explodeResult) == 3) {
+        if (!empty($explodeResult) && count($explodeResult) >= 2) {
+            if (count($explodeResult) == 5) {
+                $relationName = $explodeResult[0];
+                $sub1RelationName = $explodeResult[1];
+                $sub2RelationName = $explodeResult[2];
+                $sub3RelationName = $explodeResult[3];
+                $column = $explodeResult[4];
+                try {
+                    $relation = $query->getRelation($relationName);
+                    $sub1Relation = $relation->getRelation($sub1RelationName);
+                    $sub2Relation = $sub1Relation->getRelation($sub2RelationName);
+                    $sub3Relation = $sub2Relation->getRelation($sub3RelationName);
+                    $query = $this->queryJoinBuilder($query, $relation, $sub1Relation, $sub2Relation, $sub3Relation);
+                } catch (BadMethodCallException $e) {
+                    throw new ColumnSortableException($relationName, 1, $e);
+                } catch (\Exception $e) {
+                    throw new ColumnSortableException($relationName, 2, $e);
+                }
+                $model = $relation->getRelated();
+                $sub1Model = $sub1Relation->getRelated();
+                $sub2Model = $sub2Relation->getRelated();
+                $sub3Model = $sub3Relation->getRelated();
+            } else if (count($explodeResult) == 4) {
+                $relationName = $explodeResult[0];
+                $sub1RelationName = $explodeResult[1];
+                $sub2RelationName = $explodeResult[2];
+                $column = $explodeResult[3];
+                try {
+                    $relation = $query->getRelation($relationName);
+                    $sub1Relation = $relation->getRelation($sub1RelationName);
+                    $sub2Relation = $sub1Relation->getRelation($sub2RelationName);
+                    $query = $this->queryJoinBuilder($query, $relation, $sub1Relation, $sub2Relation);
+                } catch (BadMethodCallException $e) {
+                    throw new ColumnSortableException($relationName, 1, $e);
+                } catch (\Exception $e) {
+                    throw new ColumnSortableException($relationName, 2, $e);
+                }
+                $model = $relation->getRelated();
+                $sub1Model = $sub1Relation->getRelated();
+                $sub2Model = $sub2Relation->getRelated();
+            } else if (count($explodeResult) == 3) {
                 $relationName = $explodeResult[0];
                 $subRelationName = $explodeResult[1];
                 $column = $explodeResult[2];
                 try {
                     $relation = $query->getRelation($relationName);
-                    $subRelation = $query->getRelation($relationName)->getRelation($subRelationName);
+                    $subRelation = $relation->getRelation($subRelationName);
                     $query = $this->queryJoinBuilder($query, $relation, $subRelation);
                 } catch (BadMethodCallException $e) {
                     throw new ColumnSortableException($relationName, 1, $e);
@@ -100,7 +139,7 @@ trait Sortable
                 }
                 $subModel = $subRelation->getRelated();
                 $model = $relation->getRelated();
-            } else {
+            } else if (count($explodeResult) == 2) {
                 $relationName = $explodeResult[0];
                 $column = $explodeResult[1];
                 try {
@@ -163,9 +202,12 @@ trait Sortable
      *
      * @throws \Exception
      */
-    private function queryJoinBuilder($query, $relation, $subRelation)
+    private function queryJoinBuilder($query, $relation, $sub1Relation = null, $sub2Relation = null, $sub3Relation = null)
     {
-        $subRelatedTable = ($subRelation) ? $subRelation->getRelated()->getTable() : false;
+        $sub1RelatedTable = ($sub1Relation) ? $sub1Relation->getRelated()->getTable() : false;
+        $sub2RelatedTable = ($sub2Relation) ? $sub2Relation->getRelated()->getTable() : false;
+        $sub3RelatedTable = ($sub3Relation) ? $sub3Relation->getRelated()->getTable() : false;
+
         $relatedTable = $relation->getRelated()->getTable();
         $parentTable = $relation->getParent()->getTable();
 
@@ -185,22 +227,58 @@ trait Sortable
             throw new \Exception();
         }
 
-        $subRelatedParentKey = false;
-        $subRelatedPrimaryKey = false;
+        $sub1RelatedParentPrimaryKey = false;
+        $sub1RelatedPrimaryKey = false;
 
-        if ($subRelation) {
-            if ($subRelation instanceof HasOne) {
-                $subRelatedPrimaryKey = $subRelation->getQualifiedForeignKeyName();
-                $subRelatedParentKey = $subRelation->getQualifiedParentKeyName();
-            } elseif ($subRelation instanceof BelongsTo) {
-                $subRelatedPrimaryKey = $subRelation->getQualifiedOwnerKeyName();
-                $subRelatedParentKey = $subRelation->getQualifiedForeignKeyName();
+        $sub2RelatedParentPrimaryKey = false;
+        $sub2RelatedPrimaryKey = false;
+
+        $sub3RelatedParentPrimaryKey = false;
+        $sub3RelatedPrimaryKey = false;
+
+        if ($sub1Relation) {
+            if ($sub1Relation instanceof HasOne) {
+                $sub1RelatedParentPrimaryKey = $sub1Relation->getQualifiedForeignKeyName();
+                $sub1RelatedPrimaryKey = $sub1Relation->getQualifiedParentKeyName();
+            } elseif ($sub1Relation instanceof BelongsTo) {
+                $sub1RelatedParentPrimaryKey = $sub1Relation->getQualifiedOwnerKeyName();
+                $sub1RelatedPrimaryKey = $sub1Relation->getQualifiedForeignKeyName();
             } else {
                 throw new \Exception();
             }
         }
 
-        return $this->formJoin($query, $parentTable, $relatedTable, $subRelatedTable, $parentPrimaryKey, $relatedPrimaryKey, $subRelatedParentKey, $subRelatedPrimaryKey);
+        if ($sub2Relation) {
+            if ($sub2Relation instanceof HasOne) {
+                $sub2RelatedParentPrimaryKey = $sub2Relation->getQualifiedForeignKeyName();
+                $sub2RelatedPrimaryKey = $sub2Relation->getQualifiedParentKeyName();
+            } elseif ($sub2Relation instanceof BelongsTo) {
+                $sub2RelatedParentPrimaryKey = $sub2Relation->getQualifiedOwnerKeyName();
+                $sub2RelatedPrimaryKey = $sub2Relation->getQualifiedForeignKeyName();
+            } else {
+                throw new \Exception();
+            }
+        }
+
+        if ($sub3Relation) {
+            if ($sub3Relation instanceof HasOne) {
+                $sub3RelatedParentPrimaryKey = $sub3Relation->getQualifiedForeignKeyName();
+                $sub3RelatedPrimaryKey = $sub3Relation->getQualifiedParentKeyName();
+            } elseif ($sub3Relation instanceof BelongsTo) {
+                $sub3RelatedParentPrimaryKey = $sub3Relation->getQualifiedOwnerKeyName();
+                $sub3RelatedPrimaryKey = $sub3Relation->getQualifiedForeignKeyName();
+            } else {
+                throw new \Exception();
+            }
+        }
+
+        return $this->formJoin($query,
+            $parentTable, $relatedTable, $sub1RelatedTable, $sub2RelatedTable, $sub3RelatedTable,
+            $parentPrimaryKey, $relatedPrimaryKey,
+            $sub1RelatedParentPrimaryKey, $sub1RelatedPrimaryKey,
+            $sub2RelatedParentPrimaryKey, $sub2RelatedPrimaryKey,
+            $sub3RelatedParentPrimaryKey, $sub3RelatedPrimaryKey,
+        );
     }
 
 
@@ -255,15 +333,28 @@ trait Sortable
      *
      * @return mixed
      */
-    private function formJoin($query, $parentTable, $relatedTable, $subRelatedTable, $parentPrimaryKey, $relatedPrimaryKey, $subRelatedParentKey, $subRelatedPrimaryKey)
+    private function formJoin(
+        $query,
+        $parentTable, $relatedTable, $sub1RelatedTable, $sub2RelatedTable, $sub3RelatedTable,
+        $parentPrimaryKey, $relatedPrimaryKey,
+        $sub1RelatedParentPrimaryKey, $sub1RelatedPrimaryKey,
+        $sub2RelatedParentPrimaryKey, $sub2RelatedPrimaryKey,
+        $sub3RelatedParentPrimaryKey, $sub3RelatedPrimaryKey,
+    )
     {
         $joinType = config('columnsortable.join_type', 'leftJoin');
 
         $query->select($parentTable . '.*')
             ->{$joinType}($relatedTable, $parentPrimaryKey, '=', $relatedPrimaryKey);
 
-        if ($subRelatedTable) {
-            $query->{$joinType}($subRelatedTable, $subRelatedParentKey, '=', $subRelatedPrimaryKey);
+        if ($sub1RelatedTable) {
+            $query->{$joinType}($sub1RelatedTable, $sub1RelatedParentPrimaryKey, '=', $sub1RelatedPrimaryKey);
+        }
+        if ($sub2RelatedTable) {
+            $query->{$joinType}($sub2RelatedTable, $sub2RelatedParentPrimaryKey, '=', $sub2RelatedPrimaryKey);
+        }
+        if ($sub3RelatedTable) {
+            $query->{$joinType}($sub3RelatedTable, $sub3RelatedParentPrimaryKey, '=', $sub3RelatedPrimaryKey);
         }
 
         return $query;

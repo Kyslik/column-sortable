@@ -81,7 +81,7 @@ class SortableLink
 
         if (Str::contains($parameter, $separator)) {
             $oneToOneSort = explode($separator, $parameter);
-            if (count($oneToOneSort) > 3) {
+            if (count($oneToOneSort) < 1) {
                 throw new ColumnSortableException();
             }
 

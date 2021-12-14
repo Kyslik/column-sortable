@@ -1,6 +1,6 @@
 {
-  "name": "wasxxm/column-sortable",
-  "description": "Package for handling column sorting in Laravel 8.x",
+  "name": "kyslik/column-sortable",
+  "description": "Package for handling column sorting in Laravel 6.x",
   "keywords": [
     "sortable",
     "sorting",
