@@ -127,6 +127,8 @@ There is a blade extension for you to use **@sortablelink()**
 
 You can omit 2nd, 3rd and 4th parameter.
 
+By using `['direction'=>'desc']` in 3rd parameter you can override the default toggle behavior.
+
 Possible examples and usages of blade extension:
 
 ```blade
