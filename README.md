@@ -136,6 +136,7 @@ Possible examples and usages of blade extension:
 @sortablelink('name', 'Username')
 @sortablelink('address', trans('fields.address'), ['filter' => 'active, visible'])
 @sortablelink('address', trans('fields.address'), ['filter' => 'active, visible'], ['class' => 'btn btn-block', 'rel' => 'nofollow', 'href' => route('my.custom.route')])
+@sortablelink(null, 'Reset') {{!-- back to default --}}
 ```
 
 If you do not fill **Title** (2nd parameter) column name is used instead.

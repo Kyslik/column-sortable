@@ -258,8 +258,11 @@ class SortableLink
             return is_array($element) ? $element : strlen($element);
         };
 
-        $persistParameters = array_filter(request()->except('sort', 'direction', 'page'), $checkStrlenOrArray);
-        $queryString       = http_build_query(array_merge($queryParameters, $persistParameters, [
+        $persistParameters = array_filter(request()->except('sort', 'direction', 'page'), $checkStrlenOrArray);    
+        
+        if(is_null($sortParameter)) $direction = null;
+
+        $queryString = http_build_query(array_merge($queryParameters, $persistParameters, [
             'sort'      => $sortParameter,
             'direction' => $direction,
         ]));
