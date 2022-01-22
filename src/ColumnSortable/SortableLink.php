@@ -260,7 +260,11 @@ class SortableLink
 
         $persistParameters = array_filter(request()->except('sort', 'direction', 'page'), $checkStrlenOrArray);    
         
-        if(is_null($sortParameter)) $direction = null;
+        //TODO: Test for one-to-one relations
+        if(is_null($sortParameter)){
+            if(config('columnsortable.to_session')) $sortParameter = config('columnsortable.reset_value');
+            $direction = null;
+        }    
 
         $queryString = http_build_query(array_merge($queryParameters, $persistParameters, [
             'sort'      => $sortParameter,

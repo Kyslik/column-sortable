@@ -25,9 +25,19 @@ trait Sortable
      */
     public function scopeSortable($query, $defaultParameters = null)
     {
+        
         if (request()->allFilled(['sort', 'direction'])) { // allFilled() is macro
+            $this->saveToSession(request()->only(['sort', 'direction']));
             return $this->queryOrderBuilder($query, request()->only(['sort', 'direction']));
         }
+
+        if(request()->has('sort') && request()->only(['sort'])['sort'] == config('columnsortable.reset_value')){
+            $this->removeFromSession();
+        }        
+
+        $session_sort = $this->getSessionSort();
+        if($session_sort !== false) return $this->queryOrderBuilder($query, $session_sort);
+
 
         if (is_null($defaultParameters)) {
             $defaultParameters = $this->getDefaultSortable();
@@ -43,6 +53,37 @@ trait Sortable
         }
 
         return $query;
+    }
+
+    private function getSessionSort(){
+        if(config('columnsortable.to_session')){
+            $sess_sort = request()->session()->get('sort', []);
+            if(isset($sess_sort[request()->path()])) {
+                $sortParams = $sess_sort[request()->path()];
+                return ['sort'      => key($sortParams),
+                        'direction' => reset($sortParams)];
+            }
+        }   
+
+        return false;
+    }
+
+    private function saveToSession($sortParameters){ 
+        if(config('columnsortable.to_session')){
+            list($column, $direction) = $this->parseParameters($sortParameters);
+            $sort_rec[$column] = $direction;
+            $sess_sort = request()->session()->get('sort', []);   
+            $sess_sort[request()->path()] = $sort_rec;
+            session(['sort' => $sess_sort]);
+        }
+    }
+
+    private function removeFromSession(){
+        if(config('columnsortable.to_session')){
+            $sess_sort = request()->session()->get('sort', []);  
+            unset($sess_sort[request()->path()]);
+            session(['sort' => $sess_sort]);
+        }
     }
 
 
