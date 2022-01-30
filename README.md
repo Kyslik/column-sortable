@@ -386,3 +386,9 @@ try {
 ```
 
 >**Note**: I strongly recommend to catch **ColumnSortableException** because there is a user input in question (GET parameter) and any user can modify it in such way that package throws ColumnSortableException with code `0`.
+
+# Session - persisting parameters
+
+Package supports saving the sortable parameters _sort_ and _direction_ into the session. To support this on the application level set the `to_session` configuration parameter to `true`.
+
+        

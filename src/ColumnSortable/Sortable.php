@@ -15,7 +15,6 @@ use Kyslik\ColumnSortable\Exceptions\ColumnSortableException;
  */
 trait Sortable
 {
-
     /**
      * @param \Illuminate\Database\Query\Builder $query
      * @param array|null                         $defaultParameters
@@ -25,19 +24,11 @@ trait Sortable
      */
     public function scopeSortable($query, $defaultParameters = null)
     {
-        
+        $this->Init();
+
         if (request()->allFilled(['sort', 'direction'])) { // allFilled() is macro
-            $this->saveToSession(request()->only(['sort', 'direction']));
             return $this->queryOrderBuilder($query, request()->only(['sort', 'direction']));
         }
-
-        if(request()->has('sort') && request()->only(['sort'])['sort'] == config('columnsortable.reset_value')){
-            $this->removeFromSession();
-        }        
-
-        $session_sort = $this->getSessionSort();
-        if($session_sort !== false) return $this->queryOrderBuilder($query, $session_sort);
-
 
         if (is_null($defaultParameters)) {
             $defaultParameters = $this->getDefaultSortable();
@@ -55,6 +46,18 @@ trait Sortable
         return $query;
     }
 
+    private function Init(){
+        if(request()->allFilled(['sort', 'direction'])){
+            $this->saveToSession(request()->only(['sort', 'direction']));
+        }
+        elseif(request()->has('sort') && request()->input('sort')==config('columnsortable.reset_value')){
+            $this->removeFromSession();
+        }
+        elseif($this->getSessionSort()!==false && !request()->allFilled(['sort', 'direction']) ){
+            request()->merge($this->getSessionSort());
+        }
+    }
+
     private function getSessionSort(){
         if(config('columnsortable.to_session')){
             $sess_sort = request()->session()->get('sort', []);
@@ -63,16 +66,16 @@ trait Sortable
                 return ['sort'      => key($sortParams),
                         'direction' => reset($sortParams)];
             }
-        }   
+        }
 
         return false;
     }
 
-    private function saveToSession($sortParameters){ 
+    private function saveToSession($sortParameters){
         if(config('columnsortable.to_session')){
             list($column, $direction) = $this->parseParameters($sortParameters);
             $sort_rec[$column] = $direction;
-            $sess_sort = request()->session()->get('sort', []);   
+            $sess_sort = request()->session()->get('sort', []);
             $sess_sort[request()->path()] = $sort_rec;
             session(['sort' => $sess_sort]);
         }
@@ -80,7 +83,7 @@ trait Sortable
 
     private function removeFromSession(){
         if(config('columnsortable.to_session')){
-            $sess_sort = request()->session()->get('sort', []);  
+            $sess_sort = request()->session()->get('sort', []);
             unset($sess_sort[request()->path()]);
             session(['sort' => $sess_sort]);
         }
