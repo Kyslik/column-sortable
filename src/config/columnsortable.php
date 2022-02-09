@@ -113,4 +113,14 @@ return [
     for more information see https://github.com/Kyslik/column-sortable/issues/59
     */
     'join_type'                     => 'leftJoin',
+
+    /*
+     SortableLink.php:buildQueryString()
+
+     when building sortable links, pass the parameters like this if false (default):
+     array_merge($persistParameters, $queryParameters,
+     otherwise swap the order
+     array_merge($queryParameters, $persistParameters,
+     */
+    'swap_querystring_params'          => false,
 ];
