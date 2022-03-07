@@ -344,8 +344,11 @@ trait Sortable
     {
         $joinType = config('columnsortable.join_type', 'leftJoin');
 
-        $query->select($parentTable . '.*')
-            ->{$joinType}($relatedTable, $parentPrimaryKey, '=', $relatedPrimaryKey);
+        if ($query->getQuery()->columns === null) {
+            $query->select($parentTable.'.*');
+        }
+
+        $query->{$joinType}($relatedTable, $parentPrimaryKey, '=', $relatedPrimaryKey);
 
         if ($sub1RelatedTable) {
             $query->{$joinType}($sub1RelatedTable, $sub1RelatedParentPrimaryKey, '=', $sub1RelatedPrimaryKey);
