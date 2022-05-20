@@ -114,6 +114,14 @@ class SortableLinkTest extends \Orchestra\Testbench\TestCase
         
         $this->assertSame('<a href="http://localhost/custom-path?a=b&sort=column&direction=asc" c="d">ColumnTitle</a> <i class="fa fa-sort"></i>', $link);
     }
+
+    
+    public function testCustomHrefWithCustomSortDirectionAttribute()
+    {
+        $link = SortableLink::render(['column:desc', 'ColumnTitle', ['a' => 'b'], ['c' => 'd', 'href' => 'http://localhost/custom-path']]);
+        
+        $this->assertSame('<a href="http://localhost/custom-path?a=b&sort=column&direction=desc" c="d">ColumnTitle</a> <i class="fa fa-sort"></i>', $link);
+    }
     
     
     public function testParseParameters()
