@@ -13,6 +13,8 @@ use Illuminate\Support\Str;
 class SortableLink
 {
 
+    private static ?string $defaultDirection;
+
     /**
      * @param array $parameters
      *
@@ -21,6 +23,8 @@ class SortableLink
      */
     public static function render(array $parameters)
     {
+        self::$defaultDirection = null;
+        
         list($sortColumn, $sortParameter, $title, $queryParameters, $anchorAttributes) = self::parseParameters($parameters);
 
         $title = self::applyFormatting($title, $sortColumn);
@@ -53,6 +57,13 @@ class SortableLink
      */
     public static function parseParameters(array $parameters)
     {
+        if (Str::contains($parameters[0], ':')) {
+            $parts = explode(':', $parameters[0]);
+
+            $parameters[0] = $parts[0];
+            self::$defaultDirection = $parts[1];
+        }
+
         //TODO: let 2nd parameter be both title, or default query parameters
         //TODO: needs some checks before determining $title
         $explodeResult    = self::explodeSortParameter($parameters[0]);
@@ -137,7 +148,7 @@ class SortableLink
             return [$icon, $direction];
         } else {
             $icon      = config('columnsortable.sortable_icon');
-            $direction = config('columnsortable.default_direction_unsorted', 'asc');
+            $direction = self::$defaultDirection ?? config('columnsortable.default_direction_unsorted', 'asc');
 
             return [$icon, $direction];
         }
