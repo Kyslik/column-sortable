@@ -82,6 +82,11 @@ return [
     'formatting_function'           => 'ucfirst',
 
     /*
+    apply formatting function to custom titles as well as column names
+     */
+    'format_custom_titles'          => true,
+
+    /*
     inject title parameter in query strings, use null to turn injection off
     example: 'inject_title' => 't' will result in ..user/?t="formatted title of sorted column"
      */

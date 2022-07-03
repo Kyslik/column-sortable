@@ -2,7 +2,7 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
 
-- [Column sorting for Laravel 5.5-6.0](#column-sorting-for-laravel-55-60)
+- [Column sorting for Laravel 5.5-8](#column-sorting-for-laravel-55-8)
 - [Setup](#setup)
   - [Composer](#composer)
     - [Laravel's >=5.5 auto discovery](#laravels-55-auto-discovery)
@@ -13,14 +13,28 @@
   - [Configuration in few words](#configuration-in-few-words)
   - [Font Awesome (default font classes)](#font-awesome-default-font-classes)
     - [Font Awesome 5](#font-awesome-5)
+  - [Full Example](#full-example)
+    - [Routes](#routes)
+    - [Controller's `index()` method](#controllers-index-method)
+    - [View (_pagination included_)](#view-pagination-included)
+- [HasOne / BelongsTo Relation sorting](#hasone--belongsto-relation-sorting)
+  - [Define hasOne relation](#define-hasone-relation)
+  - [Define belongsTo relation](#define-belongsto-relation)
+  - [Define `$sortable` arrays](#define-sortable-arrays)
+  - [Blade and relation sorting](#blade-and-relation-sorting)
+- [ColumnSortable overriding (advanced)](#columnsortable-overriding-advanced)
+- [Aliasing](#aliasing)
+  - [Using `withCount()`](#using-withcount)
+- [Exception to catch](#exception-to-catch)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# Column sorting for Laravel 5.5-6.0
+# Column sorting for Laravel 5.5-8
+
 [![Latest Version](https://img.shields.io/github/release/Kyslik/column-sortable.svg?style=flat-square)](https://github.com/Kyslik/column-sortable/releases)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
 [![Total Downloads](https://img.shields.io/packagist/dt/Kyslik/column-sortable.svg?style=flat-square)](https://packagist.org/packages/Kyslik/column-sortable)
-[![Build Status](https://travis-ci.org/Kyslik/column-sortable.svg?branch=L6.0)](https://travis-ci.org/Kyslik/column-sortable)
+![run-tests](https://github.com/Kyslik/column-sortable/workflows/run-tests/badge.svg)
 
 Package for handling column sorting in Laravel 5.[5-8]. For earlier versions of Laravel checkout branch [L5.1-3](https://github.com/Kyslik/column-sortable/tree/L5.1-3)
 
@@ -109,7 +123,7 @@ There is a blade extension for you to use **@sortablelink()**
 @sortablelink('column', 'Title', ['parameter' => 'smile'],  ['rel' => 'nofollow'])
 ```
 
-**Column** (1st) parameter is column in database, **Title** (2nd) parameter is displayed inside anchor tags, `array()` parameter (3rd) is default (GET) query strings parameter and `array()` parameter (4th) is for additional anchor-tag attributes.  
+**Column** (1st) parameter is column in database, **Title** (2nd) parameter is displayed inside anchor tags, `array()` parameter (3rd) is default (GET) query strings parameter and `array()` parameter (4th) is for additional anchor-tag attributes. You can use a custom URL as 'href' attribute in the 4th parameter, and the query string will be appended to it.
 
 You can omit 2nd, 3rd and 4th parameter.
 
@@ -119,7 +133,7 @@ Possible examples and usages of blade extension:
 @sortablelink('name')
 @sortablelink('name', 'Username')
 @sortablelink('address', trans('fields.address'), ['filter' => 'active, visible'])
-@sortablelink('address', trans('fields.address'), ['filter' => 'active, visible'], ['class' => 'btn btn-block', 'rel' => 'nofollow'])
+@sortablelink('address', trans('fields.address'), ['filter' => 'active, visible'], ['class' => 'btn btn-block', 'rel' => 'nofollow', 'href' => route('my.custom.route')])
 ```
 
 If you do not fill **Title** (2nd parameter) column name is used instead.
@@ -193,7 +207,7 @@ public function index(User $user)
 
 You can set default sorting parameters which will be applied when URL is empty.
 
->**For example**: page is loaded for first time, default direction is [configurable](https://github.com/Kyslik/column-sortable/blob/master/src/config/columnsortable.php#L77) (asc)
+>**For example**: page is loaded for first time, default direction is [configurable](https://github.com/Kyslik/column-sortable/blob/master/src/config/columnsortable.php#L103) (asc)
 
 ```php
 $users = $user->sortable('name')->paginate(10);
