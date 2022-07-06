@@ -13,9 +13,7 @@ use Illuminate\Support\Str;
 class SortableLink
 {
 
-    private static ?string $defaultDirection;
-
-    /**
+   /**
      * @param array $parameters
      *
      * @return string
@@ -23,8 +21,6 @@ class SortableLink
      */
     public static function render(array $parameters)
     {
-        self::$defaultDirection = null;
-        
         list($sortColumn, $sortParameter, $title, $queryParameters, $anchorAttributes) = self::parseParameters($parameters);
 
         $title = self::applyFormatting($title, $sortColumn);
@@ -33,7 +29,7 @@ class SortableLink
             request()->merge([$mergeTitleAs => $title]);
         }
 
-        list($icon, $direction) = self::determineDirection($sortColumn, $sortParameter);
+        list($icon, $direction) = self::determineDirection($sortColumn, $sortParameter, $queryParameters);
 
         $trailingTag = self::formTrailingTag($icon);
 
@@ -57,13 +53,6 @@ class SortableLink
      */
     public static function parseParameters(array $parameters)
     {
-        if (Str::contains($parameters[0], ':')) {
-            $parts = explode(':', $parameters[0]);
-
-            $parameters[0] = $parts[0];
-            self::$defaultDirection = $parts[1];
-        }
-
         //TODO: let 2nd parameter be both title, or default query parameters
         //TODO: needs some checks before determining $title
         $explodeResult    = self::explodeSortParameter($parameters[0]);
@@ -133,10 +122,11 @@ class SortableLink
     /**
      * @param $sortColumn
      * @param $sortParameter
+     * @param $queryParameters
      *
      * @return array
      */
-    private static function determineDirection($sortColumn, $sortParameter)
+    private static function determineDirection($sortColumn, $sortParameter, $queryParameters)
     {
         $icon = self::selectIcon($sortColumn);
 
@@ -148,7 +138,7 @@ class SortableLink
             return [$icon, $direction];
         } else {
             $icon      = config('columnsortable.sortable_icon');
-            $direction = self::$defaultDirection ?? config('columnsortable.default_direction_unsorted', 'asc');
+            $direction = $queryParameters['direction'] ?? config('columnsortable.default_direction_unsorted', 'asc');
 
             return [$icon, $direction];
         }
