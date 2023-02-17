@@ -31,6 +31,12 @@ jobs:
         exclude:
           - php: 7.2
             laravel: 8.*
+          - php: 7.2
+            laravel: 9.*
+          - php: 7.3
+            laravel: 9.*
+          - php: 7.4
+            laravel: 9.*
     name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.dependency-version }}
     steps:
       - name: Checkout code
