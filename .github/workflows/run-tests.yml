@@ -14,10 +14,12 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        php: [7.2, 7.3, 7.4, 8.0]
-        laravel: [6.*, 7.*, 8.*, 9.*]
+        php: [7.2, 7.3, 7.4, 8.0, 8.1]
+        laravel: [6.*, 7.*, 8.*, 9.*, 10.*]
         dependency-version: [prefer-lowest, prefer-stable]
         include:
+          -   laravel: 10.*
+              testbench: 8.*
           -   laravel: 9.*
               testbench: 7.*
           -   laravel: 8.*
@@ -29,6 +31,28 @@ jobs:
         exclude:
           - php: 7.2
             laravel: 8.*
+          - php: 7.2
+            laravel: 9.*
+          - php: 7.2
+            laravel: 10.*
+          - php: 7.3
+            laravel: 9.*
+          - php: 7.3
+            laravel: 10.*
+          - php: 7.4
+            laravel: 9.*
+          - php: 7.4
+            laravel: 10.*
+          - php: 8.0
+            laravel: 10.*
+          - php: 8.0
+            laravel: 8.*
+          - php: 8.1
+            laravel: 6.*
+          - php: 8.1
+            laravel: 7.*
+          - php: 8.1
+            laravel: 8.*
     name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.dependency-version }}
     steps:
       - name: Checkout code
@@ -39,7 +63,7 @@ jobs:
           path: ~/.composer/cache/files
           key: dependencies-laravel-${{ matrix.laravel }}-php-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}
       - name: Setup PHP
-        uses: shivammathur/setup-php@v1
+        uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
           extensions: curl, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, iconv
