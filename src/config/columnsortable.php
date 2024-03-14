@@ -118,4 +118,10 @@ return [
     for more information see https://github.com/Kyslik/column-sortable/issues/59
     */
     'join_type'                     => 'leftJoin',
+
+    /*
+    keep page: stay on the current page while sorting a column
+    default will return to the first page when sorting a column
+    */
+    'keep_page'                     => false,
 ];

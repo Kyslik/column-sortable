@@ -251,7 +251,14 @@ class SortableLink
             return is_array($element) ? $element : strlen($element);
         };
 
-        $persistParameters = array_filter(request()->except('sort', 'direction', 'page'), $checkStrlenOrArray);
+        $columnExceptions = ['sort', 'direction'];
+        $keepPage = config('columnsortable.keep_page', false);
+
+        if ($keepPage === false) {
+            $columnExceptions[] = 'page';
+        }
+
+        $persistParameters = array_filter(request()->except($columnExceptions), $checkStrlenOrArray);
         $queryString       = http_build_query(array_merge($queryParameters, $persistParameters, [
             'sort'      => $sortParameter,
             'direction' => $direction,
@@ -268,7 +275,7 @@ class SortableLink
         }
 
         unset($anchorAttributes['href']);
-        
+
         $attributes = [];
         foreach ($anchorAttributes as $k => $v) {
             $attributes[] = $k.('' != $v ? '="'.$v.'"' : '');
