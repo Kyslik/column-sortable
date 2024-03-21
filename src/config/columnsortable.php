@@ -96,6 +96,16 @@ return [
     allow request modification, when default sorting is set but is not in URI (first load)
      */
     'allow_request_modification'    => true,
+        
+    /*
+    Enable storing sorting to session
+    */
+    'to_session' => false,
+
+    /*
+    Value indicating to reset sorting
+    */
+    'reset_value' => '__reset',
 
     /*
     default direction for: $user->sortable('id') usage

@@ -29,7 +29,7 @@ class SortableLink
             request()->merge([$mergeTitleAs => $title]);
         }
 
-        list($icon, $direction) = self::determineDirection($sortColumn, $sortParameter);
+        list($icon, $direction) = self::determineDirection($sortColumn, $sortParameter, $queryParameters);
 
         $trailingTag = self::formTrailingTag($icon);
 
@@ -125,14 +125,21 @@ class SortableLink
      *
      * @return array
      */
-    private static function determineDirection($sortColumn, $sortParameter)
+    private static function determineDirection($sortColumn, $sortParameter, $queryParameters)
     {
         $icon = self::selectIcon($sortColumn);
 
-        if (request()->get('sort') == $sortParameter && in_array(request()->get('direction'), ['asc', 'desc'])) {
-            $icon      .= (request()->get('direction') === 'asc' ? config('columnsortable.asc_suffix', '-asc') :
-                config('columnsortable.desc_suffix', '-desc'));
-            $direction = request()->get('direction') === 'desc' ? 'asc' : 'desc';
+        $override_direction = array_key_exists('direction', $queryParameters) && in_array($queryParameters['direction'], ['asc', 'desc']);
+
+        if (request()->get('sort') == $sortParameter && in_array(request()->get('direction'), ['asc', 'desc']) || $override_direction) {
+            $icon .= (request()->get('direction') === 'asc' ? config('columnsortable.asc_suffix', '-asc') : config('columnsortable.desc_suffix', '-desc'));
+
+            if($override_direction){ 
+                //Override the direction with the query parameter
+                $direction = $queryParameters['direction'];
+            }else{
+                $direction = request()->get('direction') === 'desc' ? 'asc' : 'desc';
+            }    
 
             return [$icon, $direction];
         } else {
@@ -251,8 +258,15 @@ class SortableLink
             return is_array($element) ? $element : strlen($element);
         };
 
-        $persistParameters = array_filter(request()->except('sort', 'direction', 'page'), $checkStrlenOrArray);
-        $queryString       = http_build_query(array_merge($queryParameters, $persistParameters, [
+        $persistParameters = array_filter(request()->except('sort', 'direction', 'page'), $checkStrlenOrArray);    
+        
+        //TODO: Test for one-to-one relations
+        if(is_null($sortParameter)){
+            if(config('columnsortable.to_session')) $sortParameter = config('columnsortable.reset_value');
+            $direction = null;
+        }    
+
+        $queryString = http_build_query(array_merge($queryParameters, $persistParameters, [
             'sort'      => $sortParameter,
             'direction' => $direction,
         ]));

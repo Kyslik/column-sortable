@@ -127,6 +127,8 @@ There is a blade extension for you to use **@sortablelink()**
 
 You can omit 2nd, 3rd and 4th parameter.
 
+By using `['direction'=>'desc']` in 3rd parameter you can override the default toggle behavior.
+
 Possible examples and usages of blade extension:
 
 ```blade
@@ -134,6 +136,7 @@ Possible examples and usages of blade extension:
 @sortablelink('name', 'Username')
 @sortablelink('address', trans('fields.address'), ['filter' => 'active, visible'])
 @sortablelink('address', trans('fields.address'), ['filter' => 'active, visible'], ['class' => 'btn btn-block', 'rel' => 'nofollow', 'href' => route('my.custom.route')])
+@sortablelink(null, 'Reset') {{!-- back to default --}}
 ```
 
 If you do not fill **Title** (2nd parameter) column name is used instead.
@@ -383,3 +386,9 @@ try {
 ```
 
 >**Note**: I strongly recommend to catch **ColumnSortableException** because there is a user input in question (GET parameter) and any user can modify it in such way that package throws ColumnSortableException with code `0`.
+
+# Session - persisting parameters
+
+Package supports saving the sortable parameters _sort_ and _direction_ into the session. To support this on the application level set the `to_session` configuration parameter to `true`.
+
+        
