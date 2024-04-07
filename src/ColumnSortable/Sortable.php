@@ -5,6 +5,7 @@ namespace Kyslik\ColumnSortable;
 use BadMethodCallException;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Schema;
@@ -17,13 +18,13 @@ trait Sortable
 {
 
     /**
-     * @param \Illuminate\Database\Query\Builder $query
-     * @param array|null                         $defaultParameters
+     * @param Builder $query
+     * @param array|string|null $defaultParameters
      *
-     * @return \Illuminate\Database\Query\Builder
-     * @throws \Kyslik\ColumnSortable\Exceptions\ColumnSortableException
+     * @return Builder
+     * @throws ColumnSortableException
      */
-    public function scopeSortable($query, $defaultParameters = null)
+    public function scopeSortable(Builder $query, $defaultParameters = null): Builder
     {
         if (request()->allFilled(['sort', 'direction'])) { // allFilled() is macro
             return $this->queryOrderBuilder($query, request()->only(['sort', 'direction']));
@@ -51,7 +52,7 @@ trait Sortable
      *
      * @return array|null
      */
-    private function getDefaultSortable()
+    private function getDefaultSortable(): ?array
     {
         if (config('columnsortable.default_first_column', false)) {
             $sortBy = Arr::first($this->sortable);
@@ -65,14 +66,14 @@ trait Sortable
 
 
     /**
-     * @param \Illuminate\Database\Query\Builder $query
+     * @param Builder $query
      * @param array                              $sortParameters
      *
-     * @return \Illuminate\Database\Query\Builder
+     * @return Builder
      *
      * @throws ColumnSortableException
      */
-    private function queryOrderBuilder($query, array $sortParameters)
+    private function queryOrderBuilder(Builder $query, array $sortParameters): Builder
     {
         $model = $this;
 
@@ -119,7 +120,7 @@ trait Sortable
      *
      * @return array
      */
-    private function parseParameters(array $parameters)
+    private function parseParameters(array $parameters): array
     {
         $column = Arr::get($parameters, 'sort');
         if (empty($column)) {
@@ -136,14 +137,14 @@ trait Sortable
 
 
     /**
-     * @param \Illuminate\Database\Query\Builder $query
-     * @param \Illuminate\Database\Eloquent\Relations\BelongsTo|\Illuminate\Database\Eloquent\Relations\HasOne $relation
+     * @param Builder $query
+     * @param BelongsTo|\Illuminate\Database\Eloquent\Relations\HasOne $relation
      *
-     * @return \Illuminate\Database\Query\Builder
+     * @return Builder
      *
      * @throws \Exception
      */
-    private function queryJoinBuilder($query, $relation)
+    private function queryJoinBuilder(Builder $query, $relation): Builder
     {
         $relatedTable = $relation->getRelated()->getTable();
         $parentTable  = $relation->getParent()->getTable();
@@ -174,7 +175,7 @@ trait Sortable
      *
      * @return bool
      */
-    private function columnExists($model, $column)
+    private function columnExists($model, $column): bool
     {
         return (isset($model->sortable)) ? in_array($column, $model->sortable) :
             Schema::connection($model->getConnectionName())->hasColumn($model->getTable(), $column);
@@ -186,7 +187,7 @@ trait Sortable
      *
      * @return array
      */
-    private function formatToParameters($array)
+    private function formatToParameters($array): array
     {
         if (empty($array)) {
             return [];

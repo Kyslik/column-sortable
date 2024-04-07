@@ -2,7 +2,7 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
 
-- [Column sorting for Laravel 5.5-8](#column-sorting-for-laravel-55-8)
+- [Column sorting for Laravel 5.5-10](#column-sorting-for-laravel-55-8)
 - [Setup](#setup)
   - [Composer](#composer)
     - [Laravel's >=5.5 auto discovery](#laravels-55-auto-discovery)
