@@ -1,4 +1,4 @@
-# Column sorting for Laravel 5.5-8
+# Column sorting for Laravel 5.5-11
 
 [![Latest Version](https://img.shields.io/github/release/Kyslik/column-sortable.svg?style=flat-square)](https://github.com/Kyslik/column-sortable/releases)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
