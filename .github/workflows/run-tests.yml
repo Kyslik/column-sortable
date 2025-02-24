@@ -75,15 +75,11 @@ jobs:
           - laravel: 11.*
             php: 8.1
           - laravel: 12.*
-            php: 7.2
+            php: 8.2
           - laravel: 12.*
-            php: 7.3
+            php: 8.3
           - laravel: 12.*
-            php: 7.4
-          - laravel: 12.*
-            php: 8.0
-          - laravel: 12.*
-            php: 8.1
+            php: 8.4
 
     name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.dependency-version }}
 
