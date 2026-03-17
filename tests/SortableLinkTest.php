@@ -11,6 +11,13 @@ use Kyslik\ColumnSortable\SortableLink;
 class SortableLinkTest extends \Orchestra\Testbench\TestCase
 {
 
+    /**
+     * Compatibility for older Testbench/Laravel combinations that access this static property.
+     *
+     * @var \Illuminate\Testing\TestResponse|null
+     */
+    public static $latestResponse;
+
     public function testQueryStringParameterWithBooleanStaysInLink()
     {
         $parameters = ['key' => 0, 'another-key' => null, 'another-one' => 1];

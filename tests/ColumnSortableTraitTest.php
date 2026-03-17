@@ -11,6 +11,13 @@ class ColumnSortableTraitTest extends \Orchestra\Testbench\TestCase
 {
 
     /**
+     * Compatibility for older Testbench/Laravel combinations that access this static property.
+     *
+     * @var \Illuminate\Testing\TestResponse|null
+     */
+    public static $latestResponse;
+
+    /**
      * @var \User
      */
     private $user;
