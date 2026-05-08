@@ -129,10 +129,10 @@ class SortableLink
     {
         $icon = self::selectIcon($sortColumn);
 
-        if (request()->get('sort') == $sortParameter && in_array(request()->get('direction'), ['asc', 'desc'])) {
-            $icon      .= (request()->get('direction') === 'asc' ? config('columnsortable.asc_suffix', '-asc') :
+        if (request()->input('sort') == $sortParameter && in_array(request()->input('direction'), ['asc', 'desc'])) {
+            $icon      .= (request()->input('direction') === 'asc' ? config('columnsortable.asc_suffix', '-asc') :
                 config('columnsortable.desc_suffix', '-desc'));
-            $direction = request()->get('direction') === 'desc' ? 'asc' : 'desc';
+            $direction = request()->input('direction') === 'desc' ? 'asc' : 'desc';
 
             return [$icon, $direction];
         } else {
@@ -214,7 +214,7 @@ class SortableLink
 
         $directionClassPrefix = config('columnsortable.direction_anchor_class_prefix', null);
         if ($directionClassPrefix !== null && self::shouldShowActive($sortColumn)) {
-            $class[] = $directionClassPrefix.(request()->get('direction') === 'asc' ? config('columnsortable.asc_suffix', '-asc') :
+            $class[] = $directionClassPrefix.(request()->input('direction') === 'asc' ? config('columnsortable.asc_suffix', '-asc') :
                     config('columnsortable.desc_suffix', '-desc'));
         }
 
@@ -234,7 +234,7 @@ class SortableLink
      */
     private static function shouldShowActive($sortColumn)
     {
-        return request()->has('sort') && request()->get('sort') == $sortColumn;
+        return request()->has('sort') && request()->input('sort') == $sortColumn;
     }
 
 
