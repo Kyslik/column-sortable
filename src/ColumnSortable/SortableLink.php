@@ -252,7 +252,14 @@ class SortableLink
         };
 
         $persistParameters = array_filter(request()->except('sort', 'direction', 'page'), $checkStrlenOrArray);
-        $queryString       = http_build_query(array_merge($queryParameters, $persistParameters, [
+        if (config('columnsortable.swap_querystring_params') == false) {
+            $parameters[0] = $queryParameters;
+            $parameters[1] = $persistParameters;
+        } else {
+            $parameters[0] = $persistParameters;
+            $parameters[1] = $queryParameters;
+        }
+        $queryString       = http_build_query(array_merge($parameters[0], $parameters[1], [
             'sort'      => $sortParameter,
             'direction' => $direction,
         ]));
